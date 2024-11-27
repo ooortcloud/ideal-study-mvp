@@ -1,11 +1,9 @@
-package com.idealstudy.mvp.infrastructure.jpa.entity;
+package com.idealstudy.mvp.infrastructure.jpa.entity.member;
 
 import com.idealstudy.mvp.enums.member.*;
+import com.idealstudy.mvp.infrastructure.jpa.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "member")
@@ -15,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class MemberEntity extends BaseEntity{
+public class MemberEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -1,14 +1,13 @@
-package com.idealstudy.mvp.presentation.controller;
+package com.idealstudy.mvp.presentation.controller.member;
 
-import com.idealstudy.mvp.application.service.EmailService;
-import com.idealstudy.mvp.application.service.MemberService;
+import com.idealstudy.mvp.application.service.member.EmailService;
+import com.idealstudy.mvp.application.service.member.MemberService;
 import com.idealstudy.mvp.application.dto.member.MemberDto;
 import com.idealstudy.mvp.application.dto.member.MemberPageResultDto;
 import com.idealstudy.mvp.application.service.OfficialProfileService;
 import com.idealstudy.mvp.enums.HttpResponse;
 import com.idealstudy.mvp.enums.member.Role;
-import com.idealstudy.mvp.presentation.dto.SignUpUserRequestDto;
-import com.idealstudy.mvp.security.annotation.ForStudent;
+import com.idealstudy.mvp.presentation.dto.member.SignUpUserRequestDto;
 import com.idealstudy.mvp.security.annotation.ForUser;
 import com.idealstudy.mvp.util.HttpResponseUtil;
 import lombok.RequiredArgsConstructor;

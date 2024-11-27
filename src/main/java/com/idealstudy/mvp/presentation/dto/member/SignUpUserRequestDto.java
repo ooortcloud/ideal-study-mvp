@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.presentation.dto;
+package com.idealstudy.mvp.presentation.dto.member;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

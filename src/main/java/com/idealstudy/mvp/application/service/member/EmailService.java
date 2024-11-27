@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.application.service;
+package com.idealstudy.mvp.application.service.member;
 
 import com.idealstudy.mvp.application.dto.member.MemberDto;
 import com.idealstudy.mvp.infrastructure.RedisRepository;

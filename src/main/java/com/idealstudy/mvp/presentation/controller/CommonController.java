@@ -1,10 +1,8 @@
 package com.idealstudy.mvp.presentation.controller;
 
-import com.idealstudy.mvp.application.dto.member.MemberDto;
-import com.idealstudy.mvp.application.service.MemberService;
+import com.idealstudy.mvp.application.service.member.MemberService;
 import com.idealstudy.mvp.security.dto.JwtPayloadDto;
 import com.idealstudy.mvp.util.JwtUtil;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

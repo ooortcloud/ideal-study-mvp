@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.presentation.controller;
+package com.idealstudy.mvp.presentation.controller.member;
 
 import org.springframework.web.bind.annotation.*;
 
