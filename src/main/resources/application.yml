@@ -10,7 +10,7 @@ spring:
       deployment:
         - "prod"
         - "private"
-    active: deployment
+    active: development
 
   jpa:
     hibernate:

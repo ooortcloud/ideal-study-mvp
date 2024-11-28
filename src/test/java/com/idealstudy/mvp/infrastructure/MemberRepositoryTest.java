@@ -4,6 +4,7 @@ import com.idealstudy.mvp.application.dto.PageRequestDto;
 import com.idealstudy.mvp.application.dto.member.MemberDto;
 import com.idealstudy.mvp.enums.member.Gender;
 import com.idealstudy.mvp.enums.member.Role;
+import com.idealstudy.mvp.infrastructure.jpa.entity.member.MemberEntity;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ public class MemberRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Deprecated
     @Test
     @DisplayName("더미 데이터 삽입")
     public void setup() {
@@ -82,13 +84,55 @@ public class MemberRepositoryTest {
     */
 
     @Test
-    @DisplayName("이메일 조회 테스트")
-    public void testEmail() {
+    @DisplayName("관리자 조회 테스트")
+    public void testAdminEmail() {
 
-        String input = "tester1@gmail.com";
+        String input = "admin@gmail.com";
 
-        Assertions.assertThat(memberRepository.findByEmail(input))
+        MemberDto dto = memberRepository.findByEmail(input);
+        Assertions.assertThat(dto)
                 .isNotNull();
+        Assertions.assertThat(dto.getRole()).isEqualTo(Role.ROLE_ADMIN);
+
+    }
+
+    @Test
+    @DisplayName("학생 조회 테스트")
+    public void testStudentEmail() {
+
+        String input = "student@gmail.com";
+
+        MemberDto dto = memberRepository.findByEmail(input);
+        Assertions.assertThat(dto)
+                .isNotNull();
+        Assertions.assertThat(dto.getRole()).isEqualTo(Role.ROLE_STUDENT);
+
+    }
+
+    @Test
+    @DisplayName("강사 조회 테스트")
+    public void testTeacherEmail() {
+
+        String input = "teacher@gmail.com";
+
+        MemberDto dto = memberRepository.findByEmail(input);
+        Assertions.assertThat(dto)
+                .isNotNull();
+        Assertions.assertThat(dto.getRole()).isEqualTo(Role.ROLE_TEACHER);
+
+    }
+
+    @Test
+    @DisplayName("학부모 조회 테스트")
+    public void testParentsEmail() {
+
+        String input = "parents@gmail.com";
+
+        MemberDto dto = memberRepository.findByEmail(input);
+        Assertions.assertThat(dto)
+                .isNotNull();
+        Assertions.assertThat(dto.getRole()).isEqualTo(Role.ROLE_PARENTS);
+
     }
 
     @Test
@@ -99,6 +143,20 @@ public class MemberRepositoryTest {
 
         Assertions.assertThatThrownBy(() -> memberRepository.findByEmail(input))
                 .isInstanceOf(NullPointerException.class);
+    }
+    
+    @Test
+    @DisplayName("프로필 이미지 입력 테스트")
+    public void testImage() {
+
+        /*
+        MemberDto memberDto = MemberDto.builder()
+                .
+                        .build();
+
+        memberRepository.create();
+         */
+
     }
 
     @Test

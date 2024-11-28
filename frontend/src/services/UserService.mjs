@@ -1,10 +1,4 @@
-import axios from 'axios';
-
-const apiClient = axios.create({
-    baseURL: 'http://localhost:8080', // 기본 URL 설정
-    timeout: 5000,                     // 요청 제한 시간 설정
-    headers: { 'Content-Type': 'application/json' }
-  });
+import apiClient from './apiClient.mjs';
 
 /**
  * 더미데이터 생성
@@ -24,7 +18,7 @@ export const makeDummyUser = async () => {
 export const signUpUser = async (email) => {
   console.log("회원가입 API 시도:", email)
   try{
-    const response = await apiClient.post('/api/users/sign-up', {
+    const response = await apiClient.post('/users/sign-up', {
       email
     });
     console.log("회원가입 API 성공:", response)
@@ -70,7 +64,7 @@ export const readUser = async (userId) => {
 export const readUsers = async (pathname) => {
     console.log("회원목록조회 API 시도:", pathname)
     try {
-      const response = await apiClient.get('/api/users');
+      const response = await apiClient.get('/users');
 
       console.log("회원목록조회 API 성공:", response)
       return response.data;
@@ -99,7 +93,7 @@ export const readUsers = async (pathname) => {
 export const updateUser = async (accountData) => {
     console.error('회원수정 API 시도:', accountData);
     try{
-      const response = await apiClient.post('/api/users/{userId}', {
+      const response = await apiClient.post('/api/users/update/{userId}', {
         accountData
       });
       console.error('회원수정 API 성공:', response);

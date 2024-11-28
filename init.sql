@@ -10,6 +10,8 @@ GRANT ALL PRIVILEGES ON idealstudy.* TO 'manager'@'%';
 -- 권한 변경 사항 적용
 FLUSH PRIVILEGES;
 
+USE idealstudy;
+
 -- member 테이블 생성
 CREATE TABLE IF NOT EXISTS member (
                                       user_id CHAR(36) PRIMARY KEY,
@@ -20,32 +22,25 @@ CREATE TABLE IF NOT EXISTS member (
     sex ENUM('MALE', 'FEMALE') NOT NULL,
     referral_id CHAR(36),
     level INT DEFAULT 0,
-    role ENUM('GUEST', 'STUDENT', 'TEACHER', 'PARENTS', 'ADMIN') NOT NULL,  -- 수정된 부분
+    role ENUM('ROLE_GUEST', 'ROLE_STUDENT', 'ROLE_TEACHER', 'ROLE_PARENTS', 'ROLE_ADMIN') NOT NULL,  -- 수정된 부분
     from_social TINYINT DEFAULT 0,
     init TINYINT DEFAULT 1,
-    deleted TINYINT DEFAULT 0
-    );
+    deleted TINYINT DEFAULT 0,
+    mod_date datetime(6),
+    reg_date datetime(6),
+    dtype varchar(31) NOT NULL,
+    created_by varchar(255),
+    del_date datetime(6),
+    deleted_by varchar(255),
+    modified_by varchar(255),
+    introduction varchar(255) default '안녕하세요. 잘 부탁드립니다.',
+    image_data longblob
+);
 
 -- 멤버 데이터 삽입
-INSERT INTO member (user_id, password, name, phone_address, email, sex, referral_id, level, role, from_social, init, deleted)
+INSERT INTO member (user_id, password, name, phone_address, email, sex, referral_id, level, role, from_social, init, deleted, reg_date, dtype)
 VALUES
-    (UUID(), 'password1', '홍길동', '010-1234-5678', 'hongil@example.com', 'MALE', NULL, 1, 'GUEST', 0, 1, 0),
-    (UUID(), 'password2', '김철수', '010-2345-6789', 'kim@example.com', 'MALE', NULL, 2, 'ADMIN', 0, 1, 0),
-    (UUID(), 'password3', '이영희', '010-3456-7890', 'lee@example.com', 'FEMALE', NULL, 1, 'GUEST', 0, 1, 0),
-    (UUID(), 'password4', '박지은', '010-4567-8901', 'park@example.com', 'FEMALE', NULL, 1, 'GUEST', 1, 1, 0),
-    (UUID(), 'password5', '최민호', '010-5678-9012', 'choi@example.com', 'MALE', NULL, 2, 'ADMIN', 0, 1, 0),
-    (UUID(), 'password6', '정지훈', '010-6789-0123', 'jung@example.com', 'MALE', NULL, 1, 'STUDENT', 1, 1, 0),
-    (UUID(), 'password7', '이수지', '010-7890-1234', 'lee2@example.com', 'FEMALE', NULL, 1, 'STUDENT', 0, 1, 0),
-    (UUID(), 'password8', '김태희', '010-8901-2345', 'kim2@example.com', 'FEMALE', NULL, 2, 'ADMIN', 0, 1, 0),
-    (UUID(), 'password9', '송유진', '010-9012-3456', 'song@example.com', 'FEMALE', NULL, 1, 'STUDENT', 1, 1, 0),
-    (UUID(), 'password10', '정유미', '010-0123-4567', 'jung2@example.com', 'FEMALE', NULL, 1, 'STUDENT', 0, 1, 0),
-    (UUID(), 'password11', '황성진', '010-1234-5679', 'hwang@example.com', 'MALE', NULL, 1, 'STUDENT', 0, 1, 0),
-    (UUID(), 'password12', '김영수', '010-2345-6789', 'kim3@example.com', 'MALE', NULL, 1, 'STUDENT', 1, 1, 0),
-    (UUID(), 'password13', '이찬희', '010-3456-7890', 'lee3@example.com', 'FEMALE', NULL, 2, 'ADMIN', 0, 1, 0),
-    (UUID(), 'password14', '박상희', '010-4567-8901', 'park2@example.com', 'FEMALE', NULL, 1, 'STUDENT', 1, 1, 0),
-    (UUID(), 'password15', '김지훈', '010-5678-9012', 'kim4@example.com', 'MALE', NULL, 1, 'STUDENT', 0, 1, 0),
-    (UUID(), 'password16', '홍성호', '010-6789-0123', 'hong2@example.com', 'MALE', NULL, 2, 'ADMIN', 1, 1, 0),
-    (UUID(), 'password17', '이정은', '010-7890-1234', 'lee4@example.com', 'FEMALE', NULL, 1, 'STUDENT', 0, 1, 0),
-    (UUID(), 'password18', '김혜수', '010-8901-2345', 'kim5@example.com', 'FEMALE', NULL, 2, 'ADMIN', 0, 1, 0),
-    (UUID(), 'password19', '정지민', '010-9012-3456', 'jung3@example.com', 'FEMALE', NULL, 1, 'STUDENT', 1, 1, 0),
-    (UUID(), 'password20', '송윤호', '010-0123-4567', 'song2@example.com', 'MALE', NULL, 1, 'STUDENT', 0, 1, 0);
+    (UUID(), '$2a$10$J03L0oKiIDC5mhdYxzOTresMpd9gMfqbJakKr.iHAsgUbq/To2VZO', '관리자', '010-1234-1234', 'admin@gmail.com', 'MALE', null, 1, 'ROLE_ADMIN', 0, 1, 0, NOW(), 'A'),
+    (UUID(), '$2a$10$/essrJvIRI8sf52JKG/YHO.5bv6JOqmk8UFD.kFK8a12WtQZ.t2sK', '학생', '010-1234-1234', 'student@gmail.com', 'MALE', null, 1, 'ROLE_STUDENT', 0, 1, 0, NOW(), 'S'),
+    (UUID(), '$2a$10$J03L0oKiIDC5mhdYxzOTresMpd9gMfqbJakKr.iHAsgUbq/To2VZO', '강사', '010-1234-1234', 'teacher@gmail.com', 'MALE', null, 1, 'ROLE_TEACHER', 0, 1, 0, NOW(), 'T'),
+    (UUID(), '$2a$10$tPBgYrrCy8kKo7G.w5uVJeCcGPaCDOC80oV5qK2PE68THsjk443wy', '학부모', '010-1234-1234', 'parents@gmail.com', 'FEMALE', null, 1, 'ROLE_PARENTS', 0, 1, 0, NOW(), 'P');

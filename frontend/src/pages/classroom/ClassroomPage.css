@@ -1,0 +1,99 @@
+.classroom-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* 섹션 간의 간격 */
+    padding: 20px;
+    background-color: #f4f6f9; /* 부드러운 배경색 */
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh; /* 화면 높이 */
+}
+
+/* 개별 섹션 스타일 */
+.section {
+    padding: 20px;
+    background-color: #ffffff; /* 흰색 배경 */
+    border-radius: 10px; /* 둥근 모서리 */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* 애니메이션 */
+}
+
+.section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* FAQ 섹션 */
+.faq-section {
+    padding: 15px;
+    background-color: #e8f8f5; /* 연한 녹색 배경 */
+    border-left: 5px solid #2ecc71; /* 강조를 위한 테두리 */
+}
+
+.faq-section h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #27ae60;
+}
+
+/* 질문 게시판 */
+.inquiry-section {
+    padding: 15px;
+    background-color: #fef9e7; /* 연한 노란색 배경 */
+    border-left: 5px solid #f39c12;
+}
+
+.inquiry-section h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #e67e22;
+}
+
+/* 게시물 섹션 */
+.post-section {
+    padding: 15px;
+    background-color: #f4ecf7; /* 연한 보라색 배경 */
+    border-left: 5px solid #9b59b6;
+}
+
+.post-section h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #8e44ad;
+}
+
+/* 스케줄 섹션 */
+.schedule-section {
+    padding: 15px;
+    background-color: #ebf5fb; /* 연한 파란색 배경 */
+    border-left: 5px solid #3498db;
+}
+
+.schedule-section h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #2980b9;
+}
+
+/* 수강 등록 섹션 */
+.enrollment-section {
+    padding: 15px;
+    background-color: #fdebd0; /* 연한 주황색 배경 */
+    border-left: 5px solid #e67e22;
+}
+
+.enrollment-section h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #d35400;
+}
+
+/* 반응형 디자인 */
+@media screen and (max-width: 768px) {
+    .classroom-container {
+        padding: 10px;
+    }
+
+    .section {
+        padding: 15px;
+    }
+}

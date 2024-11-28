@@ -5,8 +5,10 @@ import com.idealstudy.mvp.infrastructure.jpa.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Table(name = "member")
+@Entity(name = "Member")
+@Table(name = "MEMBER")
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name="DTYPE") // 부모클래스 구분 칼럼
 @Getter
 @Setter  // for Writer accessor
 @Builder
@@ -53,6 +55,16 @@ public class MemberEntity extends BaseEntity {
         roleSet.add(role);
     }
      */
+
+    @Column(columnDefinition = "varchar(255) default '안녕하세요. 잘 부탁드립니다.'")
+    private String introduction;
+
+    // Specifies that a persistent property or field should be persisted as a large object
+    // to a database-supported large object type.
+    @Lob @Basic(fetch=FetchType.LAZY)
+    // LONGBLOB: MySQL에서 대용량 바이너리 데이터를 저장하기 위한 데이터 타입을 지정
+    @Column(name = "image_data", columnDefinition="LONGBLOB")
+    private byte[] profile;
 
     @Column(columnDefinition = "TINYINT")
     private int fromSocial;

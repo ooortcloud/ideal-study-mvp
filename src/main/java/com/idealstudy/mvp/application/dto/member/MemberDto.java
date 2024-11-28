@@ -25,6 +25,10 @@ public class MemberDto {
 
     private Role role;
 
+    private String introduction;
+
+    private byte[] profile;
+
     private int fromSocial;
 
     private int init;

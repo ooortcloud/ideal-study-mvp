@@ -12,15 +12,19 @@ const LoginPage = () => {
 
   const handleLogin = async() => {
     try{
-      const response = await loginUser(userEmail, password)
-      login(); // context 를 로그인상태로 등록
+      const { token, user } = await loginUser(userEmail, password)
+
+      login({ token, user }); // context 를 로그인상태로 등록
       navigate('/'); // 로그인시 메인 페이지로 이동
     }catch(error) {
       console.log(error);
 
       //////////////임시로 로그인처리 아래 함수들 삭제해야함
       navigate('/');
-      login({name: "김동은", id: "2", level: "7", role: 'teacher'}); 
+      login({
+        token: "dummy-token", // 임시로 더미 토큰
+        user: { name: "김동은", id: "2", level: "7", role: 'teacher' }
+      }); 
     }
   };
 

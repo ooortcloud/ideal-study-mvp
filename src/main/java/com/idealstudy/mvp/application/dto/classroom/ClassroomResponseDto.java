@@ -9,7 +9,7 @@ public class ClassroomResponseDto {
     private String title;
     private String description;
     private int capacity;
-    private String teacherId;
+//    private String teacherId;
     private String thumbnail;
 
     // 엔티티에서 ResponseDto로 변환
@@ -19,7 +19,6 @@ public class ClassroomResponseDto {
         dto.setTitle(entity.getTitle());
         dto.setDescription(entity.getDescription());
         dto.setCapacity(entity.getCapacity());
-        dto.setTeacherId(entity.getTeacher().getTeacherId());
         dto.setThumbnail(entity.getThumbnail());
         return dto;
     }

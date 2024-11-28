@@ -1,10 +1,11 @@
 package com.idealstudy.mvp.infrastructure.impl.member;
 
+import com.idealstudy.mvp.infrastructure.TeacherRepository;
 import com.idealstudy.mvp.infrastructure.jpa.repository.member.TeacherJpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class TeacherRepositoryImpl {
+public class TeacherRepositoryImpl implements TeacherRepository {
 
     private TeacherJpaRepository teacherJpaRepository;
 

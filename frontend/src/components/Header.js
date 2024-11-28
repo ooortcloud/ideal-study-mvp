@@ -32,6 +32,7 @@ const Header = () => {
           <Link to="/about">소개</Link>
           <Link to="/teachers">강사목록</Link>
           <Link to="/students">학생목록</Link>
+          <Link to="/classes">클래스목록</Link>
           {isAuthenticated && <> <Link to={`/myPage/${userInfo.id}`}>마이페이지</Link></>}
         </div>
 

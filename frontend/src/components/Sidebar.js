@@ -8,8 +8,8 @@ const Sidebar = () => {
       <h3>마이 페이지</h3>
       <nav>
         <Link to="/profile">개인정보 조회/수정</Link>
+        <Link to="/classes">내 클래스 목록</Link>
         <Link to="/settings">설정</Link>
-        <Link to="/logout">로그아웃</Link>
       </nav>
     </aside>
   );

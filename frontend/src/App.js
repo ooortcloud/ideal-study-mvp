@@ -16,6 +16,8 @@ import OfficialProfilePageUpdate from './pages/teacher/OfficialProfilePageUpdate
 
 import './App.css';  // 스타일 파일 import
 import Sidebar from './components/Sidebar';
+import ClassroomListPage from './pages/classroom/ClassroomListPage';
+import ClassroomPage from './pages/classroom/ClassroomPage';
 
 const App = () => {
   return (
@@ -39,6 +41,9 @@ const App = () => {
             {/* teachers only */}
             <Route path="/officialPage/:id" element={<OfficialProfilePage/>} />
             <Route path="/officialPageUpdate" element={<OfficialProfilePageUpdate/>} />
+            {/* classroom */}
+            <Route path="/classes" element={<ClassroomListPage/>} />
+            <Route path="/classes/:id" element={<ClassroomPage/>} />
             {/* 일치하는 라우트가 없을 때 NotFound 컴포넌트 렌더링 */}
             <Route path="*" element={<NotFound/>} />
           </Routes>

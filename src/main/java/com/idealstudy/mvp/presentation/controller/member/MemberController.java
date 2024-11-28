@@ -69,7 +69,11 @@ public class MemberController {
             // TODO: 다른 권한에 대해서도 회원가입이 가능하도록 해야 함.
             password = memberService.addMember(email, token, Role.ROLE_STUDENT);
 
-            officialProfileService.create();
+            // 마이페이지 자동 생성
+
+            // (강사에 한해서) 공식 페이지 자동 생성
+            if(true)
+                officialProfileService.create();
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());
             return new ResponseEntity<String>(e.getMessage(), HttpStatusCode.valueOf(400));
