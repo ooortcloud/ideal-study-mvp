@@ -4,6 +4,7 @@ import com.idealstudy.mvp.application.dto.classroom.inclass.MaterialsDto;
 import com.idealstudy.mvp.application.dto.classroom.inclass.MaterialsPageResultDto;
 import com.idealstudy.mvp.application.service.classroom.inclass.MaterialsService;
 import com.idealstudy.mvp.enums.classroom.MaterialsStatus;
+import com.idealstudy.mvp.enums.error.SecurityErrorMsg;
 import com.idealstudy.mvp.enums.member.Role;
 import com.idealstudy.mvp.security.annotation.ForStudent;
 import com.idealstudy.mvp.security.annotation.ForTeacher;
@@ -153,6 +154,7 @@ public class MaterialsController {
 
         try {
             File file = materialsService.getFile(filePath, materialsId, userId, role);
+
             Path path = Paths.get(file.getAbsolutePath());
             Resource resource = new UrlResource(path.toUri());
 

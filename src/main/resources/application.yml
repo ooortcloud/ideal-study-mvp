@@ -26,8 +26,7 @@ spring:
       max-file-size: 250MB
       max-request-size: 250MB
 
-upload:
-  path: src/main/resources/static/upload-materials/
+
 
 # 로깅 관련 설정은 logback-spring-server.xml 에서 세밀하게 관리
 #logging:

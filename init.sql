@@ -334,3 +334,44 @@ CREATE TABLE IF NOT EXISTS attendance (
 	FOREIGN KEY (classroom_id) REFERENCES classroom(classroom_id),
 	FOREIGN KEY (created_by) REFERNECES student(student_id)
 );
+
+
+CREATE TABLE IF NOT EXISTS assessment (
+
+	id BIGINT NOT NULL AUTO_INCREMENT,
+	classroom_id CHAR(36) NOT NULL,
+	assessment_type ENUM('EXAM', 'ASSIGNMENT') NOT NULL,
+	title VARCHAR(100) NOT NULL,
+	description VARCHAR(2000),
+	start_time TIMESTAMP NOT NULL,
+	end_time TIMESTAMP NOT NULL,
+	exam_text VARCHAR(2000),
+	exam_uri VARCHAR(255),
+	feedback_all TEXT,
+	PRIMARY KEY (id),
+	FOREIGN KEY (classroom_id) REFERENCES classroom(classroom_id)
+);
+
+CREATE TABLE IF NOT EXISTS submission(
+
+	id BIGINT NOT NULL AUTO_INCREMENT,
+	student_id CHAR(36) NOT NULL,
+	assessment_id BIGINT NOT NULL,
+	assessment_type ENUM('EXAM', 'ASSIGNMENT') NOT NULL,
+	submission_text TEXT,
+	submission_uri VARCHAR(255),
+	started_at TIMESTAMP,
+	ended_at TIMESTAMP,
+    status ENUM('PENDING', 'IN_PROGRESS', 'COMPLETED', 'MISSED'),
+	personal_feedback TEXT,
+	score INT,
+	created_by CHAR(36) NOT NULL,
+    reg_date TIMESTAMP NOT NULL,
+    mod_date DATETIME(6),
+    del_date DATETIME(6),
+    modified_by CHAR(36),
+    deleted_by CHAR(36),
+	PRIMARY KEY (id),
+	FOREIGN KEY (student_id) REFERENCES student(student_id),
+	FOREIGN KEY (assessment_id) REFERENCES assessment(id)
+);

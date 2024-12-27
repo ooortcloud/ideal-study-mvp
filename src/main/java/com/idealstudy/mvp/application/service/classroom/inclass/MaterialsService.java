@@ -2,14 +2,12 @@ package com.idealstudy.mvp.application.service.classroom.inclass;
 
 import com.idealstudy.mvp.application.dto.classroom.inclass.MaterialsDto;
 import com.idealstudy.mvp.application.dto.classroom.inclass.MaterialsPageResultDto;
-import com.idealstudy.mvp.application.component.ClassroomComponent;
-import com.idealstudy.mvp.domain.Materials;
+import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
+import com.idealstudy.mvp.application.service.domain_service.FileManager;
 import com.idealstudy.mvp.enums.classroom.MaterialsStatus;
 import com.idealstudy.mvp.enums.error.DBErrorMsg;
 import com.idealstudy.mvp.enums.error.SecurityErrorMsg;
 import com.idealstudy.mvp.enums.member.Role;
-import com.idealstudy.mvp.application.repository.ClassroomRepository;
-import com.idealstudy.mvp.application.repository.inclass.EnrollmentRepository;
 import com.idealstudy.mvp.application.repository.inclass.MaterialsRepository;
 import com.idealstudy.mvp.util.TryCatchServiceTemplate;
 import lombok.extern.slf4j.Slf4j;
@@ -28,22 +26,17 @@ public class MaterialsService {
 
     private final MaterialsRepository materialsRepository;
 
-    // 해당 클래스에 소속되어 있는지 체크하는 용도로 사용
-    private final EnrollmentRepository enrollmentRepository;
+    private final FileManager fileManager;
 
-    private final Materials materials;
-
-    private final ClassroomComponent classroom;
+    private final ValidationManager validationService;
 
     @Autowired
-    public MaterialsService(MaterialsRepository materialsRepository, ClassroomRepository classroomRepository, EnrollmentRepository enrollmentRepository,
-                            @Value("${upload.path}") String uploadPath) {
+    public MaterialsService(MaterialsRepository materialsRepository, ValidationManager validationService,
+                            @Value("${upload.materials-path}") String uploadPath) {
         this.materialsRepository = materialsRepository;
-        this.enrollmentRepository = enrollmentRepository;
+        this.validationService = validationService;
 
-        materials = new Materials(materialsRepository, enrollmentRepository
-                , classroomRepository, uploadPath);
-        classroom = new ClassroomComponent(classroomRepository);
+        fileManager = new FileManager(uploadPath);
     }
 
     public MaterialsDto uploadPublic(String teacherId, String classroomId, String description, MultipartFile file,
@@ -54,7 +47,7 @@ public class MaterialsService {
 
         return TryCatchServiceTemplate.execute(() -> tryCatchUpload(classroomId, studentId, orderNum,
                 status, description, file, title),
-                () -> classroom.checkMyClassroom(classroomId, teacherId), DBErrorMsg.CREATE_ERROR);
+                () -> validationService.validateTeacher(classroomId, teacherId), DBErrorMsg.CREATE_ERROR);
     }
 
     public MaterialsDto uploadIndividual(String teacherId, String classroomId, String studentId, String description,
@@ -64,7 +57,7 @@ public class MaterialsService {
 
         return TryCatchServiceTemplate.execute(() -> tryCatchUpload(classroomId, studentId, orderNum, status,
                         description, file, title),
-                () -> classroom.checkMyClassroom(classroomId, teacherId), DBErrorMsg.CREATE_ERROR);
+                () -> validationService.validateTeacher(classroomId, teacherId), DBErrorMsg.CREATE_ERROR);
     }
 
     public MaterialsDto getDetailForTeacher(Long id, String teacherId){
@@ -73,7 +66,7 @@ public class MaterialsService {
             MaterialsDto dto = materialsRepository.getDetail(id);
             String classroomId = dto.getClassroomId();
 
-            classroom.checkMyClassroom(classroomId, teacherId);
+            validationService.validateTeacher(classroomId, teacherId);
 
             return dto;
         },
@@ -91,15 +84,11 @@ public class MaterialsService {
                     MaterialsDto dto = materialsRepository.getDetail(id);
                     String classroomId = dto.getClassroomId();
 
-                    if(dto.getStatus() == MaterialsStatus.PUBLIC) {
-                        if( !enrollmentRepository.checkAffiliated(classroomId, studentId))
-                            throw new SecurityException(SecurityErrorMsg.NOT_AFFILIATED.toString());
-                    } else if (dto.getStatus() == MaterialsStatus.INDIVIDUAL) {
-                        if( !dto.getStudentId().equals(studentId))
-                            throw new SecurityException(SecurityErrorMsg.PRIVATE_EXCEPTION.toString());
-                    } else {
-                        throw new IllegalArgumentException("잘못된 status 값입니다.");
-                    }
+                    if(dto.getStatus() == MaterialsStatus.PUBLIC)
+                        validationService.validateStudentAffiliated(classroomId, studentId);
+
+                    if(dto.getStatus() == MaterialsStatus.INDIVIDUAL)
+                        validationService.validateStudentIndividual(studentId, dto.getStudentId());
 
                     return dto;
                 },
@@ -122,7 +111,7 @@ public class MaterialsService {
     public MaterialsPageResultDto getListForTeacher(String classroomId, int page, String teacherId){
 
         return TryCatchServiceTemplate.execute(() -> materialsRepository.getListForTeacher(classroomId, page),
-                () -> classroom.checkMyClassroom(classroomId, teacherId), DBErrorMsg.SELECT_ERROR);
+                () -> validationService.validateTeacher(classroomId, teacherId), DBErrorMsg.SELECT_ERROR);
     }
 
     public MaterialsDto update(Long id, String studentId, String description, MultipartFile multipartFile,
@@ -131,38 +120,57 @@ public class MaterialsService {
 
         return TryCatchServiceTemplate.execute(() -> tryCatchUpdate(id, studentId, description, multipartFile,
                         orderNum, status, title),
-                () -> classroom.checkMyClassroom(classroomId, teacherId), DBErrorMsg.UPDATE_ERROR);
+                () -> validationService.validateTeacher(classroomId, teacherId), DBErrorMsg.UPDATE_ERROR);
     }
 
     public void delete(Long id, String classroomId, String teacherId){
 
         TryCatchServiceTemplate.execute(() -> {
-            new File(materialsRepository.getDetail(id).getMaterialUri()).delete();
 
-            materialsRepository.delete(id);
+            fileManager.deleteFile(materialsRepository.getDetail(id).getMaterialUri());
+
             return null;
         },
-        () -> classroom.checkMyClassroom(classroomId, teacherId), DBErrorMsg.DELETE_ERROR);
+        () -> validationService.validateTeacher(classroomId, teacherId), DBErrorMsg.DELETE_ERROR);
 
     }
 
     public File getFile(String materialUri, Long id, String userId, Role role)
             throws RuntimeException {
 
-        return materials.getFile(materialUri, id, userId, role);
+        MaterialsDto dto = materialsRepository.getDetail(id);
+
+        if(role == Role.ROLE_STUDENT) {
+
+            if(dto.getStatus() == MaterialsStatus.PUBLIC)
+                validationService.validateStudentAffiliated(dto.getClassroomId(), userId);
+
+            if(dto.getStatus() == MaterialsStatus.INDIVIDUAL)
+                validationService.validateStudentIndividual(userId, dto.getStudentId());
+
+            return fileManager.getFile(materialUri);
+        }
+
+        else if(role == Role.ROLE_TEACHER) {
+            validationService.validateTeacher(userId, dto.getClassroomId());
+
+            return fileManager.getFile(materialUri);
+        }
+
+        else
+            throw new SecurityException(SecurityErrorMsg.ROLE_EXCEPTION.toString());
     }
 
     private MaterialsDto tryCatchUpload(String classroomId, String studentId, Integer orderNum, MaterialsStatus status,
                                         String description, MultipartFile multipartFile, String title
     ) throws RuntimeException, IOException {
 
-        String filePath = materials.saveFile(multipartFile.getInputStream(), multipartFile.getOriginalFilename());
+        String filePath = fileManager.saveFile(multipartFile.getInputStream(), multipartFile.getOriginalFilename());
         try {
             return materialsRepository.upload(classroomId, studentId, orderNum, status, title, description,
                     filePath);
         } catch (Exception e) {
-            File file = new File(filePath);
-            file.delete();
+
             throw new RuntimeException(e);
         }
     }
@@ -178,7 +186,7 @@ public class MaterialsService {
 
             final String materialUri;
             if(multipartFile != null)
-                materialUri = materials.saveFile(multipartFile.getInputStream(), multipartFile.getOriginalFilename());
+                materialUri = fileManager.saveFile(multipartFile.getInputStream(), multipartFile.getOriginalFilename());
             else
                 materialUri = null;
 

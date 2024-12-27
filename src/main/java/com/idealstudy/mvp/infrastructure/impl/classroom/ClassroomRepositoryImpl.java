@@ -94,4 +94,10 @@ public class ClassroomRepositoryImpl implements ClassroomRepository {
         ClassroomEntity entity = classroomJpaRepository.findById(id).orElseThrow();
         classroomJpaRepository.delete(entity);
     }
+
+    @Override
+    public ClassroomPageResultDto findByStudentId(String studentId) {
+
+        return null;
+    }
 }

@@ -51,7 +51,7 @@ public class EnrollmentController {
     @GetMapping("/api/enrollments/users/{userId}")
     public void getEnrollmentListByUserId(@PathVariable String userId) {
 
-
+        // 어떤 STATUS를 기준으로 검색할 것인가?
     }
 
     @ForUser

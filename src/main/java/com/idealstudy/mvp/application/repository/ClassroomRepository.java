@@ -18,4 +18,6 @@ public interface ClassroomRepository {
     ClassroomResponseDto update(String id, String title, String description, Integer capacity, String thumbnail);
 
     void deleteById(String id); // 수업 삭제
+
+    ClassroomPageResultDto findByStudentId(String studentId);
 }

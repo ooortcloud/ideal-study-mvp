@@ -106,7 +106,7 @@ public class MaterialsRepositoryTest {
         Long id = autoIncrement;
 
         String description = "update";
-        String materialUri = "src/main/resources/static/upload-materials/test02.txt";
+        String materialUri = "src/main/resources/static/upload-materials/test.txt";
 
         MaterialsDto dto = materialsRepository.update(id, null, null, null, description,
                 materialUri);
@@ -114,7 +114,7 @@ public class MaterialsRepositoryTest {
         Assertions.assertThat(dto.getDescription()).isEqualTo(description);
 
         File uploadedFile = new File(dto.getMaterialUri());
-        Assertions.assertThat(uploadedFile.getName()).contains("test02.txt");
+        Assertions.assertThat(uploadedFile.getName()).contains("test.txt");
     }
 
      */

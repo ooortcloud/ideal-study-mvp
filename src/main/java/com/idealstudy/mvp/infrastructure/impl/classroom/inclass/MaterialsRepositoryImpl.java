@@ -38,18 +38,13 @@ public class MaterialsRepositoryImpl implements MaterialsRepository {
 
     private final static int SIZE = 10;
 
-    private final String UPLOAD_PATH;
-
     @Autowired
     public MaterialsRepositoryImpl(MaterialsJpaRepository materialsJpaRepository,
                                    ClassroomJpaRepository classroomJpaRepository,
-                                   StudentJpaRepository studentJpaRepository,
-                                   @Value("${upload.path}") String uploadPath) {
+                                   StudentJpaRepository studentJpaRepository) {
         this.materialsJpaRepository = materialsJpaRepository;
         this.classroomJpaRepository = classroomJpaRepository;
         this.studentJpaRepository = studentJpaRepository;
-
-        UPLOAD_PATH = uploadPath;
     }
 
     @Override
@@ -196,38 +191,5 @@ public class MaterialsRepositoryImpl implements MaterialsRepository {
         MaterialsEntity entity = materialsJpaRepository.findById(id).orElseThrow();
         // deleteFile(entity.getMaterialUri());
         materialsJpaRepository.delete(entity);
-    }
-
-    @Deprecated
-    private String uploadFile(File file) {
-
-        String uuid = UUID.randomUUID().toString();
-        String filePath = UPLOAD_PATH + uuid + "_" + file.getName();
-
-        try (InputStream inputStream = new FileInputStream(file);
-             OutputStream outputStream = new FileOutputStream(filePath)) {
-
-            byte[] buffer = new byte[8192]; // 8KB 버퍼 크기 설정
-
-            int bytesRead;
-            // EOF인 경우 파일 쓰기 종료. 그 외에는 buffer에 파일을 write.
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                // buffer에 저장된 파일 조각을 쓰는 작업
-                outputStream.write(buffer, 0, bytesRead);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("파일 업로드 중 오류가 발생했습니다.");
-        }
-
-        return filePath;
-    }
-
-    @Deprecated
-    private void deleteFile(String materialUri) {
-
-        File file = new File(materialUri);
-        file.delete();
     }
 }
