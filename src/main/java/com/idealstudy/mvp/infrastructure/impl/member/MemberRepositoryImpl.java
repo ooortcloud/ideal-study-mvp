@@ -41,6 +41,8 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Autowired
     private MemberMapper memberMapper;
 
+    private static final int SIZE = 10;
+
     @Override
     public void create(TeacherDto dto) {
 
@@ -130,13 +132,15 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public MemberPageResultDto findMembers(PageRequestDto requestDto) {
+    public MemberPageResultDto findMembers(int page) {
+
+        PageRequestDto requestDto = new PageRequestDto(page, SIZE);
 
         Pageable pageable = requestDto.getPageable(Sort.by("regDate").ascending());
 
         Page<MemberEntity> result = memberJpaRepository.findAll(pageable);
 
-        Function<MemberEntity, MemberDto> fn = (entity -> memberMapper.entityToDto(entity));
+        Function<MemberEntity, MemberListDto> fn = (entity -> memberMapper.entityToListDto(entity));
 
         return memberMapper.toApplicationPageResult(new PageResultDto<>(result, fn));
     }
@@ -170,10 +174,18 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public MemberDto update(MemberDto dto) {
+    public MemberDto update(String userId, String phoneAddress, String introduction, String profile) {
 
-        MemberEntity entity = memberJpaRepository.findById(dto.getUserId()).orElseThrow();
-        memberMapper.updateEntityFromDto(dto, entity);
+        MemberEntity entity = memberJpaRepository.findById(userId).orElseThrow();
+
+        if(phoneAddress != null)
+            entity.setPhoneAddress(phoneAddress);
+
+        if(introduction != null)
+            entity.setIntroduction(introduction);
+
+        if(profile != null)
+            entity.setProfile(null);
 
         MemberEntity result = memberJpaRepository.save(entity);
 

@@ -92,15 +92,10 @@ public class MemberRepositoryTest {
     @DisplayName("회원 데이터 목록 조회 테스트")
     public void testFindMembers() {
 
-        PageRequestDto pageRequestDto = PageRequestDto.builder()
-                .page(1)
-                .size(10)
-                .build();
-        MemberPageResultDto dto = memberRepository.findMembers(pageRequestDto);
+        int page = 1;
+        MemberPageResultDto dto = memberRepository.findMembers(page);
 
         Assertions.assertThat(dto.getSize()).isGreaterThan(4);
-
-        Assertions.assertThat(dto.getDtoList().getFirst().getPhoneAddress()).isEqualTo("010-1234-1234");
     }
 
     @Test

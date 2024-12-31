@@ -46,9 +46,10 @@ public interface MemberRepository {
 
     MemberDto findByEmail(String email);
 
-    MemberPageResultDto findMembers(PageRequestDto requestDto);
+    MemberPageResultDto findMembers(int page);
 
-    MemberDto update(MemberDto dto);
+
+    MemberDto update(String userId, String phoneAddress, String introduction, String profile);
     TeacherDto update(TeacherDto dto);
     ParentsDto update(ParentsDto dto);
     StudentDto update(StudentDto dto);

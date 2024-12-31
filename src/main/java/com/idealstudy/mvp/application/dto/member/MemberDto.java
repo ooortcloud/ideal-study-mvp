@@ -15,7 +15,7 @@ public class MemberDto {
 
     private String name;
 
-    private String phoneAddress;
+    private String phoneAddress; //
 
     private String email;
 
@@ -27,9 +27,9 @@ public class MemberDto {
 
     private Role role;
 
-    private String introduction;
+    private String introduction; //
 
-    private byte[] profile;
+    private byte[] profile; //
 
     private int fromSocial;
 

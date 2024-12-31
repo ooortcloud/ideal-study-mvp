@@ -2,10 +2,14 @@ package com.idealstudy.mvp.application.service.member;
 
 import com.idealstudy.mvp.application.dto.PageRequestDto;
 import com.idealstudy.mvp.application.dto.member.*;
+import com.idealstudy.mvp.enums.error.DBErrorMsg;
 import com.idealstudy.mvp.enums.member.Gender;
 import com.idealstudy.mvp.enums.member.Role;
 import com.idealstudy.mvp.application.repository.MemberRepository;
 import com.idealstudy.mvp.infrastructure.RedisRepository;
+import com.idealstudy.mvp.mapstruct.MemberMapper;
+import com.idealstudy.mvp.presentation.dto.member.MemberResponseDto;
+import com.idealstudy.mvp.util.TryCatchServiceTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,23 +45,40 @@ public class MemberService {
         return password;
     }
 
-    public MemberDto findById(String userId) {
-        return memberRepository.findById(userId);
+    public MemberResponseDto findById(String userId) {
+
+        return TryCatchServiceTemplate.execute(() -> {
+
+            MemberDto dto = memberRepository.findById(userId);
+
+            MemberResponseDto responseDto = MemberMapper.INSTANCE.toResponseDto(dto);
+
+            // public private 에 따라 데이터 null처리 필요
+            if(false) {
+                responseDto.setEmail(null);
+                responseDto.setUserId(null);
+                responseDto.setPhoneAddress(null);
+            }
+            
+            return responseDto;
+        }, null, DBErrorMsg.SELECT_ERROR);
+
     }
 
     public MemberDto findByEmail(String email) {
         return memberRepository.findByEmail(email);
     }
 
-    public MemberPageResultDto findMembers() {
+    public MemberPageResultDto findMembers(int page) {
 
-        PageRequestDto requestDto = new PageRequestDto(1, 9999);
-        return memberRepository.findMembers(requestDto);
+        return TryCatchServiceTemplate.execute(() -> {
+            return memberRepository.findMembers(page);
+        }, null,DBErrorMsg.SELECT_ERROR);
     }
 
-    public MemberDto updateMember(MemberDto dto) {
+    public MemberResponseDto updateMember(String userId, String phoneAddress, String introduction, String profile) {
 
-        return memberRepository.update(dto);
+        return MemberMapper.INSTANCE.toResponseDto(memberRepository.update(userId, phoneAddress, introduction, profile));
     }
 
     public boolean deleteMember(String userId) {

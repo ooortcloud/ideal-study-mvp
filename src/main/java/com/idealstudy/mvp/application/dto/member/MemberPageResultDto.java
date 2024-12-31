@@ -9,7 +9,7 @@ import java.util.List;
 @Setter
 public class MemberPageResultDto {
 
-    private List<MemberDto> dtoList;
+    private List<MemberListDto> dtoList;
 
     private int totalPage;
 

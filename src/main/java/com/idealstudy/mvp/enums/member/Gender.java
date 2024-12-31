@@ -2,6 +2,7 @@ package com.idealstudy.mvp.enums.member;
 
 public enum Gender {
 
+    // 이거 다 순수 영어 string으로 변경할 것
     MALE("남"),
     FEMALE("여"),
     OTHER("기타");
