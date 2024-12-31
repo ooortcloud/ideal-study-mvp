@@ -14,7 +14,7 @@ const RecordedLectureListPage = () => {
   useEffect(() => {
     const fetchLectures = async () => {
       const lectures = await readRecordedLecturesByClassId(classId);
-      setLectures(lectures.data);
+      setLectures(lectures.dtoList);
     };
     fetchLectures();
   }, [classId]);

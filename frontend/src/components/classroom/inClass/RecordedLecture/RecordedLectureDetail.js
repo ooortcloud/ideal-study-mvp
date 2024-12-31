@@ -4,7 +4,10 @@ import React from "react";
 import VimeoPlayer from "../../../../components/vimeo/VimeoPlayer";
 import styles from "./RecordedLectureDetail.module.css";
 
-const RecordedLectureDetail = () => {
+const RecordedLectureDetail = ({lecture}) => {
+  const splitedVideoId = lecture.url.split('/')[2];
+  console.log(splitedVideoId);
+
   return (
     <div className={styles.recordedLectureDetailContainer}>
       <div className={styles.recordedLectureDetailHeader}>
@@ -13,7 +16,7 @@ const RecordedLectureDetail = () => {
       </div>
       <div className={styles.recordedLectureDetailInfo}>
         <div className={styles.recordedLectureDetailVideo}>
-          <VimeoPlayer />
+          <VimeoPlayer videoId={splitedVideoId} />
         </div>
       </div>
     </div>

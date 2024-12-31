@@ -3,6 +3,7 @@ import Player from "@vimeo/player";
 import styles from "./VimeoPlayer.module.css";
 
 function VimeoPlayer({ videoId = "1037702745" }) {
+
   useEffect(() => {
     const player = new Player("myVideo", {
       url: `https://vimeo.com/${videoId}`,
