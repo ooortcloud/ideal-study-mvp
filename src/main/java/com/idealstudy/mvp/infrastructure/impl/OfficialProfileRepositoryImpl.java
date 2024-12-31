@@ -45,10 +45,10 @@ public class OfficialProfileRepositoryImpl implements OfficialProfileRepository 
     }
 
     @Override
-    public OfficialProfileDto update(OfficialProfileDto dto) {
+    public OfficialProfileDto update(String teacherId, String html) {
 
-        OfficialProfileEntity entity = officialProfileJpaRepository.findById(dto.getTeacherId()).orElseThrow();
-        entity.setContent(dto.getContent());
+        OfficialProfileEntity entity = officialProfileJpaRepository.findById(teacherId).orElseThrow();
+        entity.setContent(html);
         return officialProfileJpaRepository.save(entity).toDto();
     }
 }
