@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.infrastructure;
+package com.idealstudy.mvp.integration.infrastructure;
 
 import com.idealstudy.mvp.application.dto.OfficialProfileDto;
 import com.idealstudy.mvp.application.dto.member.MemberDto;
@@ -25,6 +25,16 @@ public class OfficialProfileRepositoryTest {
     private final OfficialProfileRepository officialProfileRepository;
 
     private static final String USER_ID = UUID.randomUUID().toString();
+
+    private static final String TEACHER_ID = "98a10847-ad7e-11ef-8e5c-0242ac140002";
+
+    private static final String CLASSROOM_ID = "98a12345-ad7e-11ef-8e5c-0242ac140002";
+
+    private static final String STUDENT_ID = "c99fd58f-b0ae-11ef-89d8-0242ac140003";
+
+    private static final String OTHER_STUDENT_ID = "e8445639-917a-4396-8aaa-4a68dd11e4c7";
+
+    private static final String PARENTS_ID = "c99fd83e-b0ae-11ef-89d8-0242ac140003";
 
     @Autowired
     public OfficialProfileRepositoryTest(MemberRepository memberRepository, OfficialProfileRepository repository) {
@@ -85,12 +95,9 @@ public class OfficialProfileRepositoryTest {
         String html = "<h1>아무개 공식 프로필</h1>\n" +
                 "<p>저는 수학 정말 잘합니다. 믿어주세요.</p>";
 
-        OfficialProfileDto officialProfileDto = OfficialProfileDto.builder()
-                .teacherId(USER_ID)
-                .content(html)
-                .build();
+        String teacherId = TEACHER_ID;
 
-        officialProfileRepository.update(officialProfileDto);
+        officialProfileRepository.update(teacherId, html);
 
         OfficialProfileDto resultDto = officialProfileRepository.findByTeacherId(USER_ID);
 

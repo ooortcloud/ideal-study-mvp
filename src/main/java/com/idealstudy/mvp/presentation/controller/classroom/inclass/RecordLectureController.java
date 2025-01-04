@@ -55,9 +55,9 @@ public class RecordLectureController {
     }
 
     @GetMapping("/api/recorded-lectures/{classroomId}")
-    public ResponseEntity<RecordLecturePageResultDto> selectList(@PathVariable String classroomId) {
+    public ResponseEntity<RecordLecturePageResultDto> selectList(@PathVariable String classroomId, int page) {
 
-        return TryCatchControllerTemplate.execute(() -> recordLectureService.selectList(classroomId));
+        return TryCatchControllerTemplate.execute(() -> recordLectureService.selectList(classroomId, page));
     }
 
     @ForTeacher
@@ -70,7 +70,6 @@ public class RecordLectureController {
             JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
             String teacherId = payload.getSub();
 
-            log.info("수정을 진행합니다.");
             return recordLectureService.update(
                     lectureId,
                     dto.getTitle(),

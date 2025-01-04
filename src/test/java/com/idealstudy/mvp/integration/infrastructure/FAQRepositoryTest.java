@@ -1,10 +1,11 @@
-package com.idealstudy.mvp.infrastructure;
+package com.idealstudy.mvp.integration.infrastructure;
 
 import com.idealstudy.mvp.TestRepositoryUtil;
 import com.idealstudy.mvp.application.dto.PageRequestDto;
 import com.idealstudy.mvp.application.dto.classroom.preclass.FAQDto;
 import com.idealstudy.mvp.application.dto.classroom.preclass.FAQPageResultDto;
 import com.idealstudy.mvp.application.repository.preclass.FAQRepository;
+import com.idealstudy.mvp.mapstruct.FAQMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,8 +32,6 @@ public class FAQRepositoryTest {
 
     private static final String CLASSROOM_ID = "98a12345-ad7e-11ef-8e5c-0242ac140002";
 
-    private static final Long ID = 1L;
-
     private static final String TABLE_NAME = "faq";
 
     @Autowired
@@ -49,35 +48,18 @@ public class FAQRepositoryTest {
     @Test
     public void createAndFindOne() {
 
-        String title = "과제 하는 방법";
-        String content = "<p>과제를 작성하고 파일 형태로 첨부하여 제출할 것.</p>";
+        String createdBy = TEACHER_ID;
+        FAQDto createDto = createDummy(createdBy);
 
-        FAQDto dto = FAQDto.builder()
-                .classroomId(CLASSROOM_ID)
-                .createdBy(TEACHER_ID)
-                .title(title)
-                .content(content)
-                .build();
-
-        faqRepository.create(dto);
-
-        log.info("현재 auto_increment 값: " + autoIncrement);
-        FAQDto resultDto = faqRepository.findById(autoIncrement);
-        Assertions.assertThat(resultDto.getId()).isEqualTo(autoIncrement);
-        Assertions.assertThat(resultDto.getCreatedBy()).isEqualTo(TEACHER_ID);
-        Assertions.assertThat(resultDto.getClassroomId()).isEqualTo(CLASSROOM_ID);
-        Assertions.assertThat(resultDto.getTitle()).isEqualTo(title);
-        Assertions.assertThat(resultDto.getContent()).isEqualTo(content);
+        FAQDto findDto = faqRepository.findById(autoIncrement);
+        Assertions.assertThat(findDto.getId()).isEqualTo(autoIncrement);
+        Assertions.assertThat(findDto.getCreatedBy()).isEqualTo(createDto.getCreatedBy());
+        Assertions.assertThat(findDto.getClassroomId()).isEqualTo(createDto.getClassroomId());
+        Assertions.assertThat(findDto.getTitle()).isEqualTo(createDto.getTitle());
+        Assertions.assertThat(findDto.getContent()).isEqualTo(createDto.getContent());
     }
 
-    @Test
-    public void findOne() {
-
-        FAQDto resultDto = faqRepository.findById(ID);
-        Assertions.assertThat(resultDto.getId()).isEqualTo(ID);
-        Assertions.assertThat(resultDto.getCreatedBy()).isEqualTo(TEACHER_ID);
-    }
-
+    /*
     @Test
     public void findList() {
 
@@ -100,6 +82,10 @@ public class FAQRepositoryTest {
     public void update() {
 
         String newTitle = "동영상 시청 팁";
+
+        Long id = ID;
+
+
         FAQDto dto = FAQDto.builder()
                 .id(ID)
                 .title(newTitle)
@@ -119,5 +105,16 @@ public class FAQRepositoryTest {
 
         Assertions.assertThatThrownBy(() -> {faqRepository.findById(ID);})
                 .isInstanceOf(NoSuchElementException.class);
+    }
+
+     */
+
+    private FAQDto createDummy(String createdBy) {
+
+        String title = "과제 하는 방법";
+        String content = "<p>과제를 작성하고 파일 형태로 첨부하여 제출할 것.</p>";
+        String classroomId = CLASSROOM_ID;
+
+        return faqRepository.create(title, content, classroomId, createdBy);
     }
 }

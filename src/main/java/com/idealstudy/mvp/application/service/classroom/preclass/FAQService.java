@@ -4,6 +4,9 @@ import com.idealstudy.mvp.application.dto.PageRequestDto;
 import com.idealstudy.mvp.application.dto.classroom.preclass.FAQDto;
 import com.idealstudy.mvp.application.dto.classroom.preclass.FAQPageResultDto;
 import com.idealstudy.mvp.application.repository.preclass.FAQRepository;
+import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
+import com.idealstudy.mvp.enums.error.DBErrorMsg;
+import com.idealstudy.mvp.util.TryCatchServiceTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,19 +24,14 @@ public class FAQService {
     @Autowired
     private final FAQRepository faqRepository;
 
-    public void create(String teacherId, String classroomId, String title, String content) {
+    @Autowired
+    private final ValidationManager validationManager;
 
-        FAQDto dto = FAQDto.builder()
-                .title(title)
-                .content(content)
-                .createdBy(teacherId)
-                .classroomId(classroomId)
-                .build();
-        try {
-            faqRepository.create(dto);
-        } catch (Exception e) {
-            log.error(e + " : " + e.getMessage());
-        }
+    public FAQDto create(String teacherId, String classroomId, String title, String content) {
+
+        return TryCatchServiceTemplate.execute(() ->
+                        faqRepository.create(title, content, classroomId, teacherId),
+                null, DBErrorMsg.CREATE_ERROR);
     }
 
     public FAQDto findById(Long faqId) {
@@ -51,45 +49,31 @@ public class FAQService {
         return faqRepository.findList(dto, classroomId);
     }
 
-    public FAQDto updateTitle(Long faqId, String title) {
+    public FAQDto update(Long faqId, String title, String content, String teacherId) {
 
-        FAQDto dto = FAQDto.builder()
-                .id(faqId)
-                .title(title)
-                .build();
+        return TryCatchServiceTemplate.execute(() -> {
 
-        return faqRepository.update(dto);
+            FAQDto dto = findById(faqId);
+            String classroomId = dto.getClassroomId();
+
+            validationManager.validateTeacher(teacherId, classroomId);
+
+            return faqRepository.update(faqId, title, content);
+        }, null, DBErrorMsg.UPDATE_ERROR);
     }
 
-    public FAQDto updateContent(Long faqId, String content) {
+    public void delete(Long faqId, String teacherId) {
 
-        FAQDto dto = FAQDto.builder()
-                .id(faqId)
-                .content(content)
-                .build();
+        TryCatchServiceTemplate.execute(() -> {
 
-        return faqRepository.update(dto);
-    }
+            FAQDto dto = findById(faqId);
+            String classroomId = dto.getClassroomId();
 
-    public FAQDto update(Long faqId, String title, String content) {
+            validationManager.validateTeacher(teacherId, classroomId);
 
-        FAQDto dto = FAQDto.builder()
-                .id(faqId)
-                .title(title)
-                .content(content)
-                .build();
-
-        return faqRepository.update(dto);
-    }
-
-    public boolean delete(Long faqId) {
-
-        try {
             faqRepository.delete(faqId);
-        } catch (Exception e) {
-            return false;
-        }
 
-        return true;
+            return null;
+        }, null, DBErrorMsg.DELETE_ERROR);
     }
 }

@@ -1,5 +1,6 @@
 package com.idealstudy.mvp.application.dto.classroom;
 
+import com.idealstudy.mvp.enums.classroom.ClassroomStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,6 +15,7 @@ public class ClassroomResponseDto {
     private int capacity;
     private String createdBy;
     private String thumbnail;
+    private ClassroomStatus status;
 
     /*
     // 엔티티에서 ResponseDto로 변환

@@ -3,6 +3,7 @@ package com.idealstudy.mvp.mapstruct;
 import com.idealstudy.mvp.application.dto.PageResultDto;
 import com.idealstudy.mvp.application.dto.member.AdminDto;
 import com.idealstudy.mvp.application.dto.member.MemberDto;
+import com.idealstudy.mvp.application.dto.member.MemberListDto;
 import com.idealstudy.mvp.application.dto.member.MemberPageResultDto;
 import com.idealstudy.mvp.application.dto.member.ParentsDto;
 import com.idealstudy.mvp.application.dto.member.StudentDto;
@@ -12,6 +13,7 @@ import com.idealstudy.mvp.infrastructure.jpa.entity.member.MemberEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.ParentsEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.StudentEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.TeacherEntity;
+import com.idealstudy.mvp.presentation.dto.member.MemberResponseDto;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +22,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-12-30T17:04:42+0900",
+    date = "2025-01-04T11:12:27+0900",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21 (Oracle Corporation)"
 )
 @Component
@@ -56,32 +58,38 @@ public class MemberMapperImpl implements MemberMapper {
     }
 
     @Override
-    public MemberEntity dtoToEntity(MemberDto dto) {
+    public MemberListDto entityToListDto(MemberEntity entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        MemberListDto memberListDto = new MemberListDto();
+
+        return memberListDto;
+    }
+
+    @Override
+    public MemberResponseDto toResponseDto(MemberDto dto) {
         if ( dto == null ) {
             return null;
         }
 
-        MemberEntity.MemberEntityBuilder<?, ?> memberEntity = MemberEntity.builder();
+        MemberResponseDto memberResponseDto = new MemberResponseDto();
 
-        memberEntity.userId( dto.getUserId() );
-        memberEntity.password( dto.getPassword() );
-        memberEntity.name( dto.getName() );
-        memberEntity.phoneAddress( dto.getPhoneAddress() );
-        memberEntity.email( dto.getEmail() );
-        memberEntity.sex( dto.getSex() );
-        memberEntity.referralId( dto.getReferralId() );
-        memberEntity.level( dto.getLevel() );
-        memberEntity.role( dto.getRole() );
-        memberEntity.introduction( dto.getIntroduction() );
+        memberResponseDto.setUserId( dto.getUserId() );
+        memberResponseDto.setName( dto.getName() );
+        memberResponseDto.setPhoneAddress( dto.getPhoneAddress() );
+        memberResponseDto.setEmail( dto.getEmail() );
+        memberResponseDto.setSex( dto.getSex() );
+        memberResponseDto.setLevel( dto.getLevel() );
+        memberResponseDto.setRole( dto.getRole() );
+        memberResponseDto.setIntroduction( dto.getIntroduction() );
         byte[] profile = dto.getProfile();
         if ( profile != null ) {
-            memberEntity.profile( Arrays.copyOf( profile, profile.length ) );
+            memberResponseDto.setProfile( Arrays.copyOf( profile, profile.length ) );
         }
-        memberEntity.fromSocial( dto.getFromSocial() );
-        memberEntity.init( dto.getInit() );
-        memberEntity.deleted( dto.getDeleted() );
 
-        return memberEntity.build();
+        return memberResponseDto;
     }
 
     @Override
@@ -510,16 +518,16 @@ public class MemberMapperImpl implements MemberMapper {
     }
 
     @Override
-    public MemberPageResultDto toApplicationPageResult(PageResultDto<MemberDto, MemberEntity> pageResultDto) {
+    public MemberPageResultDto toApplicationPageResult(PageResultDto<MemberListDto, MemberEntity> pageResultDto) {
         if ( pageResultDto == null ) {
             return null;
         }
 
         MemberPageResultDto memberPageResultDto = new MemberPageResultDto();
 
-        List<MemberDto> list = pageResultDto.getDtoList();
+        List<MemberListDto> list = pageResultDto.getDtoList();
         if ( list != null ) {
-            memberPageResultDto.setDtoList( new ArrayList<MemberDto>( list ) );
+            memberPageResultDto.setDtoList( new ArrayList<MemberListDto>( list ) );
         }
         memberPageResultDto.setTotalPage( pageResultDto.getTotalPage() );
         memberPageResultDto.setPage( pageResultDto.getPage() );

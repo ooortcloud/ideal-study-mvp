@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.application;
+package com.idealstudy.mvp.unit.application;
 
 import com.idealstudy.mvp.application.dto.ReplyDto;
 import com.idealstudy.mvp.application.dto.ReplyPageResultDto;

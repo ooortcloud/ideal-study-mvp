@@ -4,9 +4,12 @@ import com.idealstudy.mvp.enums.member.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-@Data
-@SuperBuilder
+@Getter
+@Setter
 @ToString
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberDto {
 
     private String userId;

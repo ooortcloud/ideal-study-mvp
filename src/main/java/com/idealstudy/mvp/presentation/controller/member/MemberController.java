@@ -57,7 +57,7 @@ public class MemberController {
     @PostMapping("/users/sign-up")
     public ResponseEntity<String> signUp(@RequestBody SignUpUserRequestDto dto) {
 
-        ResponseEntity<String> response = sendEmail(dto.getEmail());
+        ResponseEntity<String> response = sendEmail(dto.getEmail(), dto.getRole());
         if(response != null)
             return response;
 
@@ -93,17 +93,15 @@ public class MemberController {
 
     @ForUser
     @GetMapping("/api/users/{userId}")
-    public ResponseEntity<MemberResponseDto> findMember(@PathVariable String userId) {
-        
-        log.info("개인 정보 조회");
-        MemberResponseDto dto = memberService.findById(userId);
-        log.info("당신의 정보: " + dto);
-        if(dto != null)
-            return new ResponseEntity<MemberResponseDto>(dto, HttpStatusCode.valueOf(200));
-        if(dto == null)
-            return new ResponseEntity<MemberResponseDto>(dto, HttpStatusCode.valueOf(404));
+    public ResponseEntity<MemberResponseDto> findMember(@PathVariable String userId, HttpServletRequest request) {
 
-        return null;
+        return TryCatchControllerTemplate.execute(() -> {
+
+            JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+            String tokenId = payload.getSub();
+
+            return memberService.findById(userId, tokenId);
+        });
     }
 
     @GetMapping("/users")
@@ -140,7 +138,7 @@ public class MemberController {
                 memberService.updateMember(userId, dto.getPhoneAddress(), dto.getIntroduction(), null));
     }
 
-    private ResponseEntity<String> sendEmail(String email) {
+    private ResponseEntity<String> sendEmail(String email, Role role) {
         try{
             if(!isValidEmailPattern(email))
                 return new ResponseEntity<String>("잘못된 이메일 양식입니다.", HttpStatusCode.valueOf(400));
@@ -150,7 +148,7 @@ public class MemberController {
                 return new ResponseEntity<String>("현재 등록 중이거나 이미 등록된 이메일입니다.",
                         HttpStatusCode.valueOf(400));
             }
-            emailService.sendSignUpEmail(email);
+            emailService.sendSignUpEmail(email, role);
         } catch (Exception e) {
             log.error(e.toString() + ":: " + e.getMessage());
             return new ResponseEntity<String>("failed to send email", HttpStatusCode.valueOf(500));

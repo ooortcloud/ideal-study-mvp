@@ -3,6 +3,8 @@ package com.idealstudy.mvp.presentation.controller.classroom.preclass;
 import com.idealstudy.mvp.application.dto.classroom.preclass.EnrollmentDto;
 import com.idealstudy.mvp.application.dto.classroom.preclass.EnrollmentPageResultDto;
 import com.idealstudy.mvp.application.service.classroom.preclass.EnrollmentService;
+import com.idealstudy.mvp.security.annotation.ForParents;
+import com.idealstudy.mvp.security.annotation.ForStudent;
 import com.idealstudy.mvp.security.annotation.ForTeacher;
 import com.idealstudy.mvp.security.annotation.ForUser;
 import com.idealstudy.mvp.security.dto.JwtPayloadDto;
@@ -25,12 +27,15 @@ public class EnrollmentController {
 
     @ForUser
     @PostMapping("/api/enrollments")
-    public ResponseEntity<EnrollmentDto> enroll(@RequestBody EnrollmentDto dto) {
+    public ResponseEntity<EnrollmentDto> enroll(@RequestBody EnrollmentDto dto, HttpServletRequest request) {
+
+        JwtPayloadDto payload = (JwtPayloadDto)  request.getAttribute("jwtPayload");
+        String studentId = payload.getSub();
 
         return TryCatchControllerTemplate.execute(() -> enrollmentService.enroll(
                 dto.getClassroomId(),
                 dto.getCreatedBy(),
-                dto.getStudentId(),
+                studentId,
                 dto.getCurScore(),
                 dto.getTargetScore(),
                 dto.getRequest(),
@@ -47,9 +52,23 @@ public class EnrollmentController {
                 enrollmentService.getList(classId, page));
     }
 
-    @ForUser
-    @GetMapping("/api/enrollments/users/{userId}")
-    public void getEnrollmentListByUserId(@PathVariable String userId) {
+    @ForStudent
+    @GetMapping("/api/enrollments/users")
+    public void getEnrollmentListByUserId(HttpServletRequest request) {
+
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String studentId = payload.getSub();
+
+
+    }
+
+    @ForParents
+    @GetMapping("/api/enrollments/users/{studentId}")
+    public void getEnrollmentListByUserId(@PathVariable String studentId, HttpServletRequest request) {
+
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String parentsId = payload.getSub();
+
 
 
     }
@@ -61,13 +80,22 @@ public class EnrollmentController {
         return TryCatchControllerTemplate.execute(() -> enrollmentService.getInfo(enrollmentId));
     }
 
-    public void update() {
+    @ForStudent
+    @PatchMapping("/api/enrollments/student/{enrollmentId}")
+    public void updateForStudent() {
 
     }
 
-    @ForUser
-    @DeleteMapping("/api/enrollments/{enrollmentId}")
-    public ResponseEntity<Object> drop(@PathVariable Long enrollmentId, HttpServletRequest request) {
+    @ForParents
+    @PatchMapping("/api/enrollments/parents/{enrollmentId}")
+    public void updateForParents() {
+
+        //enrollmentId를 사용하여 studentId를 추적할 수 있다.
+    }
+
+    @ForStudent
+    @DeleteMapping("/api/enrollments/student/{enrollmentId}")
+    public ResponseEntity<Object> dropForStudent(@PathVariable Long enrollmentId, HttpServletRequest request) {
 
         JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
 
@@ -76,6 +104,30 @@ public class EnrollmentController {
             enrollmentService.drop(enrollmentId, applicantId);
             return null;
         });
+    }
+
+    @ForParents
+    @DeleteMapping("/api/enrollments/parents/{enrollmentId}")
+    public ResponseEntity<Object> dropForParents(@PathVariable Long enrollmentId, HttpServletRequest request) {
+
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+
+        String applicantId = payload.getSub();
+        return TryCatchControllerTemplate.execute(() -> {
+            enrollmentService.drop(enrollmentId, applicantId);
+            return null;
+        });
+    }
+
+    @ForTeacher
+    @PatchMapping("/api/enrollments/{enrollmentId}/reject")
+    public void reject() {
+
+    }
+
+    @ForTeacher
+    @PatchMapping("/api/enrollments/{enrollmentId}/accept")
+    public void accept() {
 
     }
 }

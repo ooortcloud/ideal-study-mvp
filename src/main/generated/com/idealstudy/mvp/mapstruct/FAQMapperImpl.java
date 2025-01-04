@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-12-30T17:04:42+0900",
+    date = "2025-01-04T11:12:27+0900",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21 (Oracle Corporation)"
 )
 @Component
@@ -32,10 +32,7 @@ public class FAQMapperImpl implements FAQMapper {
         fAQDto.content( entity.getContent() );
         fAQDto.regDate( entity.getRegDate() );
         fAQDto.modDate( entity.getModDate() );
-        fAQDto.delDate( entity.getDelDate() );
         fAQDto.createdBy( entity.getCreatedBy() );
-        fAQDto.modifiedBy( entity.getModifiedBy() );
-        fAQDto.deletedBy( entity.getDeletedBy() );
 
         return fAQDto.build();
     }
@@ -51,10 +48,7 @@ public class FAQMapperImpl implements FAQMapper {
         fAQEntity.classroom( fAQDtoToClassroomEntity( dto ) );
         fAQEntity.regDate( dto.getRegDate() );
         fAQEntity.modDate( dto.getModDate() );
-        fAQEntity.delDate( dto.getDelDate() );
         fAQEntity.createdBy( dto.getCreatedBy() );
-        fAQEntity.modifiedBy( dto.getModifiedBy() );
-        fAQEntity.deletedBy( dto.getDeletedBy() );
         fAQEntity.id( dto.getId() );
         fAQEntity.title( dto.getTitle() );
         fAQEntity.content( dto.getContent() );

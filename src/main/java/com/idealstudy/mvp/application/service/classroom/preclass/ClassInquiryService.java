@@ -2,6 +2,7 @@ package com.idealstudy.mvp.application.service.classroom.preclass;
 
 import com.idealstudy.mvp.application.dto.classroom.preclass.ClassInquiryDto;
 import com.idealstudy.mvp.application.dto.classroom.preclass.ClassInquiryPageResultDto;
+import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
 import com.idealstudy.mvp.enums.error.DBErrorMsg;
 import com.idealstudy.mvp.enums.error.SecurityErrorMsg;
 import com.idealstudy.mvp.enums.classroom.Visibility;
@@ -22,17 +23,21 @@ public class ClassInquiryService {
     @Autowired
     private final ClassInquiryRepository classInquiryRepository;
 
-    public void create(String title, String content, String classroomId, String writer, Visibility visibility) {
+    @Autowired
+    private final ValidationManager validationManager;
 
-        TryCatchServiceTemplate.execute(() -> {
-            classInquiryRepository.create(title, content, classroomId, writer, visibility);
-            return null;
-        }, null, DBErrorMsg.CREATE_ERROR);
+    public ClassInquiryDto create(String title, String content, String classroomId,Visibility visibility) {
+
+        return TryCatchServiceTemplate.execute(() ->
+            classInquiryRepository.create(title, content, classroomId, visibility)
+        , null, DBErrorMsg.CREATE_ERROR);
     }
 
     public ClassInquiryDto findById(Long classInquiryId, String userId) {
 
         ClassInquiryDto dto = classInquiryRepository.findById(classInquiryId);
+        
+        // 클래스 내 강사와 해당 글 작성 학생만 조회 가능함
         if(dto.getVisibility().equals(Visibility.PRIVATE)) {
             if( userId != null)
                 checkMine(classInquiryId, userId);
@@ -58,11 +63,18 @@ public class ClassInquiryService {
     }
 
 
-    public ClassInquiryDto update(Long classInquiryId, String title, String content, String classroomId, String writer,
-                                  Visibility visibility) {
+    public ClassInquiryDto update(Long classInquiryId, String title, String content, String classroomId,
+                                  Visibility visibility, String userId) {
 
-        return TryCatchServiceTemplate.execute(() -> classInquiryRepository.update(classInquiryId, title, content,
-                classroomId, writer, visibility), ()-> checkMine(classInquiryId, writer), DBErrorMsg.UPDATE_ERROR);
+        return TryCatchServiceTemplate.execute(() -> {
+
+            ClassInquiryDto dto = classInquiryRepository.findById(classInquiryId);
+
+            validationManager.validateIndividual(userId, dto.getCreatedBy());
+
+            return classInquiryRepository.update(classInquiryId, title, content,
+                            classroomId, visibility);
+            }, null, DBErrorMsg.UPDATE_ERROR);
     }
 
     public void delete(Long inquiryId, String deleter) {

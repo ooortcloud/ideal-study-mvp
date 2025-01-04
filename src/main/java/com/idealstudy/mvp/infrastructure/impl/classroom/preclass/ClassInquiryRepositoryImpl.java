@@ -32,14 +32,13 @@ public class ClassInquiryRepositoryImpl implements ClassInquiryRepository {
     private final ClassInquiryMapper classInquiryMapper;
 
     @Override
-    public ClassInquiryDto create(String title, String content, String classroomId, String writer,
+    public ClassInquiryDto create(String title, String content, String classroomId,
                                   Visibility visibility) {
 
         ClassInquiryDto dto = ClassInquiryDto.builder()
                 .title(title)
                 .content(content)
                 .classroomId(classroomId)
-                .createdBy(writer)
                 .visibility(visibility)
                 .build();
 
@@ -97,14 +96,14 @@ public class ClassInquiryRepositoryImpl implements ClassInquiryRepository {
 
     // 본인이 아니면 수정할 수 없게 application layer에서 방어해야 함.
     @Override
-    public ClassInquiryDto update(Long id, String title, String content, String classroomId, String writer,
+    public ClassInquiryDto update(Long id, String title, String content, String classroomId,
                                   Visibility visibility) {
 
         ClassInquiryDto dto = ClassInquiryDto.builder()
                 .title(title)
                 .content(content)
                 .classroomId(classroomId)
-                .createdBy(writer)
+                .classroomId(classroomId)
                 .visibility(visibility)
                 .build();
 

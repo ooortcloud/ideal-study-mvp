@@ -1,7 +1,10 @@
 package com.idealstudy.mvp;
 
+import com.idealstudy.mvp.enums.member.Role;
+import com.idealstudy.mvp.security.dto.JwtPayloadDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,9 +22,12 @@ public class TestRepositoryUtil {
 
     private final DataSource dataSource;
 
+    private final HttpServletRequest request;
+
     @Autowired
-    public TestRepositoryUtil(DataSource dataSource) {
+    public TestRepositoryUtil(DataSource dataSource, HttpServletRequest request) {
         this.dataSource = dataSource;
+        this.request = request;
     }
 
     public Long getAutoIncrement(String tableName) {
@@ -43,5 +49,15 @@ public class TestRepositoryUtil {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void setToken(String userId, Role role) {
+
+        JwtPayloadDto payload = JwtPayloadDto.builder()
+                .sub(userId)
+                .role(role)
+                .build();
+
+        request.setAttribute("jwtUtil", payload);
     }
 }

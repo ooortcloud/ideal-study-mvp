@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.application;
+package com.idealstudy.mvp.unit.application;
 
 import com.idealstudy.mvp.TestRepositoryUtil;
 import com.idealstudy.mvp.application.dto.classroom.preclass.ClassInquiryDto;
@@ -6,6 +6,7 @@ import com.idealstudy.mvp.application.dto.classroom.preclass.ClassInquiryPageRes
 import com.idealstudy.mvp.application.service.classroom.preclass.ClassInquiryService;
 import com.idealstudy.mvp.enums.error.SecurityErrorMsg;
 import com.idealstudy.mvp.enums.classroom.Visibility;
+import com.idealstudy.mvp.enums.member.Role;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -62,7 +63,7 @@ public class ClassInquiryServiceTest {
         String writer = STUDENT_ID;
         Visibility visibility = Visibility.PUBLIC;
 
-        classInquiryService.create(title, content, classroomId, writer, visibility);
+        classInquiryService.create(title, content, classroomId, visibility);
 
         ClassInquiryDto dto = classInquiryService.findById(autoIncrement, writer);
         Assertions.assertThat(dto.getClassroomId()).isEqualTo(classroomId);
@@ -125,15 +126,17 @@ public class ClassInquiryServiceTest {
         String title = "문의드립니다.";
         String content = "사실 없습니다.";
         String classId = CLASSROOM_ID;
-        String writer = STUDENT_ID;
+        String userId = STUDENT_ID;
         Visibility visibility = Visibility.PUBLIC;
 
-        ClassInquiryDto dto = classInquiryService.update(id, title, content, classId, writer, visibility);
+        testRepositoryUtil.setToken(userId, Role.ROLE_STUDENT);
+
+        ClassInquiryDto dto = classInquiryService.update(id, title, content, classId, visibility, userId);
         Assertions.assertThat(dto.getId()).isEqualTo(id);
         Assertions.assertThat(dto.getTitle()).isEqualTo(title);
         Assertions.assertThat(dto.getContent()).isEqualTo(content);
         Assertions.assertThat(dto.getClassroomId()).isEqualTo(classId);
-        Assertions.assertThat(dto.getCreatedBy()).isEqualTo(writer);
+        Assertions.assertThat(dto.getCreatedBy()).isEqualTo(userId);
         Assertions.assertThat(dto.getVisibility()).isEqualTo(visibility);
     }
 
@@ -170,10 +173,13 @@ public class ClassInquiryServiceTest {
         String title = "문의드립니다.";
         String content = "사실 없습니다.";
         String classId = CLASSROOM_ID;
-        String writer = STUDENT_ID_NOT_WRITE;
+        String userId = STUDENT_ID_NOT_WRITE;
         Visibility visibility = Visibility.PUBLIC;
 
-        Assertions.assertThatThrownBy(() -> classInquiryService.update(id, title, content, classId, writer, visibility))
+        testRepositoryUtil.setToken(userId, Role.ROLE_STUDENT);
+
+        Assertions.assertThatThrownBy(() -> classInquiryService.update(id, title, content, classId, visibility
+                , userId))
                 .isInstanceOf(SecurityException.class)
                 .hasMessageContaining(SecurityErrorMsg.PRIVATE_EXCEPTION.toString());
     }
@@ -189,4 +195,5 @@ public class ClassInquiryServiceTest {
                 .isInstanceOf(SecurityException.class)
                 .hasMessageContaining(SecurityErrorMsg.PRIVATE_EXCEPTION.toString());
     }
+
 }

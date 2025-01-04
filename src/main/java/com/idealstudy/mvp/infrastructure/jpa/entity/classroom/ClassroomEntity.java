@@ -1,19 +1,12 @@
 package com.idealstudy.mvp.infrastructure.jpa.entity.classroom;
 
+import com.idealstudy.mvp.enums.classroom.ClassroomStatus;
 import com.idealstudy.mvp.infrastructure.jpa.entity.BaseEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.LikedEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.StudentEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.TeacherEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.util.List;
 import lombok.Data;
 import lombok.Getter;
@@ -40,6 +33,9 @@ public class ClassroomEntity extends BaseEntity {
     private Integer capacity; // 모집인원
 
     private String thumbnail; // 썸네일 이미지 주소
+
+    @Enumerated(EnumType.STRING)
+    private ClassroomStatus status;
 
     // Teacher와 1:N 관계
     @ManyToOne

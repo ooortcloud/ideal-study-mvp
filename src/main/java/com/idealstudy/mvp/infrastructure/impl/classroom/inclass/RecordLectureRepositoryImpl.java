@@ -62,10 +62,10 @@ public class RecordLectureRepositoryImpl implements RecordLectureRepository {
     }
 
     @Override
-    public RecordLecturePageResultDto selectList(String classroomId) {
+    public RecordLecturePageResultDto selectList(String classroomId, int page) {
 
         PageRequestDto requestDto = PageRequestDto.builder()
-                .page(1)  // 인강에서는 페이징 기능이 필요없음. 하지만 정렬 기능 때문에 PageRequest 사용 필요
+                .page(page)  // 인강에서는 페이징 기능이 필요없음. 하지만 정렬 기능 때문에 PageRequest 사용 필요
                 .size(SIZE)
                 .build();
 

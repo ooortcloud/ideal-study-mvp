@@ -120,6 +120,7 @@ CREATE TABLE IF NOT EXISTS classroom (
         del_date datetime(6),
         deleted_by varchar(255),
         modified_by varchar(255),
+    status ENUM('OPEN', 'CLOSED'),
 	PRIMARY KEY (classroom_id),
 	FOREIGN KEY (teacher_id) REFERENCES teacher(teacher_id)
 );

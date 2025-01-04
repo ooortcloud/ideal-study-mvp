@@ -82,7 +82,7 @@ public class RecordLectureRepositoryImplOld implements RecordLectureRepository {
     }
 
     @Override
-    public RecordLecturePageResultDto selectList(String classroomId) {
+    public RecordLecturePageResultDto selectList(String classroomId, int page) {
         return null;
     }
 

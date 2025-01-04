@@ -1,12 +1,11 @@
 package com.idealstudy.mvp.application.service.member;
 
-import com.idealstudy.mvp.application.dto.PageRequestDto;
 import com.idealstudy.mvp.application.dto.member.*;
 import com.idealstudy.mvp.enums.error.DBErrorMsg;
 import com.idealstudy.mvp.enums.member.Gender;
 import com.idealstudy.mvp.enums.member.Role;
 import com.idealstudy.mvp.application.repository.MemberRepository;
-import com.idealstudy.mvp.infrastructure.RedisRepository;
+import com.idealstudy.mvp.infrastructure.EmailRepository;
 import com.idealstudy.mvp.mapstruct.MemberMapper;
 import com.idealstudy.mvp.presentation.dto.member.MemberResponseDto;
 import com.idealstudy.mvp.util.TryCatchServiceTemplate;
@@ -27,25 +26,25 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Autowired
-    private final RedisRepository redisRepository;
+    private final EmailRepository emailRepository;
 
     // Repository에 포함시키면 순환 참조 문제 발생하여 불가능. 인코딩은 어플리케이션 계층에서 처리하기로 결정
     @Autowired
     private final PasswordEncoder passwordEncoder;
 
     public String addMember(String email, String token, Role role) throws IllegalArgumentException {
-        String savedToken = redisRepository.getToken(email);
+        String savedToken = emailRepository.getToken(email);
         if( savedToken == null || !savedToken.equals(token))
             throw new IllegalArgumentException("유효한 토큰이 아님");
 
         String password = UUID.randomUUID().toString().split("-")[0];
         addMember(email, role, password);
-        redisRepository.deleteToken(email);
+        emailRepository.deleteToken(email);
 
         return password;
     }
 
-    public MemberResponseDto findById(String userId) {
+    public MemberResponseDto findById(String userId, String tokenId) {
 
         return TryCatchServiceTemplate.execute(() -> {
 
@@ -53,8 +52,8 @@ public class MemberService {
 
             MemberResponseDto responseDto = MemberMapper.INSTANCE.toResponseDto(dto);
 
-            // public private 에 따라 데이터 null처리 필요
-            if(false) {
+            // 본인 자격 조회가 아닌 경우 private 정보는 숨긴다.
+            if( !userId.equals(tokenId)) {
                 responseDto.setEmail(null);
                 responseDto.setUserId(null);
                 responseDto.setPhoneAddress(null);
@@ -101,8 +100,18 @@ public class MemberService {
         addMember("otherstudent@gmail.com", Role.ROLE_STUDENT, "1234");
     }
 
-    public boolean testPassword(String raw, String encoded) {
+    public boolean isPasswordMatch(String raw, String encoded) {
         return passwordEncoder.matches(raw, encoded);
+    }
+
+    public String encodePassword(String password) {
+        return passwordEncoder.encode(password);
+    }
+
+    public boolean isFirst(String userId) {
+
+        MemberDto dto = memberRepository.findById(userId);
+        return dto.getInit() == 1;
     }
 
     private void addMember(String email, Role role, String password) {

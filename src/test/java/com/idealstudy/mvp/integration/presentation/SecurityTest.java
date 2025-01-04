@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.presentation;
+package com.idealstudy.mvp.integration.presentation;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

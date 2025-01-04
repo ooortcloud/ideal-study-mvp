@@ -24,14 +24,13 @@ public class ClassInquiryController {
 
     @ForUser
     @PostMapping("/api/inquiries")
-    public ResponseEntity<Object> create(@RequestBody ClassInquiryDto dto){
+    public ResponseEntity<ClassInquiryDto> create(@RequestBody ClassInquiryDto dto){
         // ENUM 타입에 대해서도 JSON으로 string 형태로 넣어주면 자동 바인딩해줌.(단, name()값을 기준으로 함)
 
-        return TryCatchControllerTemplate.execute(() -> {
+        return TryCatchControllerTemplate.execute(() ->
             classInquiryService.create(dto.getTitle(), dto.getContent(), dto.getClassroomId(),
-                    dto.getCreatedBy(), dto.getVisibility());
-            return null;
-        });
+                     dto.getVisibility())
+        );
     }
 
     @GetMapping("/inquiries/classes/{classId}")
@@ -61,10 +60,15 @@ public class ClassInquiryController {
 
     @ForUser
     @PutMapping("/api/inquiries/{inquiryId}")
-    public ResponseEntity<ClassInquiryDto> update(@PathVariable Long inquiryId, @RequestBody ClassInquiryDto dto) {
+    public ResponseEntity<ClassInquiryDto> update(@PathVariable Long inquiryId, @RequestBody ClassInquiryDto dto,
+                                                  HttpServletRequest request) {
 
-        return TryCatchControllerTemplate.execute(() -> classInquiryService.update(dto.getId(), dto.getTitle(), dto.getContent(),
-                dto.getClassroomId(), dto.getCreatedBy(), dto.getVisibility()));
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String userId = payload.getSub();
+
+        return TryCatchControllerTemplate.execute(() ->
+                classInquiryService.update(inquiryId, dto.getTitle(), dto.getContent(),
+                dto.getClassroomId(), dto.getVisibility(), userId));
     }
 
     @ForUser

@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.infrastructure;
+package com.idealstudy.mvp.integration.infrastructure;
 
 import com.idealstudy.mvp.TestRepositoryUtil;
 import com.idealstudy.mvp.application.dto.classroom.preclass.ClassInquiryDto;
@@ -59,7 +59,7 @@ public class ClassInquiryRepositoryTest {
         String content = "<p>사실 없습니다.</p>";
         Visibility visibility = Visibility.PUBLIC;
 
-        classInquiryRepository.create(title, content, CLASSROOM_ID, STUDENT_ID, visibility);
+        classInquiryRepository.create(title, content, CLASSROOM_ID,  visibility);
 
         ClassInquiryDto dto = classInquiryRepository.findById(autoIncrement);
         Assertions.assertThat(dto.getTitle()).isEqualTo(title);
@@ -75,8 +75,7 @@ public class ClassInquiryRepositoryTest {
         String content = "<p>사실 없습니다.</p>";
         Visibility visibility = Visibility.PUBLIC;
 
-        ClassInquiryDto dto = classInquiryRepository.update(EXIST_ID, title, content, CLASSROOM_ID, STUDENT_ID,
-                visibility);
+        ClassInquiryDto dto = classInquiryRepository.update(EXIST_ID, title, content, CLASSROOM_ID, visibility);
         Assertions.assertThat(dto.getTitle()).isEqualTo(title);
         Assertions.assertThat(dto.getContent()).isEqualTo(content);
         Assertions.assertThat(dto.getClassroomId()).isEqualTo(CLASSROOM_ID);
