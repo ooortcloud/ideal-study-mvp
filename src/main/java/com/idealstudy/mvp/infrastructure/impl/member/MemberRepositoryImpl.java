@@ -106,7 +106,7 @@ public class MemberRepositoryImpl implements MemberRepository {
         Optional<MemberEntity> result = memberJpaRepository.findById(id);
 
         if(result.isEmpty())
-            throw new NullPointerException(MemberError.NOT_REGISTERED_MEMBER.getMsg());
+            throw new IllegalArgumentException(MemberError.NOT_REGISTERED_MEMBER.getMsg());
 
         return memberMapper.entityToDto(result.get());
     }
@@ -117,7 +117,7 @@ public class MemberRepositoryImpl implements MemberRepository {
         Optional<TeacherEntity> result = teacherJpaRepository.findById(id);
 
         if(result.isEmpty())
-            throw new NullPointerException(MemberError.NOT_REGISTERED_MEMBER.getMsg());
+            throw new IllegalArgumentException(MemberError.NOT_REGISTERED_MEMBER.getMsg());
 
         return memberMapper.entityToDto(result.get());
     }
@@ -128,7 +128,7 @@ public class MemberRepositoryImpl implements MemberRepository {
         Optional<ParentsEntity> result = parentsJpaRepository.findById(id);
 
         if(result.isEmpty())
-            throw new NullPointerException(MemberError.NOT_REGISTERED_MEMBER.getMsg());
+            throw new IllegalArgumentException(MemberError.NOT_REGISTERED_MEMBER.getMsg());
 
         return memberMapper.entityToDto(result.get());
     }

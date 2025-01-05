@@ -1,5 +1,6 @@
 package com.idealstudy.mvp.infrastructure.impl;
 
+import com.idealstudy.mvp.enums.error.DBErrorMsg;
 import com.idealstudy.mvp.enums.member.Role;
 import com.idealstudy.mvp.infrastructure.EmailRepository;
 import com.idealstudy.mvp.infrastructure.dto.SignUpDto;
@@ -27,24 +28,31 @@ public class EmailRepositoryImpl implements EmailRepository {
     private static final long AUTHENTICATION_PERIOD_MINUTE = 30L;
 
     @Override
-    public void addToken(String email, Role role, String token) {
+    public SignUpDto addToken(String token, String email, Role role) {
 
         SignUpDto dto = SignUpDto.builder()
-                .token(token)
+                .email(email)
                 .role(role)
                 .build();
 
-        redisTemplate.opsForValue().set(email, dto, AUTHENTICATION_PERIOD_MINUTE, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(token, dto, AUTHENTICATION_PERIOD_MINUTE, TimeUnit.MINUTES);
+
+        return dto;
     }
 
     @Override
-    public SignUpDto getToken(String email) {
+    public SignUpDto getToken(String token) throws IllegalArgumentException {
 
-        return (SignUpDto) redisTemplate.opsForValue().get(email);
+        Object object = redisTemplate.opsForValue().get(token);
+
+        if(object == null)
+            throw new IllegalArgumentException(DBErrorMsg.SELECT_ERROR.getMsg());
+
+        return (SignUpDto) object;
     }
 
     @Override
-    public Boolean deleteToken(String email) {
-        return redisTemplate.delete(email);
+    public Boolean deleteToken(String token) {
+        return redisTemplate.delete(token);
     }
 }

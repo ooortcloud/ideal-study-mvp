@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.unit.application;
+package com.idealstudy.mvp.unit;
 
 import com.idealstudy.mvp.TestRepositoryUtil;
 import com.idealstudy.mvp.application.dto.classroom.inclass.AttendanceDto;

@@ -33,20 +33,18 @@ public class MemberService {
     @Autowired
     private final PasswordEncoder passwordEncoder;
 
-    public String addMember(String email, String token){
+    public String addMember(String token){
 
         // 소셜 회원가입 시 메소드 처리를 어떻게 할지 고민해봐야 한다.
         Integer fromSocial = 0;
 
         return TryCatchServiceTemplate.execute(() -> {
 
-            SignUpDto savedToken = emailRepository.getToken(email);
-            if( savedToken == null || !savedToken.getToken().equals(token))
-                throw new IllegalArgumentException("유효한 토큰이 아님");
+            SignUpDto savedToken = emailRepository.getToken(token);
 
             String password = UUID.randomUUID().toString().split("-")[0];
-            addMember(email, savedToken.getRole(), password, fromSocial);
-            emailRepository.deleteToken(email);
+            addMember(savedToken.getEmail(), savedToken.getRole(), password, fromSocial);
+            emailRepository.deleteToken(token);
 
             return password;
 

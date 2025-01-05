@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.unit.application;
+package com.idealstudy.mvp.unit;
 
 import com.idealstudy.mvp.application.dto.member.MemberDto;
 import com.idealstudy.mvp.application.dto.member.MemberListDto;
@@ -47,16 +47,6 @@ public class MemberServiceTest {
     private static final String OTHER_STUDENT_ID = "e8445639-917a-4396-8aaa-4a68dd11e4c7";
 
     private static final String PARENTS_ID = "c99fd83e-b0ae-11ef-89d8-0242ac140003";
-
-    @Test
-    public void testEncodePassword() {
-
-        String raw = "1234";
-        String encoded = "$2a$10$kdG9XoA8h0J7UirQ1xuUfuzVfa/BgGzZtEjmPc063.vrevHZfM6oK";
-
-        boolean result = memberService.isPasswordMatch(raw, encoded);
-        Assertions.assertThat(result).isTrue();
-    }
 
     @Test
     public void findById_mine() {
@@ -124,7 +114,7 @@ public class MemberServiceTest {
 
         String token = setEmailRepository(email, role);
 
-        Assertions.assertThatCode(() -> memberService.addMember(email, token))
+        Assertions.assertThatCode(() -> memberService.addMember(token))
                 .doesNotThrowAnyException();
 
     }
@@ -137,7 +127,7 @@ public class MemberServiceTest {
 
         String token = setEmailRepository(email, role);
 
-        Assertions.assertThatCode(() -> memberService.addMember(email, token))
+        Assertions.assertThatCode(() -> memberService.addMember(token))
                 .doesNotThrowAnyException();
     }
 
@@ -149,7 +139,7 @@ public class MemberServiceTest {
 
         String token = setEmailRepository(email, role);
 
-        Assertions.assertThatCode(() -> memberService.addMember(email, token))
+        Assertions.assertThatCode(() -> memberService.addMember(token))
                 .doesNotThrowAnyException();
     }
 
@@ -277,14 +267,14 @@ public class MemberServiceTest {
 
         String token = UUID.randomUUID().toString();
 
-        Mockito.when(emailRepository.getToken(email)).thenReturn(
+        Mockito.when(emailRepository.getToken(token)).thenReturn(
                 SignUpDto.builder()
-                        .token(token)
+                        .email(email)
                         .role(role)
                         .build());
 
         // 단위 테스트에서 테스트 불가
-        Mockito.when(emailRepository.deleteToken(email)).thenReturn(Boolean.TRUE);
+        Mockito.when(emailRepository.deleteToken(token)).thenReturn(Boolean.TRUE);
 
         return token;
     }

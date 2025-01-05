@@ -5,9 +5,10 @@ import com.idealstudy.mvp.infrastructure.dto.SignUpDto;
 
 public interface EmailRepository {
 
-    void addToken(String email, Role role, String token);
+    SignUpDto addToken(String token, String email, Role role);
 
-    SignUpDto getToken(String email);
+    SignUpDto getToken(String token)
+            throws IllegalArgumentException;
 
-    Boolean deleteToken(String email);
+    Boolean deleteToken(String token);
 }

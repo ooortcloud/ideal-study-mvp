@@ -1,10 +1,9 @@
-package com.idealstudy.mvp.unit.application;
+package com.idealstudy.mvp.unit;
 
 import com.idealstudy.mvp.application.dto.OfficialProfileDto;
 import com.idealstudy.mvp.application.service.OfficialProfileService;
 import com.idealstudy.mvp.application.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

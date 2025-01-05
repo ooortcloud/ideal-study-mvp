@@ -59,7 +59,7 @@ public class MemberController {
     }
 
     @GetMapping("/users/email-authentication")
-    public ResponseEntity<String> emailAuthentication(@RequestParam String emailToken, @RequestParam String email,
+    public ResponseEntity<String> emailAuthentication(@RequestParam String emailToken,
                                                       HttpServletRequest request) {
 
         request.setAttribute("jwtPayload", JwtPayloadDto.builder()
@@ -67,7 +67,7 @@ public class MemberController {
 
         return TryCatchControllerTemplate.execute(() -> {
 
-                String password = memberService.addMember(email, emailToken);
+                String password = memberService.addMember(emailToken);
 
                 // 마이페이지 자동 생성
 
@@ -133,7 +133,7 @@ public class MemberController {
                 return new ResponseEntity<String>("잘못된 이메일 양식입니다.", HttpStatusCode.valueOf(400));
 
             log.info("입력받은 이메일: "+ email);
-            if(emailService.isEmailDuplication(email, memberService)) {
+            if(emailService.isEmailDuplication(email)) {
                 return new ResponseEntity<String>("현재 등록 중이거나 이미 등록된 이메일입니다.",
                         HttpStatusCode.valueOf(400));
             }

@@ -1,9 +1,7 @@
-package com.idealstudy.mvp.unit.application;
+package com.idealstudy.mvp.unit;
 
 import com.idealstudy.mvp.application.dto.ReplyDto;
 import com.idealstudy.mvp.application.dto.ReplyPageResultDto;
-
-import java.util.NoSuchElementException;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
