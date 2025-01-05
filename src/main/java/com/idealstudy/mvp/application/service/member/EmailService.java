@@ -3,6 +3,7 @@ package com.idealstudy.mvp.application.service.member;
 import com.idealstudy.mvp.application.dto.member.MemberDto;
 import com.idealstudy.mvp.enums.member.Role;
 import com.idealstudy.mvp.infrastructure.EmailRepository;
+import com.idealstudy.mvp.infrastructure.dto.SignUpDto;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class EmailService {
 
     public boolean isEmailDuplication(String userEmail, MemberService memberService) {
 
-        String token = emailRepository.getToken(userEmail);
+        SignUpDto token = emailRepository.getToken(userEmail);
         try {
             MemberDto dto = memberService.findByEmail(userEmail);
             if(dto != null)

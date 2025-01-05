@@ -8,6 +8,7 @@ import com.idealstudy.mvp.enums.member.Role;
 import com.idealstudy.mvp.enums.member.SchoolRegister;
 import com.idealstudy.mvp.application.repository.MemberRepository;
 import com.idealstudy.mvp.application.repository.OfficialProfileRepository;
+import com.idealstudy.mvp.infrastructure.jpa.entity.member.TeacherEntity;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,25 +45,17 @@ public class OfficialProfileRepositoryTest {
 
     @BeforeEach
     public void createDummyTeacher() {
+
+        String password = UUID.randomUUID().toString();
+        String email = "testteacher@gmail.com";
+        Integer fromSocial = 0;
+
+        memberRepository.createTeacher(password, email, fromSocial);
+
+        // 추가 정보 수정까지 해야 함
         String univ = "한국대학교";
         SchoolRegister schoolRegister = SchoolRegister.GRADUATION;
         String subject = "수학";
-
-        TeacherDto dto = TeacherDto.builder()
-                .userId(USER_ID)
-                .password("abcd1234")
-                .phoneAddress("010-1234-1234")
-                .email("testteacher@gmail.com")
-                .role(Role.ROLE_TEACHER)
-                .sex(Gender.MALE)
-                .referralId(UUID.randomUUID().toString())
-                .fromSocial(0)
-                .univ(univ)
-                .status(schoolRegister)
-                .subject(subject)
-                .build();
-
-        memberRepository.create(dto);
     }
 
     @Test

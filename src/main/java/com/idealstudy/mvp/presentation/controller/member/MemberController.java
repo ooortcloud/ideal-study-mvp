@@ -48,12 +48,6 @@ public class MemberController {
 
     private static final Pattern emailPattern = Pattern.compile(EMAIL_REGEX);
 
-    @Deprecated
-    // @GetMapping("/create-dummies")
-    public void createDummy() {
-        memberService.createDummies();
-    }
-
     @PostMapping("/users/sign-up")
     public ResponseEntity<String> signUp(@RequestBody SignUpUserRequestDto dto) {
 
@@ -67,28 +61,23 @@ public class MemberController {
     @GetMapping("/users/email-authentication")
     public ResponseEntity<String> emailAuthentication(@RequestParam String emailToken, @RequestParam String email,
                                                       HttpServletRequest request) {
-        log.info("사용자 email: " + email);
-        log.info("사용자 토큰값: " + emailToken);
 
         request.setAttribute("jwtPayload", JwtPayloadDto.builder()
                 .sub(UUID.randomUUID().toString()).build());
 
-        String password = null;
-        try {
-            // TODO: 다른 권한에 대해서도 회원가입이 가능하도록 해야 함.
-            password = memberService.addMember(email, emailToken, Role.ROLE_STUDENT);
+        return TryCatchControllerTemplate.execute(() -> {
 
-            // 마이페이지 자동 생성
+                String password = memberService.addMember(email, emailToken);
 
-            // (강사에 한해서) 공식 페이지 자동 생성
-            if(false)
-                officialProfileService.create(null);
-        } catch (IllegalArgumentException e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<String>(e.getMessage(), HttpStatusCode.valueOf(400));
-        }
+                // 마이페이지 자동 생성
 
-        return new ResponseEntity<String>(password, HttpStatusCode.valueOf(200));
+                // (강사에 한해서) 공식 페이지 자동 생성
+                if(false)
+                    officialProfileService.create(null);
+
+                return password;
+            }
+        );
     }
 
     @ForUser

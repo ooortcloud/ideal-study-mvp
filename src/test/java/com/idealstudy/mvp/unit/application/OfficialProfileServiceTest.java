@@ -29,12 +29,6 @@ public class OfficialProfileServiceTest {
         this.memberRepository = memberRepository;
     }
 
-    @BeforeEach
-    public void createDummyTeacher() {
-
-        memberRepository.createDummyTeacher(TEACHER_ID);
-    }
-
     @Test
     public void saveAndFindOne() {
 

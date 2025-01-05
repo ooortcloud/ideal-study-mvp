@@ -89,6 +89,7 @@ VALUES
 CREATE TABLE IF NOT EXISTS student (
 
 	student_id CHAR(36) NOT NULL,
+	school VARCHAR(100),
 	GRADE ENUM('M1', 'M2', 'M3', 'H1', 'H2', 'H3', 'N'),
 	PRIMARY KEY (student_id),
 	FOREIGN KEY (student_id) REFERENCES member(user_id)
@@ -96,8 +97,8 @@ CREATE TABLE IF NOT EXISTS student (
 
 INSERT INTO student
 VALUES
-('c99fd58f-b0ae-11ef-89d8-0242ac140003', 'H1'),
-('e8445639-917a-4396-8aaa-4a68dd11e4c7', 'H3');
+('c99fd58f-b0ae-11ef-89d8-0242ac140003', '한국고등학교', 'H1'),
+('e8445639-917a-4396-8aaa-4a68dd11e4c7', '강남고등학교', 'H3');
 
 CREATE TABLE IF NOT EXISTS parents(
 	user_id CHAR(36) NOT NULL,

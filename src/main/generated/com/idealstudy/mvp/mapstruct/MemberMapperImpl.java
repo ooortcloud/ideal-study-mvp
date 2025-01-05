@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-01-04T11:12:27+0900",
+    date = "2025-01-05T11:27:20+0900",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21 (Oracle Corporation)"
 )
 @Component
@@ -63,9 +63,16 @@ public class MemberMapperImpl implements MemberMapper {
             return null;
         }
 
-        MemberListDto memberListDto = new MemberListDto();
+        MemberListDto.MemberListDtoBuilder memberListDto = MemberListDto.builder();
 
-        return memberListDto;
+        memberListDto.userId( entity.getUserId() );
+        memberListDto.name( entity.getName() );
+        byte[] profile = entity.getProfile();
+        if ( profile != null ) {
+            memberListDto.profile( Arrays.copyOf( profile, profile.length ) );
+        }
+
+        return memberListDto.build();
     }
 
     @Override
@@ -74,22 +81,22 @@ public class MemberMapperImpl implements MemberMapper {
             return null;
         }
 
-        MemberResponseDto memberResponseDto = new MemberResponseDto();
+        MemberResponseDto.MemberResponseDtoBuilder memberResponseDto = MemberResponseDto.builder();
 
-        memberResponseDto.setUserId( dto.getUserId() );
-        memberResponseDto.setName( dto.getName() );
-        memberResponseDto.setPhoneAddress( dto.getPhoneAddress() );
-        memberResponseDto.setEmail( dto.getEmail() );
-        memberResponseDto.setSex( dto.getSex() );
-        memberResponseDto.setLevel( dto.getLevel() );
-        memberResponseDto.setRole( dto.getRole() );
-        memberResponseDto.setIntroduction( dto.getIntroduction() );
+        memberResponseDto.userId( dto.getUserId() );
+        memberResponseDto.name( dto.getName() );
+        memberResponseDto.phoneAddress( dto.getPhoneAddress() );
+        memberResponseDto.email( dto.getEmail() );
+        memberResponseDto.sex( dto.getSex() );
+        memberResponseDto.level( dto.getLevel() );
+        memberResponseDto.role( dto.getRole() );
+        memberResponseDto.introduction( dto.getIntroduction() );
         byte[] profile = dto.getProfile();
         if ( profile != null ) {
-            memberResponseDto.setProfile( Arrays.copyOf( profile, profile.length ) );
+            memberResponseDto.profile( Arrays.copyOf( profile, profile.length ) );
         }
 
-        return memberResponseDto;
+        return memberResponseDto.build();
     }
 
     @Override
