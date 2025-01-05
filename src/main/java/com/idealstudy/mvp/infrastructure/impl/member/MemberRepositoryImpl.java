@@ -45,7 +45,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     private static final int SIZE = 10;
 
     @Override
-    public TeacherDto createTeacher(String encodedPassword, String email, Integer fromSocial) {
+    public TeacherDto createTeacher(String userId, String encodedPassword, String email, Integer fromSocial) {
 
         String uuid = UUID.randomUUID().toString();
 
@@ -62,7 +62,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public ParentsDto createParents(String encodedPassword, String email, Integer fromSocial) {
+    public ParentsDto createParents(String userId, String encodedPassword, String email, Integer fromSocial) {
 
         String uuid = UUID.randomUUID().toString();
 
@@ -79,7 +79,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public StudentDto createStudent(String encodedPassword, String email, Integer fromSocial) {
+    public StudentDto createStudent(String userId, String encodedPassword, String email, Integer fromSocial) {
 
         String uuid = UUID.randomUUID().toString();
 
@@ -171,15 +171,12 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public MemberDto update(String userId, String phoneAddress, String introduction, String profile) {
+    public MemberDto update(String userId, String phoneAddress, String profile) {
 
         MemberEntity entity = memberJpaRepository.findById(userId).orElseThrow();
 
         if(phoneAddress != null)
             entity.setPhoneAddress(phoneAddress);
-
-        if(introduction != null)
-            entity.setIntroduction(introduction);
 
         if(profile != null)
             entity.setProfile(null);
@@ -218,6 +215,16 @@ public class MemberRepositoryImpl implements MemberRepository {
             entity.setGrade(grade);
 
         return memberMapper.entityToDto(studentJpaRepository.save(entity));
+    }
+
+    @Override
+    public MemberDto updateIntroduction(String userId, String introduction) {
+
+        MemberEntity entity = memberJpaRepository.findById(userId).orElseThrow();
+
+        entity.setIntroduction(introduction);
+
+        return MemberMapper.INSTANCE.entityToDto(memberJpaRepository.save(entity));
     }
 
     /**

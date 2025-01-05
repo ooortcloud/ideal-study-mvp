@@ -1,11 +1,8 @@
 package com.idealstudy.mvp.integration.infrastructure;
 
-import com.idealstudy.mvp.TestRepositoryUtil;
-import com.idealstudy.mvp.application.dto.PageRequestDto;
+import com.idealstudy.mvp.integration.infrastructure.util.TestRepositoryUtil;
 import com.idealstudy.mvp.application.dto.classroom.preclass.FAQDto;
-import com.idealstudy.mvp.application.dto.classroom.preclass.FAQPageResultDto;
 import com.idealstudy.mvp.application.repository.preclass.FAQRepository;
-import com.idealstudy.mvp.mapstruct.FAQMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,9 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @SpringBootTest
 @Transactional

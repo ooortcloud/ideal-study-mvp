@@ -8,6 +8,7 @@ import com.idealstudy.mvp.enums.member.Role;
 import com.idealstudy.mvp.enums.member.SchoolRegister;
 import com.idealstudy.mvp.application.repository.MemberRepository;
 import com.idealstudy.mvp.security.dto.JwtPayloadDto;
+import com.idealstudy.mvp.util.RandomValueGenerator;
 import jakarta.servlet.http.HttpServletRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,17 +28,20 @@ public class MemberRepositoryTest {
 
     private final HttpServletRequest request;
 
+    private final RandomValueGenerator randomValueGenerator;
+
     @Autowired
-    public MemberRepositoryTest(MemberRepository memberRepository, HttpServletRequest request) {
+    public MemberRepositoryTest(MemberRepository memberRepository, HttpServletRequest request, RandomValueGenerator randomValueGenerator) {
         this.memberRepository = memberRepository;
         this.request = request;
+        this.randomValueGenerator = randomValueGenerator;
     }
 
     @BeforeEach
     public void setup() {
 
         // repository에서는 검증 로직이 존재하지 않음. 따라서 여기서는 랜덤값 아무거나 집어넣었다.
-        String tokenId = UUID.randomUUID().toString();
+        String tokenId = randomValueGenerator.createRandomValue();
 
         JwtPayloadDto dto = JwtPayloadDto.builder()
                 .sub(tokenId)
@@ -184,16 +188,16 @@ public class MemberRepositoryTest {
 
         MemberDto tempDto = createDummyTeacher();
 
-        String newIntroduction = "나는 강사입니다.";
         String newPhoneAddress = "010-2222-1111";
         String newProfileUri = "http://ddd";  // 현재 profile 부분은 추가 기능으로 구현 안됨.
 
         MemberDto resultDto = memberRepository
-                .update(tempDto.getUserId(), newPhoneAddress, newIntroduction, newProfileUri);
+                .update(tempDto.getUserId(), newPhoneAddress, newProfileUri);
 
         Assertions.assertThat(resultDto.getUserId()).isEqualTo(tempDto.getUserId());
-        Assertions.assertThat(resultDto.getIntroduction()).isEqualTo(newIntroduction);
         Assertions.assertThat(resultDto.getPhoneAddress()).isEqualTo(newPhoneAddress);
+        Assertions.assertThat(resultDto.getName()).isEqualTo(tempDto.getName());
+        Assertions.assertThat(resultDto.getIntroduction()).isEqualTo(tempDto.getIntroduction());
     }
 
     @Test
@@ -291,30 +295,33 @@ public class MemberRepositoryTest {
     private StudentDto createDummyStudent() {
 
         // 여기서는 암호화 로직은 생략하겠음. 어차피 서비스에서 암호화된 값을 그대로 넣는거라서. DB CRUD를 중점으로 보겠음.
-        String password = UUID.randomUUID().toString();
+        String userId = randomValueGenerator.createRandomValue();
+        String password = randomValueGenerator.createRandomValue();
         String email = "teststudent@gmail.com";
         Integer fromSocial = 0;
 
-        return memberRepository.createStudent(password, email, fromSocial);
+        return memberRepository.createStudent(userId, password, email, fromSocial);
     }
 
     private ParentsDto createDummyParents() {
 
         // 여기서는 암호화 로직은 생략하겠음. 어차피 서비스에서 암호화된 값을 그대로 넣는거라서. DB CRUD를 중점으로 보겠음.
-        String password = UUID.randomUUID().toString();
+        String userId = randomValueGenerator.createRandomValue();
+        String password = randomValueGenerator.createRandomValue();
         String email = "testparents@gmail.com";
         Integer fromSocial = 0;
 
-        return memberRepository.createParents(password, email, fromSocial);
+        return memberRepository.createParents(userId, password, email, fromSocial);
     }
 
     private TeacherDto createDummyTeacher() {
 
         // 여기서는 암호화 로직은 생략하겠음. 어차피 서비스에서 암호화된 값을 그대로 넣는거라서. DB CRUD를 중점으로 보겠음.
-        String password = UUID.randomUUID().toString();
+        String userId = randomValueGenerator.createRandomValue();
+        String password = randomValueGenerator.createRandomValue();
         String email = "testteacher@gmail.com";
         Integer fromSocial = 0;
 
-        return memberRepository.createTeacher(password, email, fromSocial);
+        return memberRepository.createTeacher(userId, password, email, fromSocial);
     }
 }

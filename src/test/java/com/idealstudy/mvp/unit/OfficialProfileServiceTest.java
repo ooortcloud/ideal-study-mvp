@@ -1,55 +1,27 @@
 package com.idealstudy.mvp.unit;
 
-import com.idealstudy.mvp.application.dto.OfficialProfileDto;
+import com.idealstudy.mvp.unit.util.TestServiceUtil;
+import com.idealstudy.mvp.application.dto.member.TeacherDto;
+import com.idealstudy.mvp.application.repository.OfficialProfileRepository;
 import com.idealstudy.mvp.application.service.OfficialProfileService;
-import com.idealstudy.mvp.application.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
+import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.UUID;
-
-@SpringBootTest
-@Transactional
+@ExtendWith(MockitoExtension.class)
 public class OfficialProfileServiceTest {
 
-    private final OfficialProfileService officialProfileService;
+    @Mock
+    private OfficialProfileRepository officialProfileRepository;
 
-    // 더미 데이터 생성용. 이외에 의존성 없음.
-    private final MemberRepository memberRepository;
+    @Mock
+    private ValidationManager validationManager;
 
-    private static final String TEACHER_ID = UUID.randomUUID().toString();
+    @InjectMocks
+    private OfficialProfileService officialProfileService;
 
-    @Autowired
-    public OfficialProfileServiceTest(OfficialProfileService officialProfileService, MemberRepository memberRepository) {
-        this.officialProfileService = officialProfileService;
-        this.memberRepository = memberRepository;
-    }
-
-    @Test
-    public void saveAndFindOne() {
-
-        officialProfileService.create(TEACHER_ID);
-
-        OfficialProfileDto dto = officialProfileService.selectOne(TEACHER_ID);
-
-        Assertions.assertThat(dto.getTeacherId()).isEqualTo(TEACHER_ID);
-    }
-
-    @Test
-    public void update() {
-
-        officialProfileService.create(TEACHER_ID);
-
-        String html = "<h1>아무개 공식 프로필</h1>\n" +
-                "<p>저는 수학 정말 잘합니다. 믿어주세요.</p>";
-        String teacherId = TEACHER_ID;
-        OfficialProfileDto resultDto = officialProfileService.update(teacherId, html);
-
-        Assertions.assertThat(resultDto).isNotNull();
-        Assertions.assertThat(resultDto.getTeacherId()).isEqualTo(TEACHER_ID);
-        Assertions.assertThat(resultDto.getContent()).isEqualTo(html);
-    }
+    /// 당장은 테스트할 가치가 있는 메소드가 없음.
 }

@@ -1,6 +1,7 @@
 package com.idealstudy.mvp.application.service.member;
 
 import com.idealstudy.mvp.application.dto.member.*;
+import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
 import com.idealstudy.mvp.enums.error.DBErrorMsg;
 import com.idealstudy.mvp.enums.member.Gender;
 import com.idealstudy.mvp.enums.member.Role;
@@ -9,6 +10,7 @@ import com.idealstudy.mvp.infrastructure.EmailRepository;
 import com.idealstudy.mvp.infrastructure.dto.SignUpDto;
 import com.idealstudy.mvp.mapstruct.MemberMapper;
 import com.idealstudy.mvp.presentation.dto.member.MemberResponseDto;
+import com.idealstudy.mvp.util.RandomValueGenerator;
 import com.idealstudy.mvp.util.TryCatchServiceTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -33,20 +37,30 @@ public class MemberService {
     @Autowired
     private final PasswordEncoder passwordEncoder;
 
-    public String addMember(String token){
+    @Autowired
+    private final ValidationManager validationManager;
+
+    @Autowired
+    private final RandomValueGenerator randomValueGenerator;
+
+    public Map<String, Object> addMember(String token){
 
         // 소셜 회원가입 시 메소드 처리를 어떻게 할지 고민해봐야 한다.
         Integer fromSocial = 0;
 
         return TryCatchServiceTemplate.execute(() -> {
 
-            SignUpDto savedToken = emailRepository.getToken(token);
+            SignUpDto signUpDto = emailRepository.getToken(token);
 
-            String password = UUID.randomUUID().toString().split("-")[0];
-            addMember(savedToken.getEmail(), savedToken.getRole(), password, fromSocial);
+            String password = randomValueGenerator.createRandomValue().split("-")[0];
+            String userId = addMember(signUpDto.getEmail(), signUpDto.getRole(), password, fromSocial);
             emailRepository.deleteToken(token);
 
-            return password;
+            Map<String, Object> returnMap = new HashMap<>();
+            returnMap.put("password",password);
+            returnMap.put("signUpDto", signUpDto);
+            returnMap.put("userId", userId);
+            return returnMap;
 
         }, null, DBErrorMsg.CREATE_ERROR);
     }
@@ -82,17 +96,35 @@ public class MemberService {
         }, null,DBErrorMsg.SELECT_ERROR);
     }
 
-    public MemberResponseDto updateMember(String userId, String phoneAddress, String introduction, String profileUri) {
+    public MemberResponseDto updateMember(String userId, String phoneAddress, String profileUri) {
 
-        return MemberMapper.INSTANCE.toResponseDto(memberRepository.update(userId, phoneAddress, introduction, profileUri));
+        return TryCatchServiceTemplate.execute(() -> {
+
+            MemberDto memberDto = memberRepository.findById(userId);
+
+            validationManager.validateIndividual(userId, memberDto.getUserId());
+
+            return MemberMapper.INSTANCE.toResponseDto(memberRepository.update(userId, phoneAddress, profileUri));
+        }, null, DBErrorMsg.UPDATE_ERROR);
+
     }
 
     public boolean deleteMember(String userId) {
-        memberRepository.deleteById(userId);
-        if(memberRepository.findById(userId) == null)
-            return false;
 
-        return true;
+
+        return TryCatchServiceTemplate.execute(() -> {
+
+            MemberDto memberDto = memberRepository.findById(userId);
+
+            validationManager.validateIndividual(userId, memberDto.getUserId());
+
+            memberRepository.deleteById(userId);
+            if(memberRepository.findById(userId) == null)
+                return false;
+
+            return true;
+        }, null, DBErrorMsg.DELETE_ERROR);
+
     }
 
     public boolean isPasswordMatch(String raw, String encoded) {
@@ -109,15 +141,19 @@ public class MemberService {
         return dto.getInit() == 1;
     }
 
-    private void addMember(String email, Role role, String password, Integer fromSocial) {
+    private String addMember(String email, Role role, String password, Integer fromSocial) {
 
         String encodedPassword = passwordEncoder.encode(password);
 
+        String userId = randomValueGenerator.createRandomValue();
+
         if(role == Role.ROLE_TEACHER)
-            memberRepository.createTeacher(encodedPassword, email, fromSocial);
+            memberRepository.createTeacher(userId, encodedPassword, email, fromSocial);
         if(role == Role.ROLE_STUDENT)
-            memberRepository.createStudent(encodedPassword, email, fromSocial);
+            memberRepository.createStudent(userId, encodedPassword, email, fromSocial);
         if(role == Role.ROLE_PARENTS)
-            memberRepository.createParents(encodedPassword, email, fromSocial);
+            memberRepository.createParents(userId, encodedPassword, email, fromSocial);
+
+        return userId;
     }
 }

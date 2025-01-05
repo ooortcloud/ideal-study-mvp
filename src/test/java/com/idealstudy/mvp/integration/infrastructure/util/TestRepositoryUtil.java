@@ -1,4 +1,4 @@
-package com.idealstudy.mvp;
+package com.idealstudy.mvp.integration.infrastructure.util;
 
 import com.idealstudy.mvp.enums.member.Role;
 import com.idealstudy.mvp.security.dto.JwtPayloadDto;
@@ -12,8 +12,11 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
+/**
+ * 더 원활한 통합테스트를 위해 개선된 모델인 DummyMemberGenerator로 대체됨.
+ */
+@Deprecated
 @Component
 public class TestRepositoryUtil {
 
@@ -60,4 +63,5 @@ public class TestRepositoryUtil {
 
         request.setAttribute("jwtUtil", payload);
     }
+
 }

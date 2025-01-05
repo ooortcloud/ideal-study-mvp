@@ -7,6 +7,7 @@ import com.idealstudy.mvp.application.dto.member.MemberPageResultDto;
 import com.idealstudy.mvp.application.service.OfficialProfileService;
 import com.idealstudy.mvp.enums.HttpResponse;
 import com.idealstudy.mvp.enums.member.Role;
+import com.idealstudy.mvp.infrastructure.dto.SignUpDto;
 import com.idealstudy.mvp.presentation.dto.member.MemberResponseDto;
 import com.idealstudy.mvp.presentation.dto.member.SignUpUserRequestDto;
 import com.idealstudy.mvp.security.annotation.ForUser;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -67,13 +69,18 @@ public class MemberController {
 
         return TryCatchControllerTemplate.execute(() -> {
 
-                String password = memberService.addMember(emailToken);
+                Map<String, Object> returnMap = memberService.addMember(emailToken);
+                SignUpDto signUpDto = (SignUpDto) returnMap.get("signUpDto");
+                String password = (String) returnMap.get("password");
+                String userId = (String) returnMap.get("userId");
 
-                // 마이페이지 자동 생성
+                /// 마이페이지 자동 생성
+                // 현재는 마이페이지에 필요한 모든 데이터가 member 테이블에 있어서 mypage 관련 테이블이 존재하지 않음.
+                // 그래서 관련 로직이 없는 상태. (정확히는, 이 로직이 없어도 작동에는 문제 없는 상태)
 
-                // (강사에 한해서) 공식 페이지 자동 생성
-                if(false)
-                    officialProfileService.create(null);
+                /// (강사에 한해서) 공식 페이지 자동 생성
+                if(signUpDto.getRole() == Role.ROLE_TEACHER)
+                    officialProfileService.create(userId);
 
                 return password;
             }
@@ -124,7 +131,7 @@ public class MemberController {
         String userId = payload.getSub();
 
         return TryCatchControllerTemplate.execute(() ->
-                memberService.updateMember(userId, dto.getPhoneAddress(), dto.getIntroduction(), null));
+                memberService.updateMember(userId, dto.getPhoneAddress(), null));
     }
 
     private ResponseEntity<String> sendEmail(String email, Role role) {

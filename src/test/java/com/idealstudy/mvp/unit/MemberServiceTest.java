@@ -4,6 +4,7 @@ import com.idealstudy.mvp.application.dto.member.MemberDto;
 import com.idealstudy.mvp.application.dto.member.MemberListDto;
 import com.idealstudy.mvp.application.dto.member.MemberPageResultDto;
 import com.idealstudy.mvp.application.repository.MemberRepository;
+import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
 import com.idealstudy.mvp.application.service.member.MemberService;
 import com.idealstudy.mvp.enums.member.Gender;
 import com.idealstudy.mvp.enums.member.Role;
@@ -34,6 +35,9 @@ public class MemberServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private ValidationManager validationManager;
 
     @InjectMocks
     private MemberService memberService;
@@ -214,20 +218,19 @@ public class MemberServiceTest {
                 .build();
 
         String newPhoneAddress = "010-2222-3333";
-        String newIntroduction = "반갑다.";
         byte[] profile = null;
         String profileUri = "";
 
         findDto.setPhoneAddress(newPhoneAddress);
-        findDto.setIntroduction(newIntroduction);
         findDto.setProfile(profile);
 
-        Mockito.when(memberRepository.update(findDto.getUserId(), newPhoneAddress, newIntroduction, profileUri))
+
+        Mockito.when(memberRepository.findById(userId)).thenReturn(findDto);
+        Mockito.when(memberRepository.update(findDto.getUserId(), newPhoneAddress, profileUri))
                 .thenReturn(findDto);
 
-        MemberResponseDto dto = memberService.updateMember(findDto.getUserId(), newPhoneAddress, newIntroduction, profileUri);
+        MemberResponseDto dto = memberService.updateMember(findDto.getUserId(), newPhoneAddress, profileUri);
         Assertions.assertThat(findDto.getPhoneAddress()).isEqualTo(newPhoneAddress);
-        Assertions.assertThat(findDto.getIntroduction()).isEqualTo(newIntroduction);
     }
 
     private MemberDto setFindById() {
