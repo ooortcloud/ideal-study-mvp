@@ -1,6 +1,5 @@
 package com.idealstudy.mvp.util;
 
-import com.idealstudy.mvp.application.dto.member.AdminDto;
 import com.idealstudy.mvp.application.dto.member.ParentsDto;
 import com.idealstudy.mvp.application.dto.member.StudentDto;
 import com.idealstudy.mvp.application.dto.member.TeacherDto;
@@ -8,7 +7,6 @@ import com.idealstudy.mvp.enums.member.Gender;
 import com.idealstudy.mvp.enums.member.Grade;
 import com.idealstudy.mvp.enums.member.Role;
 import com.idealstudy.mvp.enums.member.SchoolRegister;
-import com.idealstudy.mvp.infrastructure.jpa.entity.member.AdminEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.ParentsEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.StudentEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.TeacherEntity;
@@ -112,27 +110,6 @@ public class MapStructTest {
     }
 
     @Test
-    public void dtoToEntity_Admin() {
-
-        Role role = Role.ROLE_ADMIN;
-
-        AdminDto dto = AdminDto.builder()
-                .userId(USER_ID)
-                .password("testpassword")
-                .email("test@test.com")
-                .fromSocial(0)
-                .role(role)
-                .sex(Gender.MALE)
-                .build();
-
-        AdminEntity entity = memberMapper.dtoToEntity(dto);
-
-        Assertions.assertThat(entity).isNotNull();
-        Assertions.assertThat(entity.getUserId()).isEqualTo(USER_ID);
-        Assertions.assertThat(entity.getRole()).isEqualTo(role);
-    }
-
-    @Test
     public void entityToDto_Teacher() {
 
         Role role = Role.ROLE_TEACHER;
@@ -208,26 +185,5 @@ public class MapStructTest {
         Assertions.assertThat(dto.getRole()).isEqualTo(role);
         Assertions.assertThat(dto.getGrade()).isEqualTo(grade);
         Assertions.assertThat(dto.getSchool()).isEqualTo(school);
-    }
-
-    @Test
-    public void entityToDto_Admin() {
-
-        Role role = Role.ROLE_ADMIN;
-
-        AdminEntity entity = AdminEntity.builder()
-                .userId(USER_ID)
-                .password("testpassword")
-                .email("test@test.com")
-                .fromSocial(0)
-                .role(role)
-                .sex(Gender.MALE)
-                .build();
-
-        AdminDto dto = memberMapper.entityToDto(entity);
-
-        Assertions.assertThat(dto).isNotNull();
-        Assertions.assertThat(dto.getUserId()).isEqualTo(USER_ID);
-        Assertions.assertThat(dto.getRole()).isEqualTo(role);
     }
 }

@@ -8,7 +8,6 @@ import com.idealstudy.mvp.application.dto.member.MemberPageResultDto;
 import com.idealstudy.mvp.application.dto.member.ParentsDto;
 import com.idealstudy.mvp.application.dto.member.StudentDto;
 import com.idealstudy.mvp.application.dto.member.TeacherDto;
-import com.idealstudy.mvp.infrastructure.jpa.entity.member.AdminEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.MemberEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.ParentsEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.StudentEntity;
@@ -185,35 +184,6 @@ public class MemberMapperImpl implements MemberMapper {
     }
 
     @Override
-    public AdminEntity dtoToEntity(AdminDto dto) {
-        if ( dto == null ) {
-            return null;
-        }
-
-        AdminEntity.AdminEntityBuilder<?, ?> adminEntity = AdminEntity.builder();
-
-        adminEntity.userId( dto.getUserId() );
-        adminEntity.password( dto.getPassword() );
-        adminEntity.name( dto.getName() );
-        adminEntity.phoneAddress( dto.getPhoneAddress() );
-        adminEntity.email( dto.getEmail() );
-        adminEntity.sex( dto.getSex() );
-        adminEntity.referralId( dto.getReferralId() );
-        adminEntity.level( dto.getLevel() );
-        adminEntity.role( dto.getRole() );
-        adminEntity.introduction( dto.getIntroduction() );
-        byte[] profile = dto.getProfile();
-        if ( profile != null ) {
-            adminEntity.profile( Arrays.copyOf( profile, profile.length ) );
-        }
-        adminEntity.fromSocial( dto.getFromSocial() );
-        adminEntity.init( dto.getInit() );
-        adminEntity.deleted( dto.getDeleted() );
-
-        return adminEntity.build();
-    }
-
-    @Override
     public TeacherDto entityToDto(TeacherEntity entity) {
         if ( entity == null ) {
             return null;
@@ -303,35 +273,6 @@ public class MemberMapperImpl implements MemberMapper {
         studentDto.grade( entity.getGrade() );
 
         return studentDto.build();
-    }
-
-    @Override
-    public AdminDto entityToDto(AdminEntity entity) {
-        if ( entity == null ) {
-            return null;
-        }
-
-        AdminDto.AdminDtoBuilder<?, ?> adminDto = AdminDto.builder();
-
-        adminDto.userId( entity.getUserId() );
-        adminDto.password( entity.getPassword() );
-        adminDto.name( entity.getName() );
-        adminDto.phoneAddress( entity.getPhoneAddress() );
-        adminDto.email( entity.getEmail() );
-        adminDto.sex( entity.getSex() );
-        adminDto.referralId( entity.getReferralId() );
-        adminDto.level( entity.getLevel() );
-        adminDto.role( entity.getRole() );
-        adminDto.introduction( entity.getIntroduction() );
-        byte[] profile = entity.getProfile();
-        if ( profile != null ) {
-            adminDto.profile( Arrays.copyOf( profile, profile.length ) );
-        }
-        adminDto.fromSocial( entity.getFromSocial() );
-        adminDto.init( entity.getInit() );
-        adminDto.deleted( entity.getDeleted() );
-
-        return adminDto.build();
     }
 
     @Override
