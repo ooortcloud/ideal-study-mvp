@@ -32,9 +32,10 @@ services:
     networks:
       - idealstudy-network
     container_name: frontend
-    build:
-      context: .
-      dockerfile: ./frontend/Dockerfile
+    image: idealstudy/frontend-app:latest
+    # build:
+    #   context: .
+    #   dockerfile: ./frontend/Dockerfile
     ports:
       - "3000:80" # Nginx 80포트를 사용
 
@@ -44,9 +45,9 @@ services:
       - idealstudy-network
     container_name: server
     image: idealstudy/backend-app:latest # 로컬에 이미지가 있으면 사용
-    build:
-      context: . # app-compose.yml 이 있는 경로
-      dockerfile: ./Dockerfile
+    # build:
+    #   context: . # app-compose.yml 이 있는 경로
+    #   dockerfile: ./Dockerfile
     ports:
       - "8080:8080"
       - "19090:19090" # Actuator 엔드포인트 포트 (운영환경)
