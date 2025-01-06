@@ -37,9 +37,6 @@ public class MemberRepositoryImpl implements MemberRepository {
     private ParentsJpaRepository parentsJpaRepository;
 
     @Autowired
-    private AdminJpaRepository adminJpaRepository;
-
-    @Autowired
     private MemberMapper memberMapper;
 
     private static final int SIZE = 10;

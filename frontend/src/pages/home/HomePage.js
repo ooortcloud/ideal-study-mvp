@@ -14,7 +14,7 @@ const HomePage = () => {
     <div>
       <main style={{ padding: "10px" }}>
         <Button onClick={makeDummy}> 더미유저 생성하기 </Button>
-        <h1>메인 페이지</h1>
+        <h1>메인 페이지1</h1>
         {isAuthenticated ? (
           <div>
             <p>로그인 상태입니다.</p>

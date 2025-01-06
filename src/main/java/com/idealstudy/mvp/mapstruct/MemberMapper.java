@@ -25,12 +25,10 @@ public interface MemberMapper {
     TeacherEntity dtoToEntity(TeacherDto dto);
     ParentsEntity dtoToEntity(ParentsDto dto);
     StudentEntity dtoToEntity(StudentDto dto);
-    AdminEntity dtoToEntity(AdminDto dto);
 
     TeacherDto entityToDto(TeacherEntity entity);
     ParentsDto entityToDto(ParentsEntity entity);
     StudentDto entityToDto(StudentEntity entity);
-    AdminDto entityToDto(AdminEntity entity);
 
     // @MappingTarget: 반환 대상 객체 지정
     @Mapping(target = "userId", ignore = true)
