@@ -1,7 +1,6 @@
 package com.idealstudy.mvp.mapstruct;
 
 import com.idealstudy.mvp.application.dto.PageResultDto;
-import com.idealstudy.mvp.application.dto.member.AdminDto;
 import com.idealstudy.mvp.application.dto.member.MemberDto;
 import com.idealstudy.mvp.application.dto.member.MemberListDto;
 import com.idealstudy.mvp.application.dto.member.MemberPageResultDto;
@@ -21,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-01-04T11:12:27+0900",
+    date = "2025-01-06T10:21:02+0900",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21 (Oracle Corporation)"
 )
 @Component
