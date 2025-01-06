@@ -25,7 +25,7 @@ const Header = ({ logout, isAuthenticated, userInfo }) => {
     <header>
       <nav>
         <div className="nav-left">
-          <h1>사이트 이름</h1>
+          <h1>이상한</h1>
           <Link to="/">홈</Link>
           <Link to="/about">소개</Link>
           <Link to="/teachers">강사목록</Link>

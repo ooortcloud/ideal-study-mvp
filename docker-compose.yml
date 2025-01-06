@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   # mySQL
   mysql-db:
@@ -30,25 +28,26 @@ services:
       - redis-data:/data
 
   # 리액트 서버
-  # frontend:
-  #   container_name: frontend
-  #   build:
-  #     context: .
-  #     dockerfile: ./frontend/Dockerfile
-  #   ports:
-  #     - "3000:80" # Nginx 80포트를 사용
-  #    networks:
-  #      - idealstudy-network
-  # 없어도 될듯
+  frontend:
+    networks:
+      - idealstudy-network
+    container_name: frontend
+    image: idealstudy/frontend-app:latest
+    # build:
+    #   context: .
+    #   dockerfile: ./frontend/Dockerfile
+    ports:
+      - "3000:80" # Nginx 80포트를 사용
 
   # 스프링 서버
   server:
     networks:
       - idealstudy-network
     container_name: server
-    build:
-      context: . # app-compose.yml 이 있는 경로
-      dockerfile: ./Dockerfile
+    image: idealstudy/backend-app:latest # 로컬에 이미지가 있으면 사용
+    # build:
+    #   context: . # app-compose.yml 이 있는 경로
+    #   dockerfile: ./Dockerfile
     ports:
       - "8080:8080"
       - "19090:19090" # Actuator 엔드포인트 포트 (운영환경)
