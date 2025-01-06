@@ -51,9 +51,9 @@ public class RecordLectureService {
         null, DBErrorMsg.SELECT_ERROR);
     }
 
-    public RecordLecturePageResultDto selectList(String classroomId) {
+    public RecordLecturePageResultDto selectList(String classroomId, int page) {
 
-        return TryCatchServiceTemplate.execute(() -> recordLectureRepository.selectList(classroomId),
+        return TryCatchServiceTemplate.execute(() -> recordLectureRepository.selectList(classroomId, page),
                 null, DBErrorMsg.SELECT_ERROR);
     }
 

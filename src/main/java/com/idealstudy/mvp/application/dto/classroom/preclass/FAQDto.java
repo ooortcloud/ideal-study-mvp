@@ -25,11 +25,5 @@ public class FAQDto {
 
     private LocalDateTime modDate; // 수정 일시
 
-    private LocalDateTime delDate; // 삭제 일시
-
     private String createdBy; // 생성자
-
-    private String modifiedBy; // 수정자
-
-    private String deletedBy; // 삭제자
 }

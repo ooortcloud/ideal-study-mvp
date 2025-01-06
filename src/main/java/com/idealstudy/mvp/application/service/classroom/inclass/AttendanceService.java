@@ -62,6 +62,7 @@ public class AttendanceService {
             if( !dto.getCreatedBy().equals(studentId))
                 throw new SecurityException(SecurityErrorMsg.NOT_YOURS.toString());
 
+            // 기간이 지난 날짜의 경우 스켸줄러 등을 사용해서 전부 퇴실 처리 안됨 체크해야 함.
             if( dto.getRegDate().toLocalDate().isBefore(LocalDate.now()))
                 throw new IllegalStateException("이미 지난 날짜입니다.");
 

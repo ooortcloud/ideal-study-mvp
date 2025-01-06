@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.application;
+package com.idealstudy.mvp.unit.application;
 
 import com.idealstudy.mvp.TestRepositoryUtil;
 import com.idealstudy.mvp.application.dto.classroom.preclass.FAQDto;
@@ -78,10 +78,11 @@ public class FAQServiceTest {
 
         String newTitle = "동영상 시청 팁";
         String newContent = "<p>동영상 시청은 어렵지 않습니다.</p>";
+        String teacherId = TEACHER_ID;
 
-        FAQDto updateDto = faqService.update(FAQ_ID, newTitle, newContent);
+        FAQDto updateDto = faqService.update(FAQ_ID, newTitle, newContent, teacherId);
 
-        Assertions.assertThat(updateDto.getCreatedBy()).isEqualTo(TEACHER_ID);
+        Assertions.assertThat(updateDto.getCreatedBy()).isEqualTo(teacherId);
         Assertions.assertThat(updateDto.getTitle()).isEqualTo(newTitle);
         Assertions.assertThat(updateDto.getContent()).isEqualTo(newContent);
     }
@@ -89,9 +90,21 @@ public class FAQServiceTest {
     @Test
     public void delete() {
 
-        faqService.delete(FAQ_ID);
+        FAQDto createDto = createDummy();
 
-        Assertions.assertThatThrownBy(() -> {faqService.findById(FAQ_ID);})
+        faqService.delete(createDto.getId(), createDto.getCreatedBy());
+
+        Assertions.assertThatThrownBy(() -> faqService.findById(createDto.getId()))
                 .isInstanceOf(NoSuchElementException.class);
+    }
+
+    private FAQDto createDummy() {
+
+        String teacherId = TEACHER_ID;
+        String classroomId = CLASSROOM_ID;
+        String title = "과제 하는 방법";
+        String content = "<p>과제를 작성하고 파일 형태로 첨부하여 제출할 것.</p>";
+
+        return faqService.create(teacherId, classroomId, title, content);
     }
 }

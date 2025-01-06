@@ -6,7 +6,7 @@ import com.idealstudy.mvp.enums.classroom.Visibility;
 
 public interface ClassInquiryRepository {
 
-    ClassInquiryDto create(String title, String content, String classroomId, String writer, Visibility visibility);
+    ClassInquiryDto create(String title, String content, String classroomId, Visibility visibility);
 
     ClassInquiryPageResultDto findListByClassId(String classId, int page);
 
@@ -14,7 +14,7 @@ public interface ClassInquiryRepository {
 
     ClassInquiryDto findById(Long inquiryId);
 
-    ClassInquiryDto update(Long inquiryId, String title, String content, String classroomId, String writer, Visibility visibility);
+    ClassInquiryDto update(Long inquiryId, String title, String content, String classroomId, Visibility visibility);
 
     boolean delete(Long inquiryId);
 }

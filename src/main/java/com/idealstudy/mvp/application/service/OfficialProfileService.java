@@ -24,8 +24,8 @@ public class OfficialProfileService {
         return officialProfileRepository.findByTeacherId(teacherId);
     }
 
-    public OfficialProfileDto update(OfficialProfileDto dto) {
+    public OfficialProfileDto update(String teacherId, String html) {
 
-        return officialProfileRepository.update(dto);
+        return officialProfileRepository.update(teacherId, html);
     }
 }

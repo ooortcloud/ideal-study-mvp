@@ -5,6 +5,7 @@ import com.idealstudy.mvp.application.dto.PageResultDto;
 import com.idealstudy.mvp.application.dto.classroom.ClassroomPageResultDto;
 import com.idealstudy.mvp.application.dto.classroom.ClassroomResponseDto;
 import com.idealstudy.mvp.application.repository.ClassroomRepository;
+import com.idealstudy.mvp.enums.classroom.ClassroomStatus;
 import com.idealstudy.mvp.infrastructure.jpa.entity.classroom.ClassroomEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.TeacherEntity;
 import com.idealstudy.mvp.infrastructure.jpa.repository.classroom.ClassroomJpaRepository;
@@ -43,6 +44,7 @@ public class ClassroomRepositoryImpl implements ClassroomRepository {
                 .description(description)
                 .capacity(capacity)
                 .thumbnail(thumbnail)
+                .status(ClassroomStatus.OPEN)
                 .build();
 
         return ClassroomMapper.INSTANCE.toDto(classroomJpaRepository.save(entity));
@@ -57,15 +59,22 @@ public class ClassroomRepositoryImpl implements ClassroomRepository {
     }
 
     @Override
-    public ClassroomPageResultDto findAll() {
+    public ClassroomPageResultDto findAll(int page, ClassroomStatus status) {
 
         PageRequestDto requestDto = PageRequestDto.builder()
-                .page(1)
+                .page(page)
                 .size(SIZE)
                 .build();
 
-        Page<ClassroomEntity> pageResult = classroomJpaRepository.findAll(
+        Page<ClassroomEntity> pageResult = null;
+
+        if(status == null)
+            pageResult = classroomJpaRepository.findAll(
                 requestDto.getPageable(Sort.by("regDate").descending()));
+
+        if(status != null)
+            pageResult = classroomJpaRepository.findByStatus(status,
+                    requestDto.getPageable(Sort.by("regDate").descending()));
 
         Function<ClassroomEntity, ClassroomResponseDto> fn = ClassroomMapper.INSTANCE::toDto;
 

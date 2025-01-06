@@ -17,10 +17,10 @@ export const createRecordedLecture = async (lectureData) => {
 
 // 인강 목록 조회
 export const readRecordedLecturesByClassId = async (classId) => {
-  console.log(`인강 목록 조회 시도: classId=${classId}`);
+  console.log(`인강 목록 조회 시도!!: classId=${classId}`);
   try {
     const response = await apiClient.get(
-      `/api/recorded-lectures?classId=${classId}`
+      `/api/recorded-lectures/${classId}`
     );
     console.log("인강 목록 조회 성공:", response.data);
     return response.data;

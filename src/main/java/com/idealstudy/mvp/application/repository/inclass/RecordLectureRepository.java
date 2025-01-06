@@ -16,7 +16,7 @@ public interface RecordLectureRepository {
 
     RecordLectureDto getDetail(Long id);
 
-    RecordLecturePageResultDto selectList(String classroomId);
+    RecordLecturePageResultDto selectList(String classroomId, int page);
 
     /**
      * 파라미터에 null값을 넣으면, 해당 파라미터는 변경 대상에서 제외됨.

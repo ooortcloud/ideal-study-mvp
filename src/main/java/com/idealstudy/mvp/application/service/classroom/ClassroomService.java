@@ -3,6 +3,7 @@ package com.idealstudy.mvp.application.service.classroom;
 import com.idealstudy.mvp.application.dto.classroom.ClassroomPageResultDto;
 import com.idealstudy.mvp.application.component.ClassroomComponent;
 import com.idealstudy.mvp.application.service.domain_service.FileManager;
+import com.idealstudy.mvp.enums.classroom.ClassroomStatus;
 import com.idealstudy.mvp.enums.error.DBErrorMsg;
 import com.idealstudy.mvp.application.repository.ClassroomRepository;
 import com.idealstudy.mvp.application.repository.LikedRepository;
@@ -55,9 +56,9 @@ public class ClassroomService {
         , null, DBErrorMsg.CREATE_ERROR);
     }
 
-    public ClassroomPageResultDto getAllClassrooms() {
+    public ClassroomPageResultDto getAllClassrooms(int page, ClassroomStatus status) {
 
-        return TryCatchServiceTemplate.execute(() -> classroomRepository.findAll(),
+        return TryCatchServiceTemplate.execute(() -> classroomRepository.findAll(page, status),
                 null, DBErrorMsg.SELECT_ERROR);
     }
 

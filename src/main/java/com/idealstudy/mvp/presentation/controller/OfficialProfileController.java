@@ -4,6 +4,7 @@ import com.idealstudy.mvp.application.dto.OfficialProfileDto;
 import com.idealstudy.mvp.application.service.OfficialProfileService;
 import com.idealstudy.mvp.security.annotation.ForTeacher;
 import com.idealstudy.mvp.security.dto.JwtPayloadDto;
+import com.idealstudy.mvp.util.TryCatchControllerTemplate;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,15 +25,7 @@ public class OfficialProfileController {
     @GetMapping("/officialProfiles/{userId}")
     public ResponseEntity<OfficialProfileDto> selectOne(@PathVariable String userId) {
 
-        OfficialProfileDto returnDto = null;
-        try {
-            returnDto = officialProfileService.selectOne(userId);
-        } catch (Exception e) {
-            log.error("존재하지 않는 강사 공식 페이지");
-            return new ResponseEntity<OfficialProfileDto>(HttpStatusCode.valueOf(404));
-        }
-
-        return new ResponseEntity<OfficialProfileDto>(returnDto, HttpStatusCode.valueOf(200));
+        return TryCatchControllerTemplate.execute(() -> officialProfileService.selectOne(userId));
     }
 
     @ForTeacher
@@ -40,20 +33,8 @@ public class OfficialProfileController {
     public ResponseEntity<OfficialProfileDto> update(@RequestBody String html, HttpServletRequest request) {
 
         JwtPayloadDto token = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String teacherId = token.getSub();
 
-        OfficialProfileDto dto = OfficialProfileDto.builder()
-                .teacherId(token.getSub())
-                .content(html)
-                .build();
-
-        OfficialProfileDto returnDto = null;
-        try {
-            returnDto = officialProfileService.update(dto);
-        } catch (Exception e) {
-            log.error("존재하지 않는 강사 공식 페이지");
-            return new ResponseEntity<OfficialProfileDto>(HttpStatusCode.valueOf(404));
-        }
-
-        return new ResponseEntity<OfficialProfileDto>(returnDto, HttpStatusCode.valueOf(200));
+        return TryCatchControllerTemplate.execute(() -> officialProfileService.update(teacherId, html));
     }
 }

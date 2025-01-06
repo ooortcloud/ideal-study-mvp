@@ -3,7 +3,7 @@ import { useDropzone } from "react-dropzone";
 import { createMaterial } from "../../../../services/classroom/MaterialService.mjs";
 import styles from "./MaterialForm.module.css";
 
-const MaterialForm = () => {
+const MaterialForm = (classId) => {
   const [files, setFiles] = useState([]);
   const [description, setDescription] = useState("");
   const [visibility, setVisibility] = useState("PUBLIC");
@@ -34,9 +34,14 @@ const MaterialForm = () => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append("files", files[0]); // TODO : 여러 개의 파일 업로드 처리
-    formData.append("description", description);
-    formData.append("visibility", visibility);
+    formData.append("files", new Blob( files[0], { type: "application/pdf"} ), files[0].name); // TODO : 여러 개의 파일 업로드 처리
+    const materialData = JSON.stringify({
+        classroomId : classId,
+        description : description,
+        status : visibility,
+    });
+
+    formData.append("dto", new Blob([materialData], {type: "application/json"}));
     // FormData의 내용을 확인하기 위한 디버깅 코드
     for (let pair of formData.entries()) {
       console.log(pair[0], pair[1]);

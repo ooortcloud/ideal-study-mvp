@@ -1,17 +1,17 @@
 package com.idealstudy.mvp.mapstruct;
 
 import com.idealstudy.mvp.application.dto.PageResultDto;
-import com.idealstudy.mvp.application.dto.member.AdminDto;
 import com.idealstudy.mvp.application.dto.member.MemberDto;
+import com.idealstudy.mvp.application.dto.member.MemberListDto;
 import com.idealstudy.mvp.application.dto.member.MemberPageResultDto;
 import com.idealstudy.mvp.application.dto.member.ParentsDto;
 import com.idealstudy.mvp.application.dto.member.StudentDto;
 import com.idealstudy.mvp.application.dto.member.TeacherDto;
-import com.idealstudy.mvp.infrastructure.jpa.entity.member.AdminEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.MemberEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.ParentsEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.StudentEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.TeacherEntity;
+import com.idealstudy.mvp.presentation.dto.member.MemberResponseDto;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-12-30T17:04:42+0900",
+    date = "2025-01-06T10:21:02+0900",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21 (Oracle Corporation)"
 )
 @Component
@@ -56,32 +56,38 @@ public class MemberMapperImpl implements MemberMapper {
     }
 
     @Override
-    public MemberEntity dtoToEntity(MemberDto dto) {
+    public MemberListDto entityToListDto(MemberEntity entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        MemberListDto memberListDto = new MemberListDto();
+
+        return memberListDto;
+    }
+
+    @Override
+    public MemberResponseDto toResponseDto(MemberDto dto) {
         if ( dto == null ) {
             return null;
         }
 
-        MemberEntity.MemberEntityBuilder<?, ?> memberEntity = MemberEntity.builder();
+        MemberResponseDto memberResponseDto = new MemberResponseDto();
 
-        memberEntity.userId( dto.getUserId() );
-        memberEntity.password( dto.getPassword() );
-        memberEntity.name( dto.getName() );
-        memberEntity.phoneAddress( dto.getPhoneAddress() );
-        memberEntity.email( dto.getEmail() );
-        memberEntity.sex( dto.getSex() );
-        memberEntity.referralId( dto.getReferralId() );
-        memberEntity.level( dto.getLevel() );
-        memberEntity.role( dto.getRole() );
-        memberEntity.introduction( dto.getIntroduction() );
+        memberResponseDto.setUserId( dto.getUserId() );
+        memberResponseDto.setName( dto.getName() );
+        memberResponseDto.setPhoneAddress( dto.getPhoneAddress() );
+        memberResponseDto.setEmail( dto.getEmail() );
+        memberResponseDto.setSex( dto.getSex() );
+        memberResponseDto.setLevel( dto.getLevel() );
+        memberResponseDto.setRole( dto.getRole() );
+        memberResponseDto.setIntroduction( dto.getIntroduction() );
         byte[] profile = dto.getProfile();
         if ( profile != null ) {
-            memberEntity.profile( Arrays.copyOf( profile, profile.length ) );
+            memberResponseDto.setProfile( Arrays.copyOf( profile, profile.length ) );
         }
-        memberEntity.fromSocial( dto.getFromSocial() );
-        memberEntity.init( dto.getInit() );
-        memberEntity.deleted( dto.getDeleted() );
 
-        return memberEntity.build();
+        return memberResponseDto;
     }
 
     @Override
@@ -177,35 +183,6 @@ public class MemberMapperImpl implements MemberMapper {
     }
 
     @Override
-    public AdminEntity dtoToEntity(AdminDto dto) {
-        if ( dto == null ) {
-            return null;
-        }
-
-        AdminEntity.AdminEntityBuilder<?, ?> adminEntity = AdminEntity.builder();
-
-        adminEntity.userId( dto.getUserId() );
-        adminEntity.password( dto.getPassword() );
-        adminEntity.name( dto.getName() );
-        adminEntity.phoneAddress( dto.getPhoneAddress() );
-        adminEntity.email( dto.getEmail() );
-        adminEntity.sex( dto.getSex() );
-        adminEntity.referralId( dto.getReferralId() );
-        adminEntity.level( dto.getLevel() );
-        adminEntity.role( dto.getRole() );
-        adminEntity.introduction( dto.getIntroduction() );
-        byte[] profile = dto.getProfile();
-        if ( profile != null ) {
-            adminEntity.profile( Arrays.copyOf( profile, profile.length ) );
-        }
-        adminEntity.fromSocial( dto.getFromSocial() );
-        adminEntity.init( dto.getInit() );
-        adminEntity.deleted( dto.getDeleted() );
-
-        return adminEntity.build();
-    }
-
-    @Override
     public TeacherDto entityToDto(TeacherEntity entity) {
         if ( entity == null ) {
             return null;
@@ -295,35 +272,6 @@ public class MemberMapperImpl implements MemberMapper {
         studentDto.grade( entity.getGrade() );
 
         return studentDto.build();
-    }
-
-    @Override
-    public AdminDto entityToDto(AdminEntity entity) {
-        if ( entity == null ) {
-            return null;
-        }
-
-        AdminDto.AdminDtoBuilder<?, ?> adminDto = AdminDto.builder();
-
-        adminDto.userId( entity.getUserId() );
-        adminDto.password( entity.getPassword() );
-        adminDto.name( entity.getName() );
-        adminDto.phoneAddress( entity.getPhoneAddress() );
-        adminDto.email( entity.getEmail() );
-        adminDto.sex( entity.getSex() );
-        adminDto.referralId( entity.getReferralId() );
-        adminDto.level( entity.getLevel() );
-        adminDto.role( entity.getRole() );
-        adminDto.introduction( entity.getIntroduction() );
-        byte[] profile = entity.getProfile();
-        if ( profile != null ) {
-            adminDto.profile( Arrays.copyOf( profile, profile.length ) );
-        }
-        adminDto.fromSocial( entity.getFromSocial() );
-        adminDto.init( entity.getInit() );
-        adminDto.deleted( entity.getDeleted() );
-
-        return adminDto.build();
     }
 
     @Override
@@ -510,16 +458,16 @@ public class MemberMapperImpl implements MemberMapper {
     }
 
     @Override
-    public MemberPageResultDto toApplicationPageResult(PageResultDto<MemberDto, MemberEntity> pageResultDto) {
+    public MemberPageResultDto toApplicationPageResult(PageResultDto<MemberListDto, MemberEntity> pageResultDto) {
         if ( pageResultDto == null ) {
             return null;
         }
 
         MemberPageResultDto memberPageResultDto = new MemberPageResultDto();
 
-        List<MemberDto> list = pageResultDto.getDtoList();
+        List<MemberListDto> list = pageResultDto.getDtoList();
         if ( list != null ) {
-            memberPageResultDto.setDtoList( new ArrayList<MemberDto>( list ) );
+            memberPageResultDto.setDtoList( new ArrayList<MemberListDto>( list ) );
         }
         memberPageResultDto.setTotalPage( pageResultDto.getTotalPage() );
         memberPageResultDto.setPage( pageResultDto.getPage() );

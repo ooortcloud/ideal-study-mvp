@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.presentation;
+package com.idealstudy.mvp.integration.presentation;
 
 import com.idealstudy.mvp.MvpApplication;
 import com.idealstudy.mvp.application.dto.member.MemberDto;

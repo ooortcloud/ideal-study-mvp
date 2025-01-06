@@ -81,7 +81,7 @@ const ClassroomDetailPage = ({userInfo}) => {
 
       {/* 자료 섹션 */}
       <div className="section material-section">
-        <MaterialListPage />
+        <MaterialListPage classId = {classId }/>
       </div>
 
       {/* 과제 섹션 */}

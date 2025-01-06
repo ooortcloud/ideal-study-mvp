@@ -3,6 +3,7 @@ package com.idealstudy.mvp.mapstruct;
 import com.idealstudy.mvp.application.dto.PageResultDto;
 import com.idealstudy.mvp.application.dto.member.*;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.*;
+import com.idealstudy.mvp.presentation.dto.member.MemberResponseDto;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -17,17 +18,17 @@ public interface MemberMapper {
     MemberMapper INSTANCE = Mappers.getMapper(MemberMapper.class);
 
     MemberDto entityToDto(MemberEntity entity);
-    MemberEntity dtoToEntity(MemberDto dto);
+    MemberListDto entityToListDto(MemberEntity entity);
+
+    MemberResponseDto toResponseDto(MemberDto dto);
 
     TeacherEntity dtoToEntity(TeacherDto dto);
     ParentsEntity dtoToEntity(ParentsDto dto);
     StudentEntity dtoToEntity(StudentDto dto);
-    AdminEntity dtoToEntity(AdminDto dto);
 
     TeacherDto entityToDto(TeacherEntity entity);
     ParentsDto entityToDto(ParentsEntity entity);
     StudentDto entityToDto(StudentEntity entity);
-    AdminDto entityToDto(AdminEntity entity);
 
     // @MappingTarget: 반환 대상 객체 지정
     @Mapping(target = "userId", ignore = true)
@@ -42,5 +43,5 @@ public interface MemberMapper {
     @Mapping(target = "userId", ignore = true)
     void updateEntityFromDto(StudentDto dto, @MappingTarget StudentEntity entity);
 
-    MemberPageResultDto toApplicationPageResult(PageResultDto<MemberDto, MemberEntity> pageResultDto);
+    MemberPageResultDto toApplicationPageResult(PageResultDto<MemberListDto, MemberEntity> pageResultDto);
 }

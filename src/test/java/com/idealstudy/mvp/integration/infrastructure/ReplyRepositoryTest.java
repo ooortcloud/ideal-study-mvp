@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.infrastructure;
+package com.idealstudy.mvp.integration.infrastructure;
 
 import com.idealstudy.mvp.application.dto.ReplyPageResultDto;
 import lombok.extern.slf4j.Slf4j;

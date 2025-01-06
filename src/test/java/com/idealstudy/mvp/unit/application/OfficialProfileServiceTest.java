@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.application;
+package com.idealstudy.mvp.unit.application;
 
 import com.idealstudy.mvp.application.dto.OfficialProfileDto;
 import com.idealstudy.mvp.application.service.OfficialProfileService;
@@ -52,13 +52,8 @@ public class OfficialProfileServiceTest {
 
         String html = "<h1>아무개 공식 프로필</h1>\n" +
                 "<p>저는 수학 정말 잘합니다. 믿어주세요.</p>";
-
-        OfficialProfileDto dto = OfficialProfileDto.builder()
-                .teacherId(TEACHER_ID)
-                .content(html)
-                .build();
-
-        OfficialProfileDto resultDto = officialProfileService.update(dto);
+        String teacherId = TEACHER_ID;
+        OfficialProfileDto resultDto = officialProfileService.update(teacherId, html);
 
         Assertions.assertThat(resultDto).isNotNull();
         Assertions.assertThat(resultDto.getTeacherId()).isEqualTo(TEACHER_ID);

@@ -7,10 +7,12 @@ import com.idealstudy.mvp.application.dto.member.MemberPageResultDto;
 import com.idealstudy.mvp.application.service.OfficialProfileService;
 import com.idealstudy.mvp.enums.HttpResponse;
 import com.idealstudy.mvp.enums.member.Role;
+import com.idealstudy.mvp.presentation.dto.member.MemberResponseDto;
 import com.idealstudy.mvp.presentation.dto.member.SignUpUserRequestDto;
 import com.idealstudy.mvp.security.annotation.ForUser;
 import com.idealstudy.mvp.security.dto.JwtPayloadDto;
 import com.idealstudy.mvp.util.HttpResponseUtil;
+import com.idealstudy.mvp.util.TryCatchControllerTemplate;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +57,7 @@ public class MemberController {
     @PostMapping("/users/sign-up")
     public ResponseEntity<String> signUp(@RequestBody SignUpUserRequestDto dto) {
 
-        ResponseEntity<String> response = sendEmail(dto.getEmail());
+        ResponseEntity<String> response = sendEmail(dto.getEmail(), dto.getRole());
         if(response != null)
             return response;
 
@@ -91,35 +93,29 @@ public class MemberController {
 
     @ForUser
     @GetMapping("/api/users/{userId}")
-    public ResponseEntity<MemberDto> findMember(@PathVariable String userId) {
-        
-        log.info("개인 정보 조회");
-        MemberDto dto = memberService.findById(userId);
-        log.info("당신의 정보: " + dto);
-        if(dto != null)
-            return new ResponseEntity<MemberDto>(dto, HttpStatusCode.valueOf(200));
-        if(dto == null)
-            return new ResponseEntity<MemberDto>(dto, HttpStatusCode.valueOf(404));
+    public ResponseEntity<MemberResponseDto> findMember(@PathVariable String userId, HttpServletRequest request) {
 
-        return null;
+        return TryCatchControllerTemplate.execute(() -> {
+
+            JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+            String tokenId = payload.getSub();
+
+            return memberService.findById(userId, tokenId);
+        });
     }
 
-    // page number는 어떻게 표현할 생각?
     @GetMapping("/users")
-    public ResponseEntity<MemberPageResultDto> findMemberList() {
+    public ResponseEntity<MemberPageResultDto> findMemberList(@RequestParam int page) {
 
-        MemberPageResultDto dto = memberService.findMembers();
-        if(dto != null)
-            return new ResponseEntity<MemberPageResultDto>(dto, HttpStatusCode.valueOf(200));
-        if(dto == null)
-            return new ResponseEntity<MemberPageResultDto>(dto, HttpStatusCode.valueOf(404));
-
-        return null;
+        return TryCatchControllerTemplate.execute(() -> memberService.findMembers(page));
     }
 
     @ForUser
-    @DeleteMapping("/api/users/{userId}")
-    public ResponseEntity<String> deleteMember(@PathVariable String userId) {
+    @DeleteMapping("/api/users")
+    public ResponseEntity<String> deleteMember(HttpServletRequest request) {
+
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String userId = payload.getSub();
 
         boolean result = memberService.deleteMember(userId);
 
@@ -132,21 +128,17 @@ public class MemberController {
     }
 
     @ForUser
-    @PatchMapping("/api/users/update/{userId}")
-    public ResponseEntity<MemberDto> updateMember(@PathVariable String userId, @RequestBody MemberDto dto) {
-        dto.setUserId(userId);
-        log.info("변경 희망하는 MemberDto: " + dto);
-        MemberDto updateDto = memberService.updateMember(dto);
+    @PatchMapping("/api/users/update")
+    public ResponseEntity<MemberResponseDto> updateMember(HttpServletRequest request, @RequestBody MemberDto dto) {
 
-        if(updateDto != null)
-            return new ResponseEntity<MemberDto>(updateDto, HttpStatusCode.valueOf(200));
-        if(updateDto == null)
-            return new ResponseEntity<MemberDto>(updateDto, HttpStatusCode.valueOf(404));
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String userId = payload.getSub();
 
-        return null;
+        return TryCatchControllerTemplate.execute(() ->
+                memberService.updateMember(userId, dto.getPhoneAddress(), dto.getIntroduction(), null));
     }
 
-    private ResponseEntity<String> sendEmail(String email) {
+    private ResponseEntity<String> sendEmail(String email, Role role) {
         try{
             if(!isValidEmailPattern(email))
                 return new ResponseEntity<String>("잘못된 이메일 양식입니다.", HttpStatusCode.valueOf(400));
@@ -156,7 +148,7 @@ public class MemberController {
                 return new ResponseEntity<String>("현재 등록 중이거나 이미 등록된 이메일입니다.",
                         HttpStatusCode.valueOf(400));
             }
-            emailService.sendSignUpEmail(email);
+            emailService.sendSignUpEmail(email, role);
         } catch (Exception e) {
             log.error(e.toString() + ":: " + e.getMessage());
             return new ResponseEntity<String>("failed to send email", HttpStatusCode.valueOf(500));

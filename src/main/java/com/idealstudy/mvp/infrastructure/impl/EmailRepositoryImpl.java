@@ -1,6 +1,7 @@
 package com.idealstudy.mvp.infrastructure.impl;
 
-import com.idealstudy.mvp.infrastructure.RedisRepository;
+import com.idealstudy.mvp.enums.member.Role;
+import com.idealstudy.mvp.infrastructure.EmailRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -10,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 @Repository
 @RequiredArgsConstructor
-public class RedisRepositoryImpl implements RedisRepository {
+public class EmailRepositoryImpl implements EmailRepository {
 
     @Autowired
     private final StringRedisTemplate stringRedisTemplate;
@@ -18,7 +19,7 @@ public class RedisRepositoryImpl implements RedisRepository {
     private static final long AUTHENTICATION_PERIOD_MINUTE = 30L;
 
     @Override
-    public void addToken(String email, String token) {
+    public void addToken(String email, Role role, String token) {
         stringRedisTemplate.opsForValue().set(email, token, AUTHENTICATION_PERIOD_MINUTE, TimeUnit.MINUTES);
     }
 

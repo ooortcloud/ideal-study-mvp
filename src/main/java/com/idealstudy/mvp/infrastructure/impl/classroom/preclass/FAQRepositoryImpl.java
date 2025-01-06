@@ -35,16 +35,17 @@ public class FAQRepositoryImpl implements FAQRepository {
     private final FAQMapper faqMapper;
 
     @Override
-    public void create(FAQDto dto) {
+    public FAQDto create(String title, String content, String classroomId, String createdBy) {
 
-        FAQEntity faqEntity = faqMapper.dtoTOEntity(dto);
+        ClassroomEntity classroomEntity = classroomJpaRepository.findById(classroomId).orElseThrow();
 
-        ClassroomEntity classroomEntity = classroomJpaRepository.findById(dto.getClassroomId()).orElseThrow();
-        faqEntity.setClassroom(classroomEntity);
+        FAQEntity entity = FAQEntity.builder()
+                .classroom(classroomEntity)
+                .title(title)
+                .content(content)
+                .build();
 
-        log.info("생성된 entity: " + faqEntity);
-
-        faqJpaRepository.save(faqEntity);
+        return FAQMapper.INSTANCE.entityToDto(faqJpaRepository.save(entity));
     }
 
     @Override
@@ -68,11 +69,15 @@ public class FAQRepositoryImpl implements FAQRepository {
     }
 
     @Override
-    public FAQDto update(FAQDto dto) {
+    public FAQDto update(Long id, String title, String content) {
 
-        FAQEntity entity = faqJpaRepository.findById(dto.getId()).orElseThrow();
-        entity.setTitle(dto.getTitle());
-        entity.setContent(dto.getContent());
+        FAQEntity entity = faqJpaRepository.findById(id).orElseThrow();
+
+        if(title != null)
+            entity.setTitle(title);
+
+        if(content != null)
+            entity.setContent(content);
 
         FAQEntity result = faqJpaRepository.save(entity);
         return faqMapper.entityToDto(result);

@@ -122,7 +122,7 @@ const RecordedLectureForm = () => {
       await createRecordedLecture(formData);
 
       // 2. 업로드 시작을 알리고 목록 페이지로 이동
-      navigate("/recordedLecture/list", {
+      navigate(`/recordedLecture/list/${classId}`, {
         state: { message: "영상이 백그라운드에서 업로드되고 있습니다." },
       });
 

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-12-30T17:48:18+0900",
+    date = "2025-01-06T10:21:01+0900",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21 (Oracle Corporation)"
 )
 @Component
@@ -33,6 +33,7 @@ public class ClassroomMapperImpl implements ClassroomMapper {
         }
         classroomResponseDto.setCreatedBy( entity.getCreatedBy() );
         classroomResponseDto.setThumbnail( entity.getThumbnail() );
+        classroomResponseDto.setStatus( entity.getStatus() );
 
         return classroomResponseDto;
     }
