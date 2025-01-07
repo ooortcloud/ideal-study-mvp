@@ -43,6 +43,10 @@ spring:
       max-file-size: 250MB
       max-request-size: 250MB
 
+  sql:
+    init:
+      mode: always
+
 upload:
   path: src/main/resources/static/upload-materials/
 
