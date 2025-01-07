@@ -14,5 +14,7 @@ public interface LikedJpaRepository extends JpaRepository<LikedEntity, Long> {
 
     // 아쉽게도 객체 그래프 탐색 코드 부분에서 동적 처리는 불가함.
     @Query("SELECT COUNT(l) FROM LikedEntity l JOIN l.classrooms c WHERE c.id = :targetId") 
-    int countByClassroomId(@Param("targetId") Long targetId);
+    int countByClassroomId(@Param("targetId") String targetId);
+
+
 }

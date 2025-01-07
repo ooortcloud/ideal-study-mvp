@@ -50,12 +50,14 @@ public class LikedEntity extends BaseEntity {
 
     public void addClassroom(ClassroomEntity classroom) {
 
-        // 영문을 모르겠지만 초기에 this.replies가 항상 null이어서 이 분기문을 추가해주었다.
+        // 영문을 모르겠지만 초기에 this.classrooms 항상 null이어서 이 분기문을 추가해주었다.
         if (this.classrooms == null) {
             this.classrooms = new ArrayList<>();
         }
 
+        // Liked 엔티티의 Classroom 엔티티 리스트에 직접 read 정보를 추가해준다.
         this.classrooms.add(classroom);
+        // Classroom 엔티티의 Liked 엔티티 리스트에 직접 read 정보를 추가해준다.
         classroom.getLikes().add(this);
     }
 

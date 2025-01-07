@@ -23,19 +23,23 @@ public class LikedReplyRepositoryImpl implements LikedRepository {
     private final ReplyJpaRepository replyJpaRepository;
 
     @Override
-    public void create(Long replyId, String userId) {
+    public int create(Long replyId) {
 
         log.info("좋아요 추가");
-        ReplyEntity replyEntity = replyJpaRepository.findById(replyId).orElseThrow();
+        ReplyEntity reply = replyJpaRepository.findById(replyId).orElseThrow();
 
-        LikedEntity newEntity = LikedEntity.builder()
-                .createdBy(userId)
-                .build();
-
-        newEntity.addReply(replyEntity);
-
+        LikedEntity liked = new LikedEntity();
         // @ManyToMany에 의해 ReplyEntity는 연관 테이블에 자동으로 매핑됨.
-        likedJpaRepository.save(newEntity);
+        LikedEntity savedLikedEntity = likedJpaRepository.save(liked);
+        savedLikedEntity.addReply(reply);
+
+        return -1;
+    }
+
+    @Override
+    public int create(String targetId) {
+
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -50,7 +54,18 @@ public class LikedReplyRepositoryImpl implements LikedRepository {
     }
 
     @Override
+    public void delete(Long likedId, String targetId) {
+
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public int countById(Long replyId) {
         return likedJpaRepository.countByReplyId(replyId);
+    }
+
+    @Override
+    public int countById(String targetId) {
+        throw new UnsupportedOperationException();
     }
 }
