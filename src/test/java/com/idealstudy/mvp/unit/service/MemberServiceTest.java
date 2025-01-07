@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.unit;
+package com.idealstudy.mvp.unit.service;
 
 import com.idealstudy.mvp.application.dto.member.MemberDto;
 import com.idealstudy.mvp.application.dto.member.MemberListDto;

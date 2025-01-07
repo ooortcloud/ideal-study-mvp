@@ -33,8 +33,8 @@ public class ClassroomRepositoryImpl implements ClassroomRepository {
     private final static int SIZE = 10;
 
     @Override
-    public ClassroomResponseDto save(String title, String description, Integer capacity, String thumbnail,
-                                     String teacherId) {
+    public ClassroomResponseDto create(String title, String description, Integer capacity, String thumbnail,
+                                       String teacherId) {
 
         TeacherEntity teacher = teacherJpaRepository.findById(teacherId).orElseThrow();
 

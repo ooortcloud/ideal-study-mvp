@@ -1,11 +1,8 @@
-package com.idealstudy.mvp.unit;
+package com.idealstudy.mvp.unit.service;
 
-import com.idealstudy.mvp.unit.util.TestServiceUtil;
-import com.idealstudy.mvp.application.dto.member.TeacherDto;
 import com.idealstudy.mvp.application.repository.OfficialProfileRepository;
 import com.idealstudy.mvp.application.service.OfficialProfileService;
 import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

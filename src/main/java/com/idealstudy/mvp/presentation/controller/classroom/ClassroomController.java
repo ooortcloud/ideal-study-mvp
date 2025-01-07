@@ -37,7 +37,9 @@ public class ClassroomController {
         JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
         String teacherId = payload.getSub();
 
-        return TryCatchControllerTemplate.execute(() -> service.createClassroom(dto, teacherId, image.getInputStream()));
+        return TryCatchControllerTemplate.execute(() ->
+                service.createClassroom(dto.getTitle(), dto.getDescription(), dto.getCapacity(),
+                        teacherId, image.getInputStream(), image.getOriginalFilename()));
     }
 
     @GetMapping("/api/classes")
@@ -89,8 +91,9 @@ public class ClassroomController {
         JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
         String teacherId = payload.getSub();
 
-        return TryCatchControllerTemplate.execute(() -> service.updateClassroom(classId, requestDto, teacherId,
-                image.getInputStream()));
+        return TryCatchControllerTemplate.execute(() -> service.updateClassroom(
+                classId, requestDto.getTitle(), requestDto.getDescription(), requestDto.getCapacity(),
+                teacherId, image.getInputStream()));
     }
 
     @ForTeacher

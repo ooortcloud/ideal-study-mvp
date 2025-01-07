@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.unit;
+package com.idealstudy.mvp.unit.service;
 
 import com.idealstudy.mvp.integration.infrastructure.util.TestRepositoryUtil;
 import com.idealstudy.mvp.application.dto.classroom.preclass.FAQDto;
