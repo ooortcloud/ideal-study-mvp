@@ -142,7 +142,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: ./docker-compose.yml
+          source: ./docker-compose-prod.yml
           target: "/home/ubuntu"
           debug: true
 
@@ -155,6 +155,15 @@ jobs:
           script: |
             cd /home/ubuntu  # docker-compose.yml이 위치한 디렉토리로 이동
             docker compose down -v  # 기존 컨테이너 중지 및 제거
+
+      - name: EC2에서 사용하지 않는 이미지와 컨테이너 정리
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker system prune
 
       - name: Docker Hub에 로그인하기
         run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
@@ -177,7 +186,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ubuntu
-            docker compose up -d  # 최신 이미지를 사용하여 컨테이너 실행
+            docker compose -f docker-compose-prod.yml up -d  # 최신 이미지를 사용하여 컨테이너 실행
 
   # deploy-frontend:
   #   name: 프론트엔드 배포
