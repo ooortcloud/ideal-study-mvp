@@ -62,7 +62,7 @@ public class ClassroomController {
 
     @ForTeacher
     @GetMapping("/api/classes/teacher")
-    public ResponseEntity<ClassroomPageResultDto> getClassesForTeacher(@RequestParam int page,
+    public ResponseEntity<ClassroomPageResultDto> getClassesForTeacher(@RequestParam Integer page,
                                                                        @RequestParam ClassroomStatus status,
                                                                        HttpServletRequest request) {
 
