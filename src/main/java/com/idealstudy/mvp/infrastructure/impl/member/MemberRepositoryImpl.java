@@ -139,7 +139,13 @@ public class MemberRepositoryImpl implements MemberRepository {
 
         Function<MemberEntity, MemberListDto> fn = (entity -> memberMapper.entityToListDto(entity));
 
-        return memberMapper.toApplicationPageResult(new PageResultDto<>(result, fn));
+        /// error
+        MemberPageResultDto returnDto = memberMapper.toApplicationPageResult(
+                new PageResultDto<MemberListDto, MemberEntity>(result, fn));
+
+        log.info(returnDto);
+
+        return returnDto;
     }
 
     @Override

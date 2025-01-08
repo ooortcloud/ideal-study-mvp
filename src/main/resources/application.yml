@@ -36,6 +36,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    defer-datasource-initialization: true
 
   # 파일 업로드 크기 제어
   servlet:
@@ -46,6 +47,7 @@ spring:
   sql:
     init:
       mode: always
+
 
 upload:
   path: src/main/resources/static/upload-materials/

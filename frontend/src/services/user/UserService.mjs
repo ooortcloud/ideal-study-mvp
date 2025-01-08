@@ -61,7 +61,7 @@ export const readUser = async (userId) => {
 export const readUsers = async (pathname) => {
   console.log("회원목록조회 API 시도:", pathname);
   try {
-    const response = await apiClient.get("/users");
+    const response = await apiClient.get("/users?page=1");
 
     console.log("회원목록조회 API 성공:", response);
     return response.data;

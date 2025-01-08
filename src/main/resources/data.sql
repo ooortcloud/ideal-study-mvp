@@ -1,6 +1,6 @@
 INSERT INTO member (user_id, password, name, phone_address, email, sex, referral_id, level, role, from_social, init, deleted, reg_date, dtype)
 VALUES
-    (UUID(), '$2a$10$J03L0oKiIDC5mhdYxzOTresMpd9gMfqbJakKr.iHAsgUbq/To2VZO', '관리자', '010-1234-1234', 'admin@gmail.com', 'MALE', null, 1, 'ROLE_ADMIN', 0, 1, 0, NOW(), 'A'),
+    -- (UUID(), '$2a$10$J03L0oKiIDC5mhdYxzOTresMpd9gMfqbJakKr.iHAsgUbq/To2VZO', '관리자', '010-1234-1234', 'admin@gmail.com', 'MALE', null, 1, 'ROLE_ADMIN', 0, 1, 0, NOW(), 'A'),  관리자 엔티티는 나중에 관리하는 걸로 하자.
     ('c99fd58f-b0ae-11ef-89d8-0242ac140003', '$2a$10$/essrJvIRI8sf52JKG/YHO.5bv6JOqmk8UFD.kFK8a12WtQZ.t2sK', '김학생', '010-1234-1234', 'student@gmail.com', 'MALE', null, 1, 'ROLE_STUDENT', 0, 1, 0, NOW(), 'S'),
     ('98a10847-ad7e-11ef-8e5c-0242ac140002', '$2a$10$J03L0oKiIDC5mhdYxzOTresMpd9gMfqbJakKr.iHAsgUbq/To2VZO', '김강사', '010-1234-1234', 'teacher@gmail.com', 'MALE', null, 1, 'ROLE_TEACHER', 0, 1, 0, NOW(), 'T'),
     ('c99fd83e-b0ae-11ef-89d8-0242ac140003', '$2a$10$tPBgYrrCy8kKo7G.w5uVJeCcGPaCDOC80oV5qK2PE68THsjk443wy', '김학생 학부모', '010-1234-1234', 'parents@gmail.com', 'FEMALE', null, 1, 'ROLE_PARENTS', 0, 1, 0, NOW(), 'P'),
@@ -9,7 +9,7 @@ VALUES
     ('c2862de7-e8ef-4aa8-bf7d-711cd712279b', '$2a$10$S3rRiFdZMWjtaOsKeD6HxOsdq9pJqvlc6vI1wofESR1s13RUkj0PG', '조학생 학부모', '010-1234-1234', 'otherparents@gmail.com', 'FEMALE', null, 1, 'ROLE_PARENTS', 0, 1, 0, NOW(), 'P');
 
 
-INSERT INTO teacher
+INSERT INTO teacher (teacher_id, status, univ, subject)
 VALUES
     ('98a10847-ad7e-11ef-8e5c-0242ac140002', 'GRADUATION', '한국대학교', '수학'),
     ('add9fa2e-92c9-48ee-adb7-46c307ca8778', 'GRADUATION', '행복대학교', '영어');
@@ -19,7 +19,7 @@ VALUES
 	('98a10847-ad7e-11ef-8e5c-0242ac140002', '<p>공식 프로필 페이지를 설정해주세요.</p>'),
 	('add9fa2e-92c9-48ee-adb7-46c307ca8778', '<p>공식 프로필 페이지를 설정해주세요.</p>');
 
-INSERT INTO student
+INSERT INTO student (student_id, school, grade)
 VALUES
     ('c99fd58f-b0ae-11ef-89d8-0242ac140003', '한국고등학교', 'H1'),
     ('e8445639-917a-4396-8aaa-4a68dd11e4c7', '강남고등학교', 'H3');
@@ -46,10 +46,10 @@ VALUES
 (2, '그렇군요, 알겠습니다.', 'PUBLIC', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', NOW(), 1, 1),
 (3, '비밀 댓글입니다. 비밀.', 'PRIVATE', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', NOW(), NULL, 1);
 
-INSERT INTO enrollment
+INSERT INTO enrollment (classroom_id, student_id, created_by, status, cur_score, target_score, request, determination, reg_date)
 VALUES
-(1, '98a12345-ad7e-11ef-8e5c-0242ac140002', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'PERMITTED' ,'50점', '100 이요', '없습니다', '화이팅', NOW(), NULL, NULL, NULL, NULL),
-(2, '76b12345-ad7e-11ef-8e5c-0242ac140002', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'PERMITTED' ,'50점', '100 이요', '없습니다', '화이팅', NOW(), NULL, NULL, NULL, NULL);
+('98a12345-ad7e-11ef-8e5c-0242ac140002', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'PERMITTED' ,'50점', '100 이요', '없습니다', '화이팅', NOW()),
+('76b12345-ad7e-11ef-8e5c-0242ac140002', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'PERMITTED' ,'50점', '100 이요', '없습니다', '화이팅', NOW());
 
 INSERT INTO record_lecture
 (id, classroom_id, created_by, del_date, deleted_by, description, mod_date, modified_by, order_num, playtime, reg_date, title, url)

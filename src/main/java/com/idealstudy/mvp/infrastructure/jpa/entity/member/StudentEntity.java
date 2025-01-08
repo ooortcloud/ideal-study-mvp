@@ -21,6 +21,7 @@ public class StudentEntity extends MemberEntity {
 
     private String school;
 
+    @Enumerated(EnumType.STRING)
     private Grade grade;
 
     // Classroom과 N:M 관계

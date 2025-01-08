@@ -105,7 +105,7 @@ public class MemberController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<MemberPageResultDto> findMemberList(@RequestParam int page) {
+    public ResponseEntity<MemberPageResultDto> findMemberList(@RequestParam Integer page) {
 
         return TryCatchControllerTemplate.execute(() -> memberService.findMembers(page));
     }
