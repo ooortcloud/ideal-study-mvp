@@ -1,24 +1,24 @@
 package com.idealstudy.mvp.infrastructure.jpa.entity.classroom;
 
+import com.idealstudy.mvp.enums.classroom.ClassroomStatus;
 import com.idealstudy.mvp.infrastructure.jpa.entity.BaseEntity;
+import com.idealstudy.mvp.infrastructure.jpa.entity.LikedEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.StudentEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.TeacherEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.util.List;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-@Data
 @Entity
 @Table(name = "classroom")
+@SuperBuilder
+@Getter
+@Setter
 public class ClassroomEntity extends BaseEntity {
 
     @Id
@@ -34,6 +34,9 @@ public class ClassroomEntity extends BaseEntity {
 
     private String thumbnail; // 썸네일 이미지 주소
 
+    @Enumerated(EnumType.STRING)
+    private ClassroomStatus status;
+
     // Teacher와 1:N 관계
     @ManyToOne
     @JoinColumn(name = "teacher_id", nullable = false)
@@ -48,18 +51,21 @@ public class ClassroomEntity extends BaseEntity {
     )
     private List<StudentEntity> students; // 학생ID (수업에 참가)
 
-    // 아래 필드는 임시 필드로만 추가 TODO : 연관관계 맺어 주어야함
+    @ManyToMany(mappedBy = "classrooms")
+    private List<LikedEntity> likes;
 
-    private String faq; // F&Q 게시판 관련
+    public ClassroomEntity() {
 
-    private String posts; // 수업 포스트 관련
+    }
 
-    private String likes; // 좋아요 관련
-
-    private String inquiries; // 수업 문의 관련
-
-    private String enrollments; // 수업 신청 관련
-
-    private String scheduler; // 스케쥴러 관련
-
+    @Override
+    public String toString() {
+        return "ClassroomEntity{" +
+                "classroomId='" + classroomId + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", capacity=" + capacity +
+                ", thumbnail='" + thumbnail + '\'' +
+                '}';
+    }
 }

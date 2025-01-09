@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface MemberJpaRepository extends JpaRepository<MemberEntity, String> {
 
-    @Query(value = "SELECT m FROM Member m WHERE m.email = :email")
+    // @Query(value = "SELECT m FROM Member m WHERE m.email = :email")
     MemberEntity findByEmail(String email);
 }

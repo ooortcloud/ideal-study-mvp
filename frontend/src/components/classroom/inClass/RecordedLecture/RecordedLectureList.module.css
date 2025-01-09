@@ -1,0 +1,22 @@
+.recordedLectureListContainer {
+  padding: 20px;
+  max-width: 1200px; /* 또는 원하는 최대 너비 */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.recordedLectureListItem {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.recordedLectureListItem:hover {
+  transform: translateY(-5px);
+}
+
+.recordedLectureDetail {
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+}

@@ -1,0 +1,190 @@
+.classroom-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* 섹션 간의 간격 */
+  padding: 20px;
+  background-color: #f4f6f9; /* 부드러운 배경색 */
+  font-family: "Arial", sans-serif;
+  min-height: 100vh; /* 화면 높이 */
+}
+
+/* 개별 섹션 스타일 */
+.section {
+  padding: 20px;
+  background-color: #ffffff; /* 흰색 배경 */
+  border-radius: 10px; /* 둥근 모서리 */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 애니메이션 */
+}
+
+.section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* FAQ 섹션 */
+.faq-section {
+  padding: 15px;
+  background-color: #ffffff; /* 연한 녹색 배경 */
+  border-left: 5px solid; /* 강조를 위한 테두리 */
+}
+
+.faq-section h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #000000;
+}
+
+/* 질문 게시판 */
+.inquiry-section {
+  padding: 15px;
+  background-color: #ffffff; /* 연한 노란색 배경 */
+  border-left: 5px solid;
+}
+
+.inquiry-section h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #000000;
+}
+
+/* 게시물 섹션 */
+.post-section {
+  padding: 15px;
+  background-color: #ffffff; /* 연한 보라색 배경 */
+  border-left: 5px solid;
+}
+
+.post-section h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #000000;
+}
+
+/* 스케줄 섹션 */
+.schedule-section {
+  padding: 15px;
+  background-color: #ffffff; /* 연한 파란색 배경 */
+  border-left: 5px solid;
+}
+
+.schedule-section h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #000000;
+}
+
+/* 수강 등록 섹션 */
+.enrollment-section {
+  padding: 15px;
+  background-color: #ffffff; /* 연한 주황색 배경 */
+  border-left: 5px solid;
+}
+
+.enrollment-section h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #000000;
+}
+
+/* 인강 섹션 */
+.recordedLecture-section {
+  padding: 15px;
+  background-color: #ffffff; /* 연한 파란색 배경 */
+  border-left: 5px solid;
+}
+
+.recordedLecture-section h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #000000;
+}
+
+/* 실시간 특강 섹션 */
+.liveLecture-section {
+  padding: 15px;
+  background-color: #ffffff; /* 연한 파란색 배경 */
+  border-left: 5px solid;
+}
+
+.liveLecture-section h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #000000;
+}
+
+/* 자료 섹션 */
+.material-section {
+  padding: 15px;
+  background-color: #ffffff; /* 연한 파란색 배경 */
+  border-left: 5px solid;
+}
+
+.material-section h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #000000;
+}
+
+/* 출석 섹션 */
+.attendance-section {
+  padding: 15px;
+  background-color: #ffffff; /* 연한 파란색 배경 */
+  border-left: 5px solid;
+}
+
+.attendance-section h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #000000;
+}
+
+/* 과제 섹션 */
+.assignment-section {
+  padding: 15px;
+  background-color: #ffffff; /* 연한 파란색 배경 */
+  border-left: 5px solid;
+}
+
+.assignment-section h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #000000;
+}
+
+/* 스터디 그룹 섹션 */
+.studyGroup-section {
+  padding: 15px;
+  background-color: #ffffff; /* 연한 파란색 배경 */
+  border-left: 5px solid;
+}
+
+.studyGroup-section h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #000000;
+}
+
+/* 시험 섹션 */
+.exam-section {
+  padding: 15px;
+  background-color: #ffffff; /* 연한 파란색 배경 */
+  border-left: 5px solid;
+}
+
+.exam-section h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #000000;
+}
+
+/* 반응형 디자인 */
+@media screen and (max-width: 768px) {
+  .classroom-container {
+    padding: 10px;
+  }
+
+  .section {
+    padding: 15px;
+  }
+}

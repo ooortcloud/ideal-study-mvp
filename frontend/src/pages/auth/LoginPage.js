@@ -1,30 +1,30 @@
-import React, { useContext, useState } from 'react';
-import { AuthContext } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import Button from '../../components/Button';
-import { loginUser } from '../../services/AuthService.mjs';
+import React, { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import Button from "../../components/Button";
+import { loginUser } from "../../services/auth/AuthService.mjs";
 
 const LoginPage = () => {
   const { login } = useContext(AuthContext); // 로그인 함수 가져오기
-  const [userEmail, setUserEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [userEmail, setUserEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async() => {
-    try{
-      const { token, user } = await loginUser(userEmail, password)
+  const handleLogin = async () => {
+    try {
+      const { token, user } = await loginUser(userEmail, password);
 
       login({ token, user }); // context 를 로그인상태로 등록
-      navigate('/'); // 로그인시 메인 페이지로 이동
-    }catch(error) {
+      navigate("/"); // 로그인시 메인 페이지로 이동
+    } catch (error) {
       console.log(error);
 
       //////////////임시로 로그인처리 아래 함수들 삭제해야함
-      navigate('/');
+      navigate("/");
       login({
         token: "dummy-token", // 임시로 더미 토큰
-        user: { name: "김동은", id: "2", level: "7", role: 'teacher' }
-      }); 
+        user: { name: "김동은", id: "2", level: "7", role: "teacher" },
+      });
     }
   };
 

@@ -1,0 +1,21 @@
+.vimeoWrapper {
+  position: relative; /* 부모요소가 됨 */
+  padding-top: 56.25%; /* 16:9 비율 */
+  width: 100%;
+  background-color: rgb(0, 0, 0);
+}
+
+.vimeoPlayer {
+  position: absolute; /* 자식요소가 됨 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* iframe이 생성될 때 자동으로 적용될 스타일 */
+.vimeoPlayer iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}

@@ -1,7 +1,7 @@
 package com.idealstudy.mvp.security.service;
 
 import com.idealstudy.mvp.application.dto.member.MemberDto;
-import com.idealstudy.mvp.infrastructure.MemberRepository;
+import com.idealstudy.mvp.application.repository.MemberRepository;
 import com.idealstudy.mvp.security.userDetailsImpl.MemberDetails;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;

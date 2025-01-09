@@ -4,12 +4,14 @@ import com.idealstudy.mvp.enums.member.Role;
 import com.idealstudy.mvp.error.ExceptionHandlerFilter;
 import com.idealstudy.mvp.security.filter.*;
 import com.idealstudy.mvp.security.provider.JwtAuthenticationProvider;
+import com.idealstudy.mvp.security.token.JwtAuthenticationToken;
 import com.idealstudy.mvp.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Arrays;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -102,6 +104,12 @@ public class SecurityConfig {
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil);
         filter.setAuthenticationManager(authenticationManager(null, null));
+        return filter;
+    }
+
+    @Bean
+    public JwtTokenGrepper jwtTokenGrepper() {
+        JwtTokenGrepper filter = new JwtTokenGrepper(jwtUtil);
         return filter;
     }
 
@@ -202,7 +210,7 @@ public class SecurityConfig {
                         // corsConfiguration 객체를 생성하여 CORS 설정을 담을 컨테이너로 사용
                         CorsConfiguration config = new CorsConfiguration();
                         // CORS 요청을 허용할 출처
-                        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://52.78.55.86:3000"));
                         config.setAllowedMethods(Collections.singletonList("*")); // CORS 요청을 허용할 메서드
                         config.setAllowCredentials(true); // CORS 쿠키나 인증정보를 포함한 요청 허용
                         config.setAllowedHeaders(Collections.singletonList("*")); // CORS 요청을 허용할 헤더
@@ -256,6 +264,7 @@ public class SecurityConfig {
         // http.addFilterBefore(formLoginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jsonLoginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(jwtAuthenticationFilter(), JsonLoginAuthenticationFilter.class);
+        http.addFilterAfter(jwtTokenGrepper(), JwtAuthenticationFilter.class);
     }
 
     private void setMetadataPermission(HttpSecurity http) throws Exception {

@@ -35,12 +35,12 @@ public class CommonController {
     }
 
     @GetMapping("/api/check-first-login")
-    public ResponseEntity<String> checkFirst() {
+    public ResponseEntity<String> checkFirst(HttpServletRequest request) {
 
-        // JwtAuthenticationProvider로부터 HttpServletRequest에 token decode 정보(즉, MemberDto 객체)를 심어둬야 한다.
-        String id = "";
+        JwtPayloadDto paylaod = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String tokenId = paylaod.getSub();
 
-        boolean isFirst = memberService.findById(id).isFirst();
+        boolean isFirst = memberService.isFirst(tokenId);
         if(isFirst)
             return new ResponseEntity<String>("true", HttpStatusCode.valueOf(200));
         else

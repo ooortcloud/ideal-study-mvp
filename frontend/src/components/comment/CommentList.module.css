@@ -1,0 +1,19 @@
+.commentList {
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.formContainer {
+  width: 50%;
+  margin-bottom: 24px;
+  padding: 8px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.commentsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

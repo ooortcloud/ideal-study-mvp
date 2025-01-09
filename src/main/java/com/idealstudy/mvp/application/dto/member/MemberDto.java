@@ -2,9 +2,14 @@ package com.idealstudy.mvp.application.dto.member;
 
 import com.idealstudy.mvp.enums.member.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-@Data
-@Builder
+@Getter
+@Setter
+@ToString
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberDto {
 
     private String userId;
@@ -13,7 +18,7 @@ public class MemberDto {
 
     private String name;
 
-    private String phoneAddress;
+    private String phoneAddress; //
 
     private String email;
 
@@ -25,9 +30,9 @@ public class MemberDto {
 
     private Role role;
 
-    private String introduction;
+    private String introduction; //
 
-    private byte[] profile;
+    private byte[] profile; //
 
     private int fromSocial;
 

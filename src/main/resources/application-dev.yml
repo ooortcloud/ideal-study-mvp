@@ -10,5 +10,6 @@ redis:
 
 server:
   backend-domain-url: http://localhost:8080
+  backend-domain: localhost
   dev: true
   https: false

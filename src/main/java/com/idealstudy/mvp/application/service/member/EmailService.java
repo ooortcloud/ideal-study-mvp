@@ -1,7 +1,8 @@
 package com.idealstudy.mvp.application.service.member;
 
 import com.idealstudy.mvp.application.dto.member.MemberDto;
-import com.idealstudy.mvp.infrastructure.RedisRepository;
+import com.idealstudy.mvp.enums.member.Role;
+import com.idealstudy.mvp.infrastructure.EmailRepository;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import java.util.UUID;
 public class EmailService {
 
     @Autowired
-    private final RedisRepository redisRepository;
+    private final EmailRepository emailRepository;
 
     @Autowired
     private final JavaMailSender mailSender;
@@ -30,16 +31,17 @@ public class EmailService {
     // 이메일 이미지 첨부용(yml 등으로 빼도 됨)
     private final String logoContentId = "logo";
 
-    public void sendSignUpEmail(String userEmail) throws Exception {
+    public void sendSignUpEmail(String userEmail, Role role) throws Exception {
 
         String token = UUID.randomUUID().toString();
-        redisRepository.addToken(userEmail, token);
+        emailRepository.addToken(userEmail, role, token);
 
         sendEmail(userEmail, token);
     }
 
     public boolean isEmailDuplication(String userEmail, MemberService memberService) {
-        String token = redisRepository.getToken(userEmail);
+
+        String token = emailRepository.getToken(userEmail);
         try {
             MemberDto dto = memberService.findByEmail(userEmail);
             if(dto != null)
@@ -82,8 +84,8 @@ public class EmailService {
 
     private String getMailContents(String email, String token) {
 
-        String authenticationUrl = backendDomainUrl + "/api/users/email-authentication"
-                + "?token=" + token + "&email=" + email;
+        String authenticationUrl = backendDomainUrl + "/users/email-authentication"
+                + "?emailToken=" + token + "&email=" + email;
 
         return  "<h3>이메일 인증</h3>" +
                 "<img src='cid:"+logoContentId+"'>" +

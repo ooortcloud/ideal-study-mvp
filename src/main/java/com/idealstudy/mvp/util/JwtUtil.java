@@ -69,6 +69,8 @@ public class JwtUtil {
                     .header().type("JWT").and()  // typ
                     .subject(dto.getUserId()) // 사용자 식별자값(ID)
                     .claim(AUTHORIZATION_KEY, dto.getRole().toString()) // 사용자 권한
+                    .claim("name", dto.getName())
+                    .claim("level", dto.getLevel())
                     .expiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
                     .issuedAt(date) // 발급일
                     .signWith(key) // signature
@@ -152,6 +154,10 @@ public class JwtUtil {
         return substringToken(req.getHeader(AUTHORIZATION_HEADER));
     }
 
+    public String getAuthorizationHeader(HttpServletRequest req) {
+        return req.getHeader(AUTHORIZATION_HEADER);
+    }
+
     public JwtPayloadDto getPayloadFromToken(String token) {
 
         validateToken(token);
@@ -159,7 +165,9 @@ public class JwtUtil {
 
         return  JwtPayloadDto.builder()
                 .sub(claims.getSubject())
-                .role(Role.stringToRole(claims.get("role", String.class)))
+                .role(Role.stringToRole(claims.get(AUTHORIZATION_KEY, String.class)))
+                .name(claims.get("name", String.class))
+                .level(claims.get("level", Integer.class))
                 .exp(claims.getExpiration())
                 .iat(claims.getIssuedAt())
                 .build();

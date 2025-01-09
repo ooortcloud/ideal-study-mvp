@@ -2,12 +2,14 @@ package com.idealstudy.mvp.infrastructure.impl.member;
 
 import com.idealstudy.mvp.application.dto.PageRequestDto;
 import com.idealstudy.mvp.application.dto.PageResultDto;
-import com.idealstudy.mvp.application.dto.member.MemberDto;
-import com.idealstudy.mvp.application.dto.member.MemberPageResultDto;
+import com.idealstudy.mvp.application.dto.member.*;
 import com.idealstudy.mvp.enums.member.MemberError;
-import com.idealstudy.mvp.infrastructure.MemberRepository;
+import com.idealstudy.mvp.application.repository.MemberRepository;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.MemberEntity;
-import com.idealstudy.mvp.infrastructure.jpa.repository.member.MemberJpaRepository;
+import com.idealstudy.mvp.infrastructure.jpa.entity.member.ParentsEntity;
+import com.idealstudy.mvp.infrastructure.jpa.entity.member.StudentEntity;
+import com.idealstudy.mvp.infrastructure.jpa.entity.member.TeacherEntity;
+import com.idealstudy.mvp.infrastructure.jpa.repository.member.*;
 import com.idealstudy.mvp.mapstruct.MemberMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,17 +27,51 @@ public class MemberRepositoryImpl implements MemberRepository {
     private MemberJpaRepository memberJpaRepository;
 
     @Autowired
+    private TeacherJpaRepository teacherJpaRepository;
+
+    @Autowired
+    private StudentJpaRepository studentJpaRepository;
+
+    @Autowired
+    private ParentsJpaRepository parentsJpaRepository;
+
+    @Autowired
     private MemberMapper memberMapper;
 
+    private static final int SIZE = 10;
+
     @Override
-    public void create(MemberDto dto) {
+    public void create(TeacherDto dto) {
 
         dto.setFirst(true);
-        MemberEntity entity = memberMapper.dtoToEntity(dto);
 
-        memberJpaRepository.save(entity);
+        TeacherEntity entity = memberMapper.dtoToEntity(dto);
+        teacherJpaRepository.save(entity);
     }
 
+    @Override
+    public void create(ParentsDto dto) {
+
+        dto.setFirst(true);
+
+        ParentsEntity entity = memberMapper.dtoToEntity(dto);
+        parentsJpaRepository.save(entity);
+    }
+
+    @Override
+    public void create(StudentDto dto) {
+
+        dto.setFirst(true);
+
+        StudentEntity entity = memberMapper.dtoToEntity(dto);
+        studentJpaRepository.save(entity);
+    }
+
+    /**
+     * MEMBER table에 저장된 데이터에 한해서만 조회하는 메소드
+     * @param id
+     * @return
+     */
     @Override
     public MemberDto findById(String id) {
 
@@ -46,6 +82,40 @@ public class MemberRepositoryImpl implements MemberRepository {
 
         return memberMapper.entityToDto(result.get());
     }
+
+    @Override
+    public TeacherDto findTeacherById(String id) {
+
+        Optional<TeacherEntity> result = teacherJpaRepository.findById(id);
+
+        if(result.isEmpty())
+            throw new NullPointerException(MemberError.NOT_REGISTERED_MEMBER.getMsg());
+
+        return memberMapper.entityToDto(result.get());
+    }
+
+    @Override
+    public ParentsDto findParentsById(String id) {
+
+        Optional<ParentsEntity> result = parentsJpaRepository.findById(id);
+
+        if(result.isEmpty())
+            throw new NullPointerException(MemberError.NOT_REGISTERED_MEMBER.getMsg());
+
+        return memberMapper.entityToDto(result.get());
+    }
+
+    @Override
+    public StudentDto findStudentById(String id) {
+
+        Optional<StudentEntity> result = studentJpaRepository.findById(id);
+
+        if(result.isEmpty())
+            throw new NullPointerException(MemberError.NOT_REGISTERED_MEMBER.getMsg());
+
+        return memberMapper.entityToDto(result.get());
+    }
+
 
     @Override
     public MemberDto findByEmail(String email) {
@@ -59,22 +129,66 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public MemberPageResultDto findMembers(PageRequestDto requestDto) {
+    public MemberPageResultDto findMembers(int page) {
+
+        PageRequestDto requestDto = new PageRequestDto(page, SIZE);
 
         Pageable pageable = requestDto.getPageable(Sort.by("regDate").ascending());
 
         Page<MemberEntity> result = memberJpaRepository.findAll(pageable);
 
-        Function<MemberEntity, MemberDto> fn = (entity -> memberMapper.entityToDto(entity));
+        Function<MemberEntity, MemberListDto> fn = (entity -> memberMapper.entityToListDto(entity));
 
-        return memberMapper.toApplicationPageResult(new PageResultDto<>(result, fn));
+        /// error
+        MemberPageResultDto returnDto = memberMapper.toApplicationPageResult(
+                new PageResultDto<MemberListDto, MemberEntity>(result, fn));
+
+        log.info(returnDto);
+
+        return returnDto;
     }
 
     @Override
-    public MemberDto update(MemberDto dto) {
+    public TeacherDto update(TeacherDto dto) {
 
-        MemberEntity entity = memberJpaRepository.findById(dto.getUserId()).orElseThrow();
+        TeacherEntity entity = teacherJpaRepository.findById(dto.getUserId()).orElseThrow();
+
         memberMapper.updateEntityFromDto(dto, entity);
+
+        return memberMapper.entityToDto(teacherJpaRepository.save(entity));
+    }
+
+    @Override
+    public ParentsDto update(ParentsDto dto) {
+        ParentsEntity entity = parentsJpaRepository.findById(dto.getUserId()).orElseThrow();
+
+        memberMapper.updateEntityFromDto(dto, entity);
+
+        return memberMapper.entityToDto(parentsJpaRepository.save(entity));
+    }
+
+    @Override
+    public StudentDto update(StudentDto dto) {
+        StudentEntity entity = studentJpaRepository.findById(dto.getUserId()).orElseThrow();
+
+        memberMapper.updateEntityFromDto(dto, entity);
+
+        return memberMapper.entityToDto(studentJpaRepository.save(entity));
+    }
+
+    @Override
+    public MemberDto update(String userId, String phoneAddress, String introduction, String profile) {
+
+        MemberEntity entity = memberJpaRepository.findById(userId).orElseThrow();
+
+        if(phoneAddress != null)
+            entity.setPhoneAddress(phoneAddress);
+
+        if(introduction != null)
+            entity.setIntroduction(introduction);
+
+        if(profile != null)
+            entity.setProfile(null);
 
         MemberEntity result = memberJpaRepository.save(entity);
 
@@ -84,11 +198,10 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public boolean deleteById(String id) {
 
-        MemberDto dto = null;
         try {
-            dto = memberMapper.entityToDto(memberJpaRepository.findById(id).orElseThrow());
-            dto.setDeleted(true);
-            memberJpaRepository.save(memberMapper.dtoToEntity(dto));
+            MemberEntity entity = memberJpaRepository.findById(id).orElseThrow();
+            entity.setDeleted(1);
+            memberJpaRepository.save(entity);
         } catch (Exception e) {
             log.info(e + " : " + e.getMessage());
             return false;
@@ -98,3 +211,4 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
 }
+

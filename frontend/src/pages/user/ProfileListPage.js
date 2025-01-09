@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import ProfileCard from '../../components/user/ProfileCard';
-import { readUsers } from '../../services/UserService.mjs';
+import { readUsers } from '../../services/user/UserService.mjs';
 import styles from './ProfileListPage.module.css';
 
 const ProfileListPage = () => {

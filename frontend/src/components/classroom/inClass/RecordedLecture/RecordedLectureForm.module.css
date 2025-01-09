@@ -1,0 +1,52 @@
+.recordedLectureFormContainer {
+  max-width: 800px;
+  padding: 20px;
+}
+
+.recordedLectureFormHeader h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.recordedLectureFormContent {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.recordedLectureFormGroup {
+  margin-bottom: 20px;
+}
+
+.recordedLectureFormGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.recordedLectureFormGroup input[type="text"],
+.recordedLectureFormGroup textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.recordedLectureFormGroup textarea {
+  min-height: 100px;
+}
+
+.recordedLectureFormSubmit {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.recordedLectureFormSubmit:hover {
+  background-color: #0056b3;
+}

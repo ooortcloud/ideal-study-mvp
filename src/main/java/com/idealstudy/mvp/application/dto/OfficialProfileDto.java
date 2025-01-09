@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class OfficialProfileDto {
 
+    private String teacherId;
     private String content;
 
 }

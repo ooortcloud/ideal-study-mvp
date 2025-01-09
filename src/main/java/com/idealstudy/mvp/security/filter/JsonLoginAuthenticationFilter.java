@@ -109,6 +109,8 @@ public class JsonLoginAuthenticationFilter extends UsernamePasswordAuthenticatio
          */
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
+        response.setHeader("Authorization", token);
+
         ObjectMapper objectMapper = new ObjectMapper();
 
         // Writes a string.

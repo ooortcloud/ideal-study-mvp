@@ -2,13 +2,18 @@ spring:
   # mysql 설정
   datasource:
     url: jdbc:mysql://mysql-db:3306/idealstudy
+    username: manager
+    password: manager
     #    url: jdbc:mysql://172.17.129.27:3306/idealstudy (성진 wsl 주소)
 
 # redis 설정
 redis:
-  hostname: 172.21.138.60
+  hostname: redis-db
+  port: 6379
+  password: ""
 
 server:
   backend-domain-url: http://localhost:8080 # 이메일 클릭시 이동하는 주소
+  backend-domain: localhost # 추후 배포 환경 도메인으로 변경할 것
   dev: false # dev 일땐 true, false 일땐 true - 시큐리티 설정에서 사용
-  https: false  # https일 때 true, 아니면 false
+  https: false # https일 때 true, 아니면 false

@@ -1,0 +1,23 @@
+.schedules-board {
+    display: flex;
+    gap: 20px;
+    height: 100%;
+  }
+  
+.calendar-container {
+    flex: 1;
+    /* 원하는 크기 지정 */
+    /* max-width: 600px;  캘린더 최대 너비 설정 */
+    width: 100%;  /* 캘린더가 부모에 맞게 크기를 차지하도록 설정 */
+  }
+  
+.details-container {
+    flex: 1;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    width: 100%;
+    /* max-width: 500px; 상세보기 컨테이너의 최대 크기 설정 */
+  }
+  

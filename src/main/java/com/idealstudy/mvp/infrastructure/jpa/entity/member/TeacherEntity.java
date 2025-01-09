@@ -1,22 +1,41 @@
 package com.idealstudy.mvp.infrastructure.jpa.entity.member;
 
+import com.idealstudy.mvp.enums.member.SchoolRegister;
 import com.idealstudy.mvp.infrastructure.jpa.entity.classroom.ClassroomEntity;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
 import java.util.List;
 
-import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-@Data
 @Entity(name = "Teacher")
 @Table(name = "TEACHER")
 @DiscriminatorValue("T")
+@SuperBuilder
+@Getter
+@Setter
+@ToString(callSuper = true)
+@PrimaryKeyJoinColumn(name = "teacher_id")
 public class TeacherEntity extends MemberEntity {
+
+    // @Column(length = 50)
+    private String univ;
+
+    @Enumerated(EnumType.STRING)
+    private SchoolRegister status;
+
+    // @Column(length = 30)
+    private String subject;
 
     // Classroom과 1:N 관계
     @OneToMany(mappedBy = "teacher")
     private List<ClassroomEntity> classrooms; // 참여한 클래스 목록
 
+
+    public TeacherEntity() {
+
+    }
 }

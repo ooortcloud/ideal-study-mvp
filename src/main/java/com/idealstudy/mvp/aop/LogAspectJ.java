@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Slf4j(topic = "LogAspectJ")
 public class LogAspectJ {
 
-    @Before("execution(* com.idealstudy.mvp.presentation.controller.*.*(..))")
+    @Before("execution(* com.idealstudy.mvp.presentation.controller..*.*(..))")
     public void printControllerMethod(JoinPoint joinPoint) {
 
         String controllerName = joinPoint.getTarget().getClass().getSimpleName();

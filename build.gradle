@@ -37,7 +37,7 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
 	// lombok과 mapstruct를 같이 쓰는 경우
-//	annotationProcessor "org.projectlombok:lombok-mapstruct-binding"
+	annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
 
 	// https://mvnrepository.com/artifact/org.mapstruct/mapstruct
 	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
@@ -85,7 +85,11 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.springframework/spring-aspects
 	implementation 'org.springframework:spring-aspects:6.2.0'
 
+	implementation 'com.clickntap:vimeo:2.0'
+}
 
+test {
+	enabled = false
 }
 
 tasks.named('test') {

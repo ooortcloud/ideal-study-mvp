@@ -1,9 +1,9 @@
 package com.idealstudy.mvp.mapstruct;
 
 import com.idealstudy.mvp.application.dto.PageResultDto;
-import com.idealstudy.mvp.application.dto.member.MemberDto;
-import com.idealstudy.mvp.application.dto.member.MemberPageResultDto;
-import com.idealstudy.mvp.infrastructure.jpa.entity.member.MemberEntity;
+import com.idealstudy.mvp.application.dto.member.*;
+import com.idealstudy.mvp.infrastructure.jpa.entity.member.*;
+import com.idealstudy.mvp.presentation.dto.member.MemberResponseDto;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -18,11 +18,30 @@ public interface MemberMapper {
     MemberMapper INSTANCE = Mappers.getMapper(MemberMapper.class);
 
     MemberDto entityToDto(MemberEntity entity);
-    MemberEntity dtoToEntity(MemberDto dto);
+    MemberListDto entityToListDto(MemberEntity entity);
+
+    MemberResponseDto toResponseDto(MemberDto dto);
+
+    TeacherEntity dtoToEntity(TeacherDto dto);
+    ParentsEntity dtoToEntity(ParentsDto dto);
+    StudentEntity dtoToEntity(StudentDto dto);
+
+    TeacherDto entityToDto(TeacherEntity entity);
+    ParentsDto entityToDto(ParentsEntity entity);
+    StudentDto entityToDto(StudentEntity entity);
 
     // @MappingTarget: 반환 대상 객체 지정
     @Mapping(target = "userId", ignore = true)
     void updateEntityFromDto(MemberDto dto, @MappingTarget MemberEntity entity);
 
-    MemberPageResultDto toApplicationPageResult(PageResultDto<MemberDto, MemberEntity> pageResultDto);
+    @Mapping(target = "userId", ignore = true)
+    void updateEntityFromDto(TeacherDto dto, @MappingTarget TeacherEntity entity);
+
+    @Mapping(target = "userId", ignore = true)
+    void updateEntityFromDto(ParentsDto dto, @MappingTarget ParentsEntity entity);
+
+    @Mapping(target = "userId", ignore = true)
+    void updateEntityFromDto(StudentDto dto, @MappingTarget StudentEntity entity);
+
+    MemberPageResultDto toApplicationPageResult(PageResultDto<MemberListDto, MemberEntity> pageResultDto);
 }

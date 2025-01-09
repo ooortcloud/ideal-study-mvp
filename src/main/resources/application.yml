@@ -10,16 +10,61 @@ spring:
       deployment:
         - "prod"
         - "private"
+      test:
+        - "test"
     active: development
 
+  # email 전송 // 향후 시크릿 으로 관리 대상
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: idealstudy.dev@gmail.com
+    password: pwvg oxgj uiyc davb
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create # 일단 init.sql 보다 엔티티를 존중함
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+    defer-datasource-initialization: true
 
+  # 파일 업로드 크기 제어
+  servlet:
+    multipart:
+      max-file-size: 250MB
+      max-request-size: 250MB
+
+  sql:
+    init:
+      mode: always
+
+
+upload:
+  path: src/main/resources/static/upload-materials/
+
+  #  파일업로드 // 향후 시크릿으로 관리 대상
+  materials-path: src/main/resources/static/upload-materials/
+  exam-path: src/main/resources/static/upload-exam/
+  assignment-path: src/main/resources/static/upload-assignment/
+  classroom-thumbnail-path: src/main/resources/static/upload-classes-thumbnail/
+
+# vimeo // 향후 시크릿으로 관리대상
+vimeo:
+  client-identifier: 77d3d8c5c879b77bc8004d79570053893ad4bd81
+  client-secret: FThgWoOqK6lFN2UqAaPxb2jvjl5Q2P6anAmvUc18X01e0jEOhJTZGwRnww8oYHNf4lM/uoK6RwmRyDmLmEqfd5MT/OLH6uDndfRXZrc2TPfkQqd3YfUw17jayEohvQ8I
+  authorize-url: https://api.vimeo.com/oauth/authorize
+  access-token-url: https://api.vimeo.com/oauth/access_token
+  personal-access-token: 7498d8502478a22cedc8b25f1b3d1984
 # 로깅 관련 설정은 logback-spring-server.xml 에서 세밀하게 관리
 #logging:
 #  level:

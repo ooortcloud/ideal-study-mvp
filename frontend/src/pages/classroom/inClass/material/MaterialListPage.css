@@ -1,0 +1,11 @@
+.materialListPageHeader {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.materialListPageFooter {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}

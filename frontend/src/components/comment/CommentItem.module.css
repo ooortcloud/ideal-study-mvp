@@ -1,0 +1,62 @@
+.item {
+  width: 50%;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.author {
+  font-weight: 600;
+  color: #333;
+}
+
+.date {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.likeCount {
+  color: #ff4757;
+  font-size: 0.9rem;
+}
+
+.content {
+  margin: 12px 0;
+  line-height: 1.5;
+  color: #444;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.button {
+  padding: 6px 12px;
+  border: none;
+  background-color: #f1f3f5;
+  border-radius: 4px;
+  color: #666;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.button:hover {
+  background-color: #e9ecef;
+  color: #333;
+}
+
+.replies {
+  width: 100%;
+  margin-left: 24px;
+  margin-top: 16px;
+}
