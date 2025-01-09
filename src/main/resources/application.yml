@@ -19,7 +19,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: idealstudy.dev@gmail.com
-    password: pwvg oxgj uiyc davb
+    password: nokv ybkx fnan hdca
     properties:
       mail:
         smtp:
@@ -36,12 +36,18 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    defer-datasource-initialization: true
 
   # 파일 업로드 크기 제어
   servlet:
     multipart:
       max-file-size: 250MB
       max-request-size: 250MB
+
+  sql:
+    init:
+      mode: always
+
 
 upload:
   path: src/main/resources/static/upload-materials/

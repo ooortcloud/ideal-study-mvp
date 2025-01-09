@@ -3,6 +3,7 @@ package com.idealstudy.mvp.presentation.controller;
 import com.idealstudy.mvp.application.service.member.MemberService;
 import com.idealstudy.mvp.security.dto.JwtPayloadDto;
 import com.idealstudy.mvp.util.JwtUtil;
+import com.idealstudy.mvp.util.TryCatchControllerTemplate;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -40,11 +41,15 @@ public class CommonController {
         JwtPayloadDto paylaod = (JwtPayloadDto) request.getAttribute("jwtPayload");
         String tokenId = paylaod.getSub();
 
-        boolean isFirst = memberService.isFirst(tokenId);
-        if(isFirst)
-            return new ResponseEntity<String>("true", HttpStatusCode.valueOf(200));
-        else
-            return new ResponseEntity<String>("false", HttpStatusCode.valueOf(200));
+        return TryCatchControllerTemplate.execute(() -> {
+            boolean isFirst = memberService.isFirst(tokenId);
+
+            if(isFirst)
+                return "first";
+
+            else
+                return "complete";
+        });
     }
 
     @GetMapping("/favicon.ico")
