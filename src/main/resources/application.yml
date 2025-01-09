@@ -19,7 +19,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: idealstudy.dev@gmail.com
-    password: pwvg oxgj uiyc davb
+    password: nokv ybkx fnan hdca
     properties:
       mail:
         smtp:
