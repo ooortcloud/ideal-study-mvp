@@ -51,7 +51,8 @@ const SignUpPage = () => {
         <input
           type="radio"
           name="userRole"
-          value="ROLE_PARENT"
+          value="ROLE_PARENTS"
+
           onChange={(e) => setUserRole(e.target.value)}
         />
         학부모

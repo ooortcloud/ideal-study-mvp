@@ -2,6 +2,7 @@ package com.idealstudy.mvp.application.service.classroom;
 
 import com.idealstudy.mvp.application.dto.classroom.ClassroomPageResultDto;
 import com.idealstudy.mvp.application.component.ClassroomComponent;
+import com.idealstudy.mvp.application.factory.FileManagerFactory;
 import com.idealstudy.mvp.application.service.domain_service.FileManager;
 import com.idealstudy.mvp.enums.classroom.ClassroomStatus;
 import com.idealstudy.mvp.enums.error.DBErrorMsg;
@@ -37,21 +38,22 @@ public class ClassroomService {
     public ClassroomService(ClassroomRepository classroomRepository,
                             @Qualifier("likedClassroomRepositoryImpl") LikedRepository likedRepository,
                             ClassroomComponent classroomComponent,
+                            FileManagerFactory fileManagerFactory,
                             @Value("${upload.classroom-thumbnail-path}") String uploadPath) {
         this.classroomRepository = classroomRepository;
         this.likedRepository = likedRepository;
         this.classroomComponent = classroomComponent;
-        this.fileManager = new FileManager(uploadPath);
+        this.fileManager = fileManagerFactory.getFileManager(uploadPath);
     }
 
-    public ClassroomResponseDto createClassroom(ClassroomRequestDto request, String teacherId, InputStream is) {
+    public ClassroomResponseDto createClassroom(String title, String description, Integer capacity
+            , String teacherId, InputStream is, String originalFileName) {
 
         return TryCatchServiceTemplate.execute(() -> {
 
-            String uri = fileManager.saveFile(is, "");
+            String uri = fileManager.saveFile(is, originalFileName);
 
-            return classroomRepository.save(request.getTitle(),
-                            request.getDescription(), request.getCapacity(), uri, teacherId);
+            return classroomRepository.create(title, description, capacity, uri, teacherId);
         }
         , null, DBErrorMsg.CREATE_ERROR);
     }
@@ -68,8 +70,8 @@ public class ClassroomService {
                 null, DBErrorMsg.SELECT_ERROR);
     }
 
-    public ClassroomResponseDto updateClassroom(String id, ClassroomRequestDto request, String teacherId,
-                                                InputStream is) {
+    public ClassroomResponseDto updateClassroom(String id, String title, String description, Integer capacity,
+                                                String teacherId, InputStream is) {
 
         return TryCatchServiceTemplate.execute(() -> {
 
@@ -82,8 +84,7 @@ public class ClassroomService {
                 uri = fileManager.saveFile(is, "");
             }
 
-            return classroomRepository.update(id,request.getTitle(),
-                            request.getDescription(), request.getCapacity(), uri);
+            return classroomRepository.update(id, title, description, capacity, uri);
         },
         () -> classroomComponent.checkMyClassroom(teacherId, id), DBErrorMsg.UPDATE_ERROR);
     }
@@ -104,7 +105,10 @@ public class ClassroomService {
 
     public int countLiked(Long classroomId) {
 
-        String collection = "classrooms";
-        return likedRepository.countById(classroomId);
+        return TryCatchServiceTemplate.execute(() -> {
+            String collection = "classrooms";
+            return likedRepository.countById(classroomId);
+        }, null, DBErrorMsg.SELECT_ERROR);
+
     }
 }

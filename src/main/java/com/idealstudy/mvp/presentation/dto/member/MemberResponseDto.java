@@ -2,6 +2,7 @@ package com.idealstudy.mvp.presentation.dto.member;
 
 import com.idealstudy.mvp.enums.member.Gender;
 import com.idealstudy.mvp.enums.member.Role;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +10,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class MemberResponseDto {
 
     private String userId;

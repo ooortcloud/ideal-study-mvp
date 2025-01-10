@@ -1,8 +1,7 @@
 package com.idealstudy.mvp.integration.infrastructure;
 
-import com.idealstudy.mvp.TestRepositoryUtil;
+import com.idealstudy.mvp.integration.infrastructure.util.TestRepositoryUtil;
 import com.idealstudy.mvp.application.repository.inclass.AttendanceRepository;
-import com.idealstudy.mvp.application.repository.preclass.ClassInquiryRepository;
 import com.idealstudy.mvp.security.dto.JwtPayloadDto;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;

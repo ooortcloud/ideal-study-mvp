@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-01-06T10:21:01+0900",
+    date = "2025-01-06T17:50:37+0900",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21 (Oracle Corporation)"
 )
 @Component
@@ -23,19 +23,19 @@ public class ClassroomMapperImpl implements ClassroomMapper {
             return null;
         }
 
-        ClassroomResponseDto classroomResponseDto = new ClassroomResponseDto();
+        ClassroomResponseDto.ClassroomResponseDtoBuilder classroomResponseDto = ClassroomResponseDto.builder();
 
-        classroomResponseDto.setId( entity.getClassroomId() );
-        classroomResponseDto.setTitle( entity.getTitle() );
-        classroomResponseDto.setDescription( entity.getDescription() );
+        classroomResponseDto.id( entity.getClassroomId() );
+        classroomResponseDto.title( entity.getTitle() );
+        classroomResponseDto.description( entity.getDescription() );
         if ( entity.getCapacity() != null ) {
-            classroomResponseDto.setCapacity( entity.getCapacity() );
+            classroomResponseDto.capacity( entity.getCapacity() );
         }
-        classroomResponseDto.setCreatedBy( entity.getCreatedBy() );
-        classroomResponseDto.setThumbnail( entity.getThumbnail() );
-        classroomResponseDto.setStatus( entity.getStatus() );
+        classroomResponseDto.createdBy( entity.getCreatedBy() );
+        classroomResponseDto.thumbnail( entity.getThumbnail() );
+        classroomResponseDto.status( entity.getStatus() );
 
-        return classroomResponseDto;
+        return classroomResponseDto.build();
     }
 
     @Override

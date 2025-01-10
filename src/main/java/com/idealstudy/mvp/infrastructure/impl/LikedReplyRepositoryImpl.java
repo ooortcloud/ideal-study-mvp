@@ -1,10 +1,13 @@
 package com.idealstudy.mvp.infrastructure.impl;
 
+import com.idealstudy.mvp.application.dto.LikedClassroomPageResultDto;
+import com.idealstudy.mvp.application.dto.LikedReplyPageResultDto;
 import com.idealstudy.mvp.infrastructure.jpa.entity.LikedEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.ReplyEntity;
 import com.idealstudy.mvp.infrastructure.jpa.repository.LikedJpaRepository;
 import com.idealstudy.mvp.infrastructure.jpa.repository.ReplyJpaRepository;
 import com.idealstudy.mvp.application.repository.LikedRepository;
+import com.idealstudy.mvp.infrastructure.jpa.repository.ReplyLikedJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,20 +25,32 @@ public class LikedReplyRepositoryImpl implements LikedRepository {
     @Autowired
     private final ReplyJpaRepository replyJpaRepository;
 
+    @Autowired
+    private final ReplyLikedJpaRepository replyLikedJpaRepository;
+
     @Override
-    public void create(Long replyId, String userId) {
+    public int create(Long replyId) {
 
-        log.info("좋아요 추가");
-        ReplyEntity replyEntity = replyJpaRepository.findById(replyId).orElseThrow();
 
-        LikedEntity newEntity = LikedEntity.builder()
-                .createdBy(userId)
-                .build();
 
-        newEntity.addReply(replyEntity);
+        return -1;
+    }
 
-        // @ManyToMany에 의해 ReplyEntity는 연관 테이블에 자동으로 매핑됨.
-        likedJpaRepository.save(newEntity);
+    @Override
+    public int create(String targetId) {
+
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public LikedReplyPageResultDto findLikedList(Long replyId) throws Exception {
+        return null;
+    }
+
+    @Override
+    public LikedClassroomPageResultDto findLikedList(String classroomId) throws Exception {
+
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -45,12 +60,26 @@ public class LikedReplyRepositoryImpl implements LikedRepository {
         LikedEntity entity = likedJpaRepository.findById(likedId).orElseThrow();
         likedJpaRepository.delete(entity);
         ReplyEntity replyEntity = replyJpaRepository.findById(replyId).orElseThrow();
-        replyEntity.getLikes().remove(entity);
         replyJpaRepository.save(replyEntity);
     }
 
     @Override
+    public void delete(Long likedId, String targetId) {
+
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public int countById(Long replyId) {
-        return likedJpaRepository.countByReplyId(replyId);
+
+
+        // return likedJpaRepository.countByReplyId(replyId);
+
+        return (int) replyLikedJpaRepository.countByReply_commentId(replyId);
+    }
+
+    @Override
+    public int countById(String targetId) {
+        throw new UnsupportedOperationException();
     }
 }

@@ -1,6 +1,6 @@
 package com.idealstudy.mvp.integration.infrastructure;
 
-import com.idealstudy.mvp.TestRepositoryUtil;
+import com.idealstudy.mvp.integration.infrastructure.util.TestRepositoryUtil;
 import com.idealstudy.mvp.application.dto.classroom.inclass.LiveLectureDto;
 import com.idealstudy.mvp.application.dto.classroom.inclass.LiveLecturePageResultDto;
 import com.idealstudy.mvp.enums.classroom.Platform;

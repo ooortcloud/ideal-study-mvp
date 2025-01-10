@@ -1,9 +1,7 @@
-package com.idealstudy.mvp.unit.application;
+package com.idealstudy.mvp.unit.service;
 
 import com.idealstudy.mvp.application.dto.ReplyDto;
 import com.idealstudy.mvp.application.dto.ReplyPageResultDto;
-
-import java.util.NoSuchElementException;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.idealstudy.mvp.TestRepositoryUtil;
+import com.idealstudy.mvp.integration.infrastructure.util.TestRepositoryUtil;
 import com.idealstudy.mvp.application.service.ReplyService;
 import com.idealstudy.mvp.enums.classroom.Visibility;
 

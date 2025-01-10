@@ -1,13 +1,16 @@
 package com.idealstudy.mvp.application.service.member;
 
 import com.idealstudy.mvp.application.dto.member.*;
+import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
 import com.idealstudy.mvp.enums.error.DBErrorMsg;
 import com.idealstudy.mvp.enums.member.Gender;
 import com.idealstudy.mvp.enums.member.Role;
 import com.idealstudy.mvp.application.repository.MemberRepository;
 import com.idealstudy.mvp.infrastructure.EmailRepository;
+import com.idealstudy.mvp.infrastructure.dto.SignUpDto;
 import com.idealstudy.mvp.mapstruct.MemberMapper;
 import com.idealstudy.mvp.presentation.dto.member.MemberResponseDto;
+import com.idealstudy.mvp.util.RandomValueGenerator;
 import com.idealstudy.mvp.util.TryCatchServiceTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -32,16 +37,32 @@ public class MemberService {
     @Autowired
     private final PasswordEncoder passwordEncoder;
 
-    public String addMember(String email, String token, Role role) throws IllegalArgumentException {
-        String savedToken = emailRepository.getToken(email);
-        if( savedToken == null || !savedToken.equals(token))
-            throw new IllegalArgumentException("유효한 토큰이 아님");
+    @Autowired
+    private final ValidationManager validationManager;
 
-        String password = UUID.randomUUID().toString().split("-")[0];
-        addMember(email, role, password);
-        emailRepository.deleteToken(email);
+    @Autowired
+    private final RandomValueGenerator randomValueGenerator;
 
-        return password;
+    public Map<String, Object> addMember(String token){
+
+        // 소셜 회원가입 시 메소드 처리를 어떻게 할지 고민해봐야 한다.
+        Integer fromSocial = 0;
+
+        return TryCatchServiceTemplate.execute(() -> {
+
+            SignUpDto signUpDto = emailRepository.getToken(token);
+
+            String password = randomValueGenerator.createRandomValue().split("-")[0];
+            String userId = addMember(signUpDto.getEmail(), signUpDto.getRole(), password, fromSocial);
+            emailRepository.deleteToken(token);
+
+            Map<String, Object> returnMap = new HashMap<>();
+            returnMap.put("password",password);
+            returnMap.put("signUpDto", signUpDto);
+            returnMap.put("userId", userId);
+            return returnMap;
+
+        }, null, DBErrorMsg.CREATE_ERROR);
     }
 
     public MemberResponseDto findById(String userId, String tokenId) {
@@ -75,29 +96,35 @@ public class MemberService {
         }, null,DBErrorMsg.SELECT_ERROR);
     }
 
-    public MemberResponseDto updateMember(String userId, String phoneAddress, String introduction, String profile) {
+    public MemberResponseDto updateMember(String userId, String phoneAddress, String profileUri) {
 
-        return MemberMapper.INSTANCE.toResponseDto(memberRepository.update(userId, phoneAddress, introduction, profile));
+        return TryCatchServiceTemplate.execute(() -> {
+
+            MemberDto memberDto = memberRepository.findById(userId);
+
+            validationManager.validateIndividual(userId, memberDto.getUserId());
+
+            return MemberMapper.INSTANCE.toResponseDto(memberRepository.update(userId, phoneAddress, profileUri));
+        }, null, DBErrorMsg.UPDATE_ERROR);
+
     }
 
     public boolean deleteMember(String userId) {
-        memberRepository.deleteById(userId);
-        if(memberRepository.findById(userId) == null)
-            return false;
 
-        return true;
-    }
 
-    @Deprecated
-    public void createDummies() {
+        return TryCatchServiceTemplate.execute(() -> {
 
-        //addMember("student@gmail.com", Role.ROLE_STUDENT, "1234");
-        //addMember("teacher@gmail.com", Role.ROLE_TEACHER, "1234");
-        //addMember("parents@gmail.com", Role.ROLE_PARENTS, "1234");
-        //addMember("admin@gmail.com", Role.ROLE_ADMIN, "1234");
-        // addMember("badteacher@gmail.com", Role.ROLE_TEACHER, "1234");
-        addMember("otherparents@gmail.com", Role.ROLE_PARENTS, "1234");
-        addMember("otherstudent@gmail.com", Role.ROLE_STUDENT, "1234");
+            MemberDto memberDto = memberRepository.findById(userId);
+
+            validationManager.validateIndividual(userId, memberDto.getUserId());
+
+            memberRepository.deleteById(userId);
+            if(memberRepository.findById(userId) == null)
+                return false;
+
+            return true;
+        }, null, DBErrorMsg.DELETE_ERROR);
+
     }
 
     public boolean isPasswordMatch(String raw, String encoded) {
@@ -114,45 +141,19 @@ public class MemberService {
         return dto.getInit() == 1;
     }
 
-    private void addMember(String email, Role role, String password) {
+    private String addMember(String email, Role role, String password, Integer fromSocial) {
 
         String encodedPassword = passwordEncoder.encode(password);
 
-        if(role == Role.ROLE_TEACHER)
-            memberRepository.create((TeacherDto) TeacherDto.builder()
-                    .password(encodedPassword)
-                    .email(email)
-                    .fromSocial(0)
-                    .role(role)
-                    .sex(Gender.MALE)
-                    .build());
-        if(role == Role.ROLE_STUDENT)
-            memberRepository.create((StudentDto) StudentDto.builder()
-                    .password(encodedPassword)
-                    .email(email)
-                    .fromSocial(0)
-                    .role(role)
-                    .sex(Gender.MALE)
-                    .build());
-        if(role == Role.ROLE_PARENTS)
-            memberRepository.create((ParentsDto) ParentsDto.builder()
-                    .password(encodedPassword)
-                    .email(email)
-                    .fromSocial(0)
-                    .role(role)
-                    .sex(Gender.MALE)
-                    .build());
-        /*
-        if(role == Role.ROLE_ADMIN)
-            memberRepository.create((AdminDto) AdminDto.builder()
-                    .userId(UUID.randomUUID().toString())
-                    .password(encodedPassword)
-                    .email(email)
-                    .fromSocial(0)
-                    .role(role)
-                    .sex(Gender.MALE)
-                    .build());
+        String userId = randomValueGenerator.createRandomValue();
 
-         */
+        if(role == Role.ROLE_TEACHER)
+            memberRepository.createTeacher(userId, encodedPassword, email, fromSocial);
+        if(role == Role.ROLE_STUDENT)
+            memberRepository.createStudent(userId, encodedPassword, email, fromSocial);
+        if(role == Role.ROLE_PARENTS)
+            memberRepository.createParents(userId, encodedPassword, email, fromSocial);
+
+        return userId;
     }
 }
