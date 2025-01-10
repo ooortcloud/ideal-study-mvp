@@ -29,7 +29,6 @@ export const makeDummyUser = async () => {
    }
  };
 
-
 /**
  * 회원 조회
  */
