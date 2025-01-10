@@ -15,11 +15,12 @@ export const makeDummyUser = async () => {
 /**
  * 회원 생성(가입)
  */
-export const signUpUser = async (email) => {
-  console.log("회원가입 API 시도:", email);
+export const signUpUser = async (data) => {
+  console.log("회원가입 API 시도:", data);
   try {
     const response = await apiClient.post("/users/sign-up", {
-      email,
+      email: data.userEmail,
+      role: data.userRole,
     });
     console.log("회원가입 API 성공:", response);
     return response.data;
