@@ -31,7 +31,7 @@ const SignUpPage = () => {
         <input
           type="radio"
           name="userRole"
-          value="teacher"
+          value="ROLE_TEACHER"
           onChange={(e) => {
             setUserRole(e.target.value);
           }}
@@ -42,7 +42,7 @@ const SignUpPage = () => {
         <input
           type="radio"
           name="userRole"
-          value="student"
+          value="ROLE_STUDENT"
           onChange={(e) => setUserRole(e.target.value)}
         />
         학생
@@ -51,7 +51,7 @@ const SignUpPage = () => {
         <input
           type="radio"
           name="userRole"
-          value="parent"
+          value="ROLE_PARENTS"
           onChange={(e) => setUserRole(e.target.value)}
         />
         학부모

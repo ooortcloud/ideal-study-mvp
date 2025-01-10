@@ -19,6 +19,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Getter
 @Setter
+@ToString
 public class ClassroomEntity extends BaseEntity {
 
     @Id
@@ -51,21 +52,7 @@ public class ClassroomEntity extends BaseEntity {
     )
     private List<StudentEntity> students; // 학생ID (수업에 참가)
 
-    @ManyToMany(mappedBy = "classrooms")
-    private List<LikedEntity> likes;
-
     public ClassroomEntity() {
 
-    }
-
-    @Override
-    public String toString() {
-        return "ClassroomEntity{" +
-                "classroomId='" + classroomId + '\'' +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", capacity=" + capacity +
-                ", thumbnail='" + thumbnail + '\'' +
-                '}';
     }
 }

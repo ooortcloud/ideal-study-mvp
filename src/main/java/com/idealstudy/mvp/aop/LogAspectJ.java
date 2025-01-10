@@ -30,8 +30,8 @@ public class LogAspectJ {
         // Request Parameters 로그 출력
         printRequestParameter(request);
 
-        // Request Body 로그 출력
-        printRequestBody(request);
+        // Request Body 로그 출력: 사용 금지...
+        // printRequestBody(request);
     }
 
     private void printControllerInfo(JoinPoint joinPoint) {
@@ -57,6 +57,12 @@ public class LogAspectJ {
         }
     }
 
+    /**
+     * HttpServletRequest에서 InputStream 또는 BufferedReader를 한 번 읽으면, 스트림이 소모되어 더 이상 읽을 수 없게 됩니다.
+     * 이로 인해 컨트롤러에서 요청 본문을 다시 읽으려고 할 때 오류가 발생합니다.
+     * @param request
+     */
+    @Deprecated
     private void printRequestBody(HttpServletRequest request) {
         StringBuilder body = new StringBuilder("Request Body: ");
         try {

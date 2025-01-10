@@ -1,7 +1,7 @@
 spring:
   # mysql 설정
   datasource:
-    url: jdbc:mysql://mysql-db:3306/idealstudy
+    url: jdbc:mysql://mysql-db:3306/idealstudy?createDatabaseIfNotExist=true
     username: manager
     password: manager
     #    url: jdbc:mysql://172.17.129.27:3306/idealstudy (성진 wsl 주소)

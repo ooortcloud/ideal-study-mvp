@@ -88,7 +88,7 @@ public class ReplyService {
 
         TryCatchServiceTemplate.execute(() -> {
             if(likedId == null)
-                likedRepository.create(replyId, userId);
+                likedRepository.create(replyId);
             else
                 likedRepository.delete(likedId, replyId);
             return null;
@@ -97,8 +97,8 @@ public class ReplyService {
 
     public int countLiked(Long replyId) {
 
-        String collection = "replies";
-        return likedRepository.countById(replyId);
+        return TryCatchServiceTemplate.execute(() -> likedRepository.countById(replyId),
+                null, DBErrorMsg.SELECT_ERROR);
     }
 
     private void checkMine(Long commentId, String userId) {

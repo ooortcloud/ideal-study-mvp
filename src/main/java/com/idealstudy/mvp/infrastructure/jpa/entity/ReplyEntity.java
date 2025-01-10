@@ -16,6 +16,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ReplyEntity extends BaseEntity {
 
     @Id
@@ -38,21 +39,4 @@ public class ReplyEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "class_inquiry_id")
     private ClassInquiryEntity classInquiry;
-
-    // Like와 일대다 양방향 연관관계
-    @ManyToMany(mappedBy = "replies")
-    private List<LikedEntity> likes;
-
-    @Override
-    public String toString() {
-        return "ReplyEntity{" +
-                "commentId=" + commentId +
-                ", content='" + content + '\'' +
-                ", visibility=" + visibility +
-                ", parentComment=" + parentComment +
-                ", post=" + post +
-                ", classInquiry=" + classInquiry +
-                ", likes=" + likes +
-                '}';
-    }
 }

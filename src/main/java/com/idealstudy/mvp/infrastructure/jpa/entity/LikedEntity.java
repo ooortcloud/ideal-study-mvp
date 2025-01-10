@@ -15,12 +15,15 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class LikedEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long likedId;
 
+    // @ManyToMany를 사용하지 말자. 개발 생산성이 오히려 떨어진다.
+    /*
     @ManyToMany
     @JoinTable(
         name = "liked_reply",
@@ -61,10 +64,5 @@ public class LikedEntity extends BaseEntity {
         classroom.getLikes().add(this);
     }
 
-    @Override
-    public String toString() {
-        return "LikedEntity{" +
-                "likedId=" + likedId +
-                '}';
-    }
+     */
 }

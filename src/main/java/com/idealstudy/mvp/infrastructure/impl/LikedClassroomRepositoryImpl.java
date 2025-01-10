@@ -1,7 +1,11 @@
 package com.idealstudy.mvp.infrastructure.impl;
 
+import com.idealstudy.mvp.application.dto.LikedClassroomPageResultDto;
+import com.idealstudy.mvp.application.dto.LikedReplyPageResultDto;
+import com.idealstudy.mvp.infrastructure.jpa.entity.ClassroomLikedEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.LikedEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.classroom.ClassroomEntity;
+import com.idealstudy.mvp.infrastructure.jpa.repository.ClassroomLikedJpaRepository;
 import com.idealstudy.mvp.infrastructure.jpa.repository.LikedJpaRepository;
 import com.idealstudy.mvp.application.repository.LikedRepository;
 import com.idealstudy.mvp.infrastructure.jpa.repository.classroom.ClassroomJpaRepository;
@@ -10,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 
@@ -25,6 +28,9 @@ public class LikedClassroomRepositoryImpl implements LikedRepository {
     @Autowired
     private final LikedJpaRepository likedJpaRepository;
 
+    @Autowired
+    private final ClassroomLikedJpaRepository classroomLikedJpaRepository;
+
     @Override
     public int create(Long  targetId) throws UnsupportedOperationException {
 
@@ -34,23 +40,31 @@ public class LikedClassroomRepositoryImpl implements LikedRepository {
     @Override
     public int create(String classroomId) throws NoSuchElementException {
 
-        /*
-            1. classroom 엔티티를 조회한다.
-                - 조회되지 않은 경우: 바로 새롭게 만들어주면 끝.
-            2. classroom 엔티티 조회에 성공하면, 다음의 행동들을 순차적으로 진행.
-                - liked 테이블에 빈 liked 엔티티를 바로 저장한다.(createdBy, regDate 모두 자동으로 기입됨.)
-                - JPA가 liked-classroom 연결 테이블에 연결 정보를 자동으로 저장해준다.
-                - classroom 엔티티의 liked 리스트 객체는 자동 갱신이 안되므로, 해당 정보를 직접 갱신해준다.
-            3. 본인에 의해 변경된 좋아요 수를 반환한다.
-         */
+        LikedEntity liked = new LikedEntity();
+        LikedEntity savedLiked = likedJpaRepository.save(liked);
 
         ClassroomEntity classroom = classroomJpaRepository.findById(classroomId).orElseThrow();
 
-        LikedEntity liked = new LikedEntity();
-        LikedEntity savedLiked = likedJpaRepository.save(liked);
-        savedLiked.addClassroom(classroom);
+        ClassroomLikedEntity entity = ClassroomLikedEntity.builder()
+                .liked(savedLiked)
+                .classroom(classroom)
+                .build();
 
-        return likedJpaRepository.countByClassroomId(classroomId);
+        classroomLikedJpaRepository.save(entity);
+
+        // 최종 개수를 카운트해서 반환
+        return (int) classroomLikedJpaRepository.countByClassroom_classroomId(classroomId);
+    }
+
+    @Override
+    public LikedReplyPageResultDto findLikedList(Long replyId) throws Exception {
+
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public LikedClassroomPageResultDto findLikedList(String classroomId) throws Exception {
+        return null;
     }
 
     @Override
@@ -62,7 +76,12 @@ public class LikedClassroomRepositoryImpl implements LikedRepository {
     @Override
     public void delete(Long likedId, String classroomId) {
 
-        likedJpaRepository.findById(class);
+         ClassroomLikedEntity findEntity = classroomLikedJpaRepository
+                 .findByClassroom_classroomIdAndLiked_likedId(classroomId, likedId).orElseThrow();
+
+         classroomLikedJpaRepository.delete(findEntity);
+
+         likedJpaRepository.delete(findEntity.getLiked());
     }
 
     @Override
@@ -73,6 +92,9 @@ public class LikedClassroomRepositoryImpl implements LikedRepository {
 
     @Override
     public int countById(String classroomId) {
-        return likedJpaRepository.countByClassroomId(classroomId);
+
+        // return likedJpaRepository.countByClassroomId(classroomId);
+
+        return (int) classroomLikedJpaRepository.countByClassroom_classroomId(classroomId);
     }
 }
