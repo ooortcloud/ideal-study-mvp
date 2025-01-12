@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./Sidebar.css";
 
-const Sidebar = ({ location, userRole }) => {
+const Sidebar = ({ location, userInfo }) => {
   if (
     location !== "teacherRoom" &&
     location !== "studentRoom" &&
@@ -35,11 +35,11 @@ const Sidebar = ({ location, userRole }) => {
               : "/myPage"
           }
         >
-          {location === "teacherRoom" && userRole === "teacher"
+          {location === "teacherRoom" && userInfo.userRole === "teacher"
             ? "교무실"
-            : location === "studentRoom" && userRole === "student"
+            : location === "studentRoom" && userInfo.userRole === "student"
             ? "자습실"
-            : location === "parentRoom" && userRole === "parent"
+            : location === "parentRoom" && userInfo.userRole === "parent"
             ? "학부모실"
             : "마이페이지"}
         </Link>
@@ -72,8 +72,11 @@ const Sidebar = ({ location, userRole }) => {
           location !== "studentRoom" &&
           location !== "parentRoom" && ( // My Page links
             <>
-              <Link to="/profile">개인정보 조회/수정</Link>
-              <Link to="/settings">설정</Link>
+              <Link to={`/myPage/${userInfo.id}`}>개인정보 조회/수정</Link>
+              <Link to={`/myPage/officialPage/${userInfo.id}`}>
+                공식 페이지
+              </Link>
+              <Link to="/myPage/settings">설정</Link>
             </>
           )}
       </nav>

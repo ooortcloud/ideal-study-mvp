@@ -67,7 +67,7 @@ const AppContent = () => {
         userInfo={userInfo}
       />
       <div className="page-common">
-        <Sidebar location={here} userRole={userInfo.role} />
+        <Sidebar location={here} userInfo={userInfo} />
         <div className="page-content">
           <Routes>
             {/*TeacherRoom Routes */}
@@ -126,10 +126,13 @@ const AppContent = () => {
               path="/myPage/:id"
               element={<ProfilePage userInfo={userInfo} />}
             />
-            {/* teachers only */}
-            <Route path="/officialPage/:id" element={<OfficialProfilePage />} />
+            {/* user - teachers only */}
             <Route
-              path="/officialPageUpdate"
+              path="/myPage/officialPage/:id"
+              element={<OfficialProfilePage />}
+            />
+            <Route
+              path="/myPage/officialPageUpdate"
               element={<OfficialProfilePageUpdate />}
             />
 
