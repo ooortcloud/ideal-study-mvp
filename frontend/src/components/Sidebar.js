@@ -35,11 +35,11 @@ const Sidebar = ({ location, userInfo }) => {
               : "/myPage"
           }
         >
-          {location === "teacherRoom" && userInfo.userRole === "teacher"
+          {location === "teacherRoom" && userInfo.role === "teacher"
             ? "교무실"
-            : location === "studentRoom" && userInfo.userRole === "student"
+            : location === "studentRoom" && userInfo.role === "student"
             ? "자습실"
-            : location === "parentRoom" && userInfo.userRole === "parent"
+            : location === "parentRoom" && userInfo.role === "parent"
             ? "학부모실"
             : "마이페이지"}
         </Link>
@@ -58,6 +58,7 @@ const Sidebar = ({ location, userInfo }) => {
         {location === "studentRoom" && ( // Student links
           <>
             <Link to="/studentRoom/classes">클래스 목록</Link>
+            <Link to="/studentRoom/enrollments">수업신청 목록</Link>
             <Link to="/studentRoom/assignments">과제목록</Link>
             <Link to="/studentRoom/exams">시험목록</Link>
           </>
