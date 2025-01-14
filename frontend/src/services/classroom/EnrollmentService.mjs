@@ -44,13 +44,11 @@ export const cancelEnrollment = async (enrollmentId) => {
   }
 };
 
-// 수업 신청 목록 조회 (클래스별) - 일단 10개씩 받음
-export const readEnrollmentsByClassId = async (classId) => {
-  console.log(`수업 신청 목록 조회 (클래스별) 시도: classId=${classId}`);
+// 수업 신청 목록 조회 (학생) - 일단 10개씩 받음
+export const readEnrollmentsByStudentJWT = async () => {
+  console.log(`수업 신청 목록 조회 (학생) 시도`);
   try {
-    const response = await apiClient.get(
-      `/api/enrollments/classes/${classId}?page=10`
-    );
+    const response = await apiClient.get(`/api/enrollments/users`);
     console.log("수업 신청 목록 조회 성공:", response.data);
     return response.data;
   } catch (err) {
@@ -59,11 +57,26 @@ export const readEnrollmentsByClassId = async (classId) => {
   }
 };
 
-// 수업 신청 목록 조회 (유저별)
-export const readEnrollmentsByUserId = async (userId) => {
-  console.log(`수업 신청 목록 조회 (유저별) 시도: userId=${userId}`);
+// 수업 신청 목록 조회 (학부모) - 일단 10개씩 받음
+export const readEnrollmentsByStudentId = async (studentId) => {
+  console.log(`수업 신청 목록 조회 (학부모) 시도: studentId=${studentId}`);
   try {
-    const response = await apiClient.get(`/api/enrollments/users`);
+    const response = await apiClient.get(`/api/enrollments/users/${studentId}`);
+    console.log("수업 신청 목록 조회 성공:", response.data);
+    return response.data;
+  } catch (err) {
+    console.error("수업 신청 목록 조회 실패:", err);
+    return { dtoList: [] };
+  }
+};
+
+// 수업 신청 목록 조회 (클래스별)
+export const readEnrollmentsByClassId = async (classId) => {
+  console.log(`수업 신청 목록 조회 (클래스별) 시도: classId=${classId}`);
+  try {
+    const response = await apiClient.get(
+      `/api/enrollments/classes/${classId}?page=1`
+    );
     console.log("수업 신청 목록 조회 성공:", response.data);
     return response.data;
   } catch (err) {

@@ -36,6 +36,8 @@ public class ClassroomController {
                                                             @RequestPart("image") MultipartFile image,
                                                             HttpServletRequest request) {
 
+        log.debug("Received Create Class Request: {}, imageName={}", dto, image.getOriginalFilename());
+
         JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
         String teacherId = payload.getSub();
 
