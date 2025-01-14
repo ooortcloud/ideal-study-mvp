@@ -2,7 +2,7 @@ package com.idealstudy.mvp.integration.infrastructure;
 
 import com.idealstudy.mvp.application.dto.classroom.ClassroomResponseDto;
 import com.idealstudy.mvp.application.repository.LikedRepository;
-import com.idealstudy.mvp.integration.infrastructure.helper.DummyClassGenerator;
+import com.idealstudy.mvp.integration.infrastructure.helper.InfraDummyClassGenerator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,29 +18,26 @@ public class LikedClassroomRepositoryTest {
 
     private LikedRepository likedRepository;
 
-    private DummyClassGenerator dummyClassGenerator;
+    private InfraDummyClassGenerator dummyClassGenerator;
 
     @Autowired
     public LikedClassroomRepositoryTest(@Qualifier("likedClassroomRepositoryImpl") LikedRepository likedRepository,
-                                        DummyClassGenerator dummyClassGenerator) {
+                                        InfraDummyClassGenerator dummyClassGenerator) {
         this.likedRepository = likedRepository;
         this.dummyClassGenerator = dummyClassGenerator;
     }
 
     @Test
-    public void createAndDelete() throws Exception {
+    public void createAndCountAndDeleteLike() throws Exception {
 
         Map<String, Object> tempMap = dummyClassGenerator.createDummy();
-        ClassroomResponseDto classroomResponseDto = (ClassroomResponseDto) tempMap.get("classroomResponseDto");
+        ClassroomResponseDto dummyClassroom = (ClassroomResponseDto) tempMap.get("classroomResponseDto");
 
-        int count = likedRepository.create(classroomResponseDto.getId());
-        Assertions.assertThat(count).isOne();
+        long likedId = likedRepository.create(dummyClassroom.getId());
+        Assertions.assertThat(likedRepository.countById(dummyClassroom.getId())).isOne();
 
-        // likedRepository.delete
-    }
+        likedRepository.delete(likedId);
 
-    @Test
-    public void countById() {
-
+        Assertions.assertThatThrownBy(() -> likedRepository.getCreatedBy(likedId));
     }
 }

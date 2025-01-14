@@ -1,5 +1,6 @@
 package com.idealstudy.mvp.util;
 
+import com.idealstudy.mvp.error.CustomException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -11,12 +12,17 @@ import java.util.function.Supplier;
 @Slf4j
 public class TryCatchControllerTemplate {
 
+
     public static <T> ResponseEntity<T> execute(Callable<T> callable) {
 
         T result = null;
         try {
             result = callable.call();
             return ResponseEntity.ok(result);
+        } catch (CustomException e) {
+            log.error(e + " : " + e.getMessage());
+            // custom 예외 클래스를 사용
+            return new ResponseEntity<>(result, HttpStatusCode.valueOf(e.getErrorCode().getStatusCode()));
         } catch (SecurityException e) {
             log.error(e + " : " + e.getMessage());
             return new ResponseEntity<>(result, HttpStatusCode.valueOf(403));

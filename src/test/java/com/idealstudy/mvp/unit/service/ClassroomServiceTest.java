@@ -1,15 +1,19 @@
 package com.idealstudy.mvp.unit.service;
 
 import com.idealstudy.mvp.application.component.ClassroomComponent;
+import com.idealstudy.mvp.application.component.EnrollmentComponent;
 import com.idealstudy.mvp.application.dto.classroom.ClassroomResponseDto;
+import com.idealstudy.mvp.application.dto.member.StudentDto;
 import com.idealstudy.mvp.application.dto.member.TeacherDto;
 import com.idealstudy.mvp.application.factory.FileManagerFactory;
 import com.idealstudy.mvp.application.repository.ClassroomRepository;
 import com.idealstudy.mvp.application.repository.LikedRepository;
 import com.idealstudy.mvp.application.service.classroom.ClassroomService;
 import com.idealstudy.mvp.application.service.domain_service.FileManager;
+import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
 import com.idealstudy.mvp.enums.classroom.ClassroomStatus;
-import com.idealstudy.mvp.unit.util.TestServiceUtil;
+import com.idealstudy.mvp.unit.util.ServiceDummyClassGenerator;
+import com.idealstudy.mvp.unit.util.ServiceDummyMemberGenerator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +23,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.*;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
@@ -41,6 +46,9 @@ public class ClassroomServiceTest {
     @Mock
     private FileManagerFactory fileManagerFactory;
 
+    @Mock
+    private EnrollmentComponent enrollmentComponent;
+
     private ClassroomService classroomService;
 
     private static final String UPLOAD_PATH = "src/main/resources/static/temp/";
@@ -51,7 +59,11 @@ public class ClassroomServiceTest {
         Mockito.when(fileManagerFactory.getFileManager(Mockito.any()))
                 .thenReturn(fileManager);
 
-        classroomService = new ClassroomService(classroomRepository, likedRepository, classroomComponent, fileManagerFactory, UPLOAD_PATH);
+        ValidationManager validationManager = new ValidationManager(enrollmentComponent, classroomComponent);
+
+        classroomService =
+                new ClassroomService(classroomRepository, likedRepository, classroomComponent, fileManagerFactory,
+                        UPLOAD_PATH, validationManager);
     }
 
     @Test
@@ -66,7 +78,7 @@ public class ClassroomServiceTest {
         String description = "임시 클래스입니다.";
         Integer capacity = 20;
 
-        TeacherDto teacherDto = TestServiceUtil.createDummyTeacherDto();
+        TeacherDto teacherDto = ServiceDummyMemberGenerator.createDummyTeacherDto();
         String teacherId = teacherDto.getUserId();
 
         String savedUri = "src/main/resources/static/temp/abcdefghijk.jpeg";
@@ -124,7 +136,7 @@ public class ClassroomServiceTest {
         String description = "임시 클래스입니다.";
         Integer capacity = 20;
 
-        TeacherDto teacherDto = TestServiceUtil.createDummyTeacherDto();
+        TeacherDto teacherDto = ServiceDummyMemberGenerator.createDummyTeacherDto();
         String teacherId = teacherDto.getUserId();
 
         String savedUri = "src/main/resources/static/temp/abcdefghijk.jpeg";
@@ -193,7 +205,7 @@ public class ClassroomServiceTest {
         String description = "임시 클래스입니다.";
         Integer capacity = 20;
 
-        TeacherDto teacherDto = TestServiceUtil.createDummyTeacherDto();
+        TeacherDto teacherDto = ServiceDummyMemberGenerator.createDummyTeacherDto();
         String teacherId = teacherDto.getUserId();
 
         String savedUri = "src/main/resources/static/temp/abcdefghijk.jpeg";
@@ -245,29 +257,26 @@ public class ClassroomServiceTest {
         Assertions.assertThat(resultDto.getThumbnail()).isEqualTo(responseDto.getThumbnail());
     }
 
-    // 실제 생성 로직을 거치는 것은 아니고, DTO 객체만 공급해줌.
-    private ClassroomResponseDto createDummyClassroom(String teacherId) {
+    public void createLiked() {
 
-        String title = "temp";
-        String description = "임시 클래스입니다.";
-        Integer capacity = 20;
-        String savedUri = "src/main/resources/static/temp/abcdefghijk.jpeg";
-
-        ClassroomResponseDto dummyDto = ClassroomResponseDto.builder()
-                .id(UUID.randomUUID().toString())
-                .title(title)
-                .description(description)
-                .capacity(capacity)
-                .createdBy(teacherId)
-                .thumbnail(savedUri)
-                .status(ClassroomStatus.OPEN)
-                .build();
-
-        return dummyDto;
     }
 
-    public void updateLiked() {
+    @Test
+    public void deleteLiked() throws Exception {
 
+        Map<String, Object> dummies = ServiceDummyClassGenerator.createDummy();
+        TeacherDto teacherDto = (TeacherDto)dummies.get("teacherDto");
+        ClassroomResponseDto classroomResponseDto = (ClassroomResponseDto) dummies.get("classroomResponseDto");
+
+        StudentDto studentDto = ServiceDummyMemberGenerator.createDummyStudentDto();
+        String createdBy = studentDto.getUserId();
+        Mockito.when(likedRepository.getCreatedBy(Mockito.anyLong()))
+                        .thenReturn(createdBy);
+
+        // Mockito.doNothing().when(likedRepository.delete(Mockito.anyLong()));
+
+        Long likedId = 1L; // sample
+        classroomService.deleteLiked(likedId, classroomResponseDto.getId(), createdBy);
     }
 
     public void countLiked() {

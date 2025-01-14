@@ -11,7 +11,7 @@ import com.idealstudy.mvp.enums.member.SchoolRegister;
 
 import java.util.UUID;
 
-public class TestServiceUtil {
+public class ServiceDummyMemberGenerator {
 
 
     public static StudentDto createDummyStudentDto() {

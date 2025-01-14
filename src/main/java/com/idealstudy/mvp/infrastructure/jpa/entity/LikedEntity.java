@@ -22,6 +22,16 @@ public class LikedEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long likedId;
 
+    /// 선택적 비식별관계
+    @ManyToOne
+    @JoinColumn(name = "classroom_id", nullable = true)
+    private ClassroomEntity classroom;
+
+    /// 선택적 비식별관계
+    @ManyToOne
+    @JoinColumn(name = "comment_id", nullable = true)
+    private ReplyEntity reply;
+
     // @ManyToMany를 사용하지 말자. 개발 생산성이 오히려 떨어진다.
     /*
     @ManyToMany

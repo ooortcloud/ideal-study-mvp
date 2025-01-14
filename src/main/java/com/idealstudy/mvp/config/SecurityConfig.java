@@ -1,10 +1,8 @@
 package com.idealstudy.mvp.config;
 
 import com.idealstudy.mvp.enums.member.Role;
-import com.idealstudy.mvp.error.ExceptionHandlerFilter;
 import com.idealstudy.mvp.security.filter.*;
 import com.idealstudy.mvp.security.provider.JwtAuthenticationProvider;
-import com.idealstudy.mvp.security.token.JwtAuthenticationToken;
 import com.idealstudy.mvp.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -88,10 +86,13 @@ public class SecurityConfig {
         return new ProviderManager(providers);
     }
 
+    /*
     @Bean
     public ExceptionHandlerFilter exceptionHandlerFilter() {
         return new ExceptionHandlerFilter();
     }
+
+     */
 
     @Bean
     public JsonLoginAuthenticationFilter jsonLoginAuthenticationFilter() {
@@ -259,7 +260,7 @@ public class SecurityConfig {
          or a Filter that has already been added using HttpSecurityBuilder.addFilterAfter(Filter, Class)
          or HttpSecurityBuilder.addFilterBefore(Filter, Class).
          */
-        http.addFilterBefore(exceptionHandlerFilter(), LogoutFilter.class);
+        // http.addFilterBefore(exceptionHandlerFilter(), LogoutFilter.class);
         // http.addFilterBefore(loginAuthenticationFilter(), BasicAuthenticationFilter.class);
         // http.addFilterBefore(formLoginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jsonLoginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

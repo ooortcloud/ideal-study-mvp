@@ -90,7 +90,7 @@ public class ReplyService {
             if(likedId == null)
                 likedRepository.create(replyId);
             else
-                likedRepository.delete(likedId, replyId);
+                likedRepository.delete(likedId);
             return null;
         }, null, DBErrorMsg.UPDATE_ERROR);
     }

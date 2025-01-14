@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public class DummyMemberGenerator {
+public class InfraDummyMemberGenerator {
 
     private final MemberRepository memberRepository;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public DummyMemberGenerator(MemberRepository memberRepository, HttpServletRequest request) {
+    public InfraDummyMemberGenerator(MemberRepository memberRepository, HttpServletRequest request) {
         this.memberRepository = memberRepository;
         this.request = request;
     }
