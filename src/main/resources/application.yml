@@ -46,8 +46,8 @@ spring:
 
   sql:
     init:
-      mode: always
-
+      mode: always # 서버 실행시 항상 data.sql 실행
+    continue-on-error: true # data.sql 삽입오류시에도 서버 종료하지 않도록
 
 upload:
   path: src/main/resources/static/upload-materials/

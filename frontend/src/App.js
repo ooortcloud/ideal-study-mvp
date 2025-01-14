@@ -42,6 +42,7 @@ import ExamManagementPage from "./pages/student/studentRoom/ExamManagementPage";
 import TeacherRoomPage from "./pages/teacher/TeacherRoomPage";
 import StudentClassroomListPage from "./pages/student/studentRoom/StudentClassroomListPage";
 import TeacherClassroomListPage from "./pages/teacher/teacherRoom/TeacherClassroomListPage";
+import EnrollmentBoardPage from "./pages/classroom/preClass/enrollment/EnrollmentBoardPage";
 
 const App = () => {
   return (
@@ -67,7 +68,7 @@ const AppContent = () => {
         userInfo={userInfo}
       />
       <div className="page-common">
-        <Sidebar location={here} userRole={userInfo.role} />
+        <Sidebar location={here} userInfo={userInfo} />
         <div className="page-content">
           <Routes>
             {/*TeacherRoom Routes */}
@@ -91,11 +92,15 @@ const AppContent = () => {
             <Route path="/studentRoom">
               <Route path="classes" element={<StudentClassroomListPage />} />
               <Route
+                path="enrollments"
+                element={<EnrollmentBoardPage userInfo={userInfo} />}
+              />
+              <Route
                 path="assignments"
                 element={<AssignmentManagementPage />}
               />
               <Route path="exams" element={<ExamManagementPage />} />
-              <Route path="" element={<StudyRoomPage />} />
+              <Route path=":id" element={<StudyRoomPage />} />
             </Route>
 
             {/* 인강 업로드 */}
@@ -126,10 +131,13 @@ const AppContent = () => {
               path="/myPage/:id"
               element={<ProfilePage userInfo={userInfo} />}
             />
-            {/* teachers only */}
-            <Route path="/officialPage/:id" element={<OfficialProfilePage />} />
+            {/* user - teachers only */}
             <Route
-              path="/officialPageUpdate"
+              path="/myPage/officialPage/:id"
+              element={<OfficialProfilePage />}
+            />
+            <Route
+              path="/myPage/officialPageUpdate"
               element={<OfficialProfilePageUpdate />}
             />
 

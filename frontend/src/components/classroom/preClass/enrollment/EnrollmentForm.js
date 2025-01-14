@@ -1,19 +1,18 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import {
   createEnrollment,
   readEnrollment,
 } from "../../../../services/classroom/EnrollmentService.mjs";
-import { AuthContext } from "../../../../context/AuthContext";
+
 import Button from "../../../Button";
 
-const EnrollmentForm = ({ classId, isClose }) => {
-  const { userInfo } = useContext(AuthContext);
-
+const EnrollmentForm = ({ classId, isClose, userInfo }) => {
   const [formData, setFormData] = useState({
     curScore: "",
     targetScore: "",
     request: "",
     determination: "",
+    studentId: userInfo.id,
   });
 
   // 수업신청이력이 있다면 정보가져오기

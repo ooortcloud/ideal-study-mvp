@@ -11,11 +11,10 @@ export const createClass = async (data) => {
   }
   try {
     const response = await apiClient.post("/api/classes", data, {
-        headers: {
-            "Content-Type": "multipart/form-data"
-        }
-    }
-    );
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     console.log("클래스 생성 API 성공:", response);
     return response.data;
   } catch (error) {
@@ -34,7 +33,7 @@ export const createClass = async (data) => {
 export const readClasses = async () => {
   console.log("클래스 목록 조회 API 시도");
   try {
-    const response = await apiClient.get("/api/classes");
+    const response = await apiClient.get("/api/classes?page=1&status=OPEN");
     console.log("클래스 목록 조회 API 성공:", response);
     return response.data;
   } catch (error) {
