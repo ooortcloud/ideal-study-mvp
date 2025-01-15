@@ -3,7 +3,8 @@ package com.idealstudy.mvp.enums.error;
 public enum SystemErrorMsg {
 
     IO_EXCEPTION("시스템 내부 입출력 오류"),
-    ILLEGAL_ARGUMENT_EXCEPTION("허용할 수 없는 인자");
+    ILLEGAL_ARGUMENT_EXCEPTION("허용할 수 없는 인자"),
+    DUPLICATED_EXCEPTION("중복됨");
 
     private final String msg;
 

@@ -6,6 +6,8 @@ import org.springframework.data.repository.query.Param;
 
 import com.idealstudy.mvp.infrastructure.jpa.entity.LikedEntity;
 
+import java.util.Optional;
+
 public interface LikedJpaRepository extends JpaRepository<LikedEntity, Long> {
 
     /*
@@ -21,4 +23,12 @@ public interface LikedJpaRepository extends JpaRepository<LikedEntity, Long> {
 
      */
 
+    int countByClassroom_classroomId(String classroomId);
+
+    int countByReply_commentId(@Param("commentId") Long replyId);
+
+    Optional<LikedEntity> findByClassroom_classroomIdAndCreatedBy(String classroomId, @Param("createdBy") String userId);
+
+    Optional<LikedEntity> findByReply_commentIdAndCreatedBy(@Param("commentId") Long replyId,
+                                                            @Param("createdBy") String userId);
 }

@@ -2,10 +2,8 @@ package com.idealstudy.mvp.infrastructure.impl;
 
 import com.idealstudy.mvp.application.dto.LikedClassroomPageResultDto;
 import com.idealstudy.mvp.application.dto.LikedReplyPageResultDto;
-import com.idealstudy.mvp.infrastructure.jpa.entity.ClassroomLikedEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.LikedEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.classroom.ClassroomEntity;
-import com.idealstudy.mvp.infrastructure.jpa.repository.ClassroomLikedJpaRepository;
 import com.idealstudy.mvp.infrastructure.jpa.repository.LikedJpaRepository;
 import com.idealstudy.mvp.application.repository.LikedRepository;
 import com.idealstudy.mvp.infrastructure.jpa.repository.classroom.ClassroomJpaRepository;
@@ -15,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 
 @Repository("likedClassroomRepositoryImpl")
@@ -28,18 +27,16 @@ public class LikedClassroomRepositoryImpl implements LikedRepository {
     @Autowired
     private final LikedJpaRepository likedJpaRepository;
 
-    @Autowired
-    private final ClassroomLikedJpaRepository classroomLikedJpaRepository;
-
     @Override
-    public int create(Long  targetId) throws UnsupportedOperationException {
+    public long create(Long  targetId) throws UnsupportedOperationException {
 
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public int create(String classroomId) throws NoSuchElementException {
+    public long create(String classroomId) throws NoSuchElementException {
 
+        /*
         LikedEntity liked = new LikedEntity();
         LikedEntity savedLiked = likedJpaRepository.save(liked);
 
@@ -54,6 +51,23 @@ public class LikedClassroomRepositoryImpl implements LikedRepository {
 
         // 최종 개수를 카운트해서 반환
         return (int) classroomLikedJpaRepository.countByClassroom_classroomId(classroomId);
+
+         */
+
+        ClassroomEntity classroom = classroomJpaRepository.findById(classroomId).orElseThrow();
+
+        LikedEntity liked = LikedEntity.builder()
+                .classroom(classroom)
+                .build();
+
+        LikedEntity savedLiked = likedJpaRepository.save(liked);
+
+        return savedLiked.getLikedId();
+    }
+
+    public String getCreatedBy(Long likedId) throws NoSuchElementException {
+
+        return likedJpaRepository.findById(likedId).orElseThrow().getCreatedBy();
     }
 
     @Override
@@ -68,33 +82,35 @@ public class LikedClassroomRepositoryImpl implements LikedRepository {
     }
 
     @Override
-    public void delete(Long likedId, Long replyId) throws UnsupportedOperationException{
+    public boolean checkAlreadyLiked(String userId, String classroomId) {
+
+        Optional<LikedEntity> entity = likedJpaRepository.findByClassroom_classroomIdAndCreatedBy(classroomId, userId);
+
+        return entity.isPresent();
+    }
+
+    @Override
+    public boolean checkAlreadyLiked(String userId, Long replyId) throws UnsupportedOperationException {
 
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void delete(Long likedId, String classroomId) {
+    public void delete(Long likedId) throws NoSuchElementException {
 
-         ClassroomLikedEntity findEntity = classroomLikedJpaRepository
-                 .findByClassroom_classroomIdAndLiked_likedId(classroomId, likedId).orElseThrow();
-
-         classroomLikedJpaRepository.delete(findEntity);
-
-         likedJpaRepository.delete(findEntity.getLiked());
+        LikedEntity entity = likedJpaRepository.findById(likedId).orElseThrow();
+        likedJpaRepository.delete(entity);
     }
 
     @Override
     public int countById(Long classroomId) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
 
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int countById(String classroomId) {
 
-        // return likedJpaRepository.countByClassroomId(classroomId);
-
-        return (int) classroomLikedJpaRepository.countByClassroom_classroomId(classroomId);
+        return likedJpaRepository.countByClassroom_classroomId(classroomId);
     }
 }

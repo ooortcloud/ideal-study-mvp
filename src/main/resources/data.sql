@@ -24,10 +24,10 @@ VALUES
     ('c99fd58f-b0ae-11ef-89d8-0242ac140003', '한국고등학교', 'H1'),
     ('e8445639-917a-4396-8aaa-4a68dd11e4c7', '강남고등학교', 'H3');
 
-INSERT INTO classroom(classroom_id, teacher_id, title, description, capacity, thumbnail, reg_date, created_by)
+INSERT INTO classroom(classroom_id, teacher_id, title, description, capacity, thumbnail, reg_date, created_by, status)
 VALUES
-	('98a12345-ad7e-11ef-8e5c-0242ac140002', '98a10847-ad7e-11ef-8e5c-0242ac140002', '이상한수학', '수학을 잘 하고 싶은 사람들 모두 모여라', 20, 'http://어딘가', NOW(), '98a10847-ad7e-11ef-8e5c-0242ac140002'),
-	('76b12345-ad7e-11ef-8e5c-0242ac140002', '98a10847-ad7e-11ef-8e5c-0242ac140002', '이상한과학', '과학을 잘 하고 싶은 사람들 모두 모여라', 20, 'http://어딘가', NOW(), '98a10847-ad7e-11ef-8e5c-0242ac140002');
+	('98a12345-ad7e-11ef-8e5c-0242ac140002', '98a10847-ad7e-11ef-8e5c-0242ac140002', '이상한수학', '수학을 잘 하고 싶은 사람들 모두 모여라', 20, 'http://어딘가', NOW(), '98a10847-ad7e-11ef-8e5c-0242ac140002', 'SETUP'),
+	('76b12345-ad7e-11ef-8e5c-0242ac140002', '98a10847-ad7e-11ef-8e5c-0242ac140002', '이상한과학', '과학을 잘 하고 싶은 사람들 모두 모여라', 20, 'http://어딘가', NOW(), '98a10847-ad7e-11ef-8e5c-0242ac140002', 'SETUP');
 
 INSERT INTO faq (faq_id, title, content, classroom_id, created_by, reg_date)
 VALUES

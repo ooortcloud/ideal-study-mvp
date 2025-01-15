@@ -7,11 +7,12 @@ import com.idealstudy.mvp.infrastructure.jpa.entity.ReplyEntity;
 import com.idealstudy.mvp.infrastructure.jpa.repository.LikedJpaRepository;
 import com.idealstudy.mvp.infrastructure.jpa.repository.ReplyJpaRepository;
 import com.idealstudy.mvp.application.repository.LikedRepository;
-import com.idealstudy.mvp.infrastructure.jpa.repository.ReplyLikedJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.util.NoSuchElementException;
 
 
 @Repository("likedReplyRepositoryImpl")
@@ -25,21 +26,30 @@ public class LikedReplyRepositoryImpl implements LikedRepository {
     @Autowired
     private final ReplyJpaRepository replyJpaRepository;
 
-    @Autowired
-    private final ReplyLikedJpaRepository replyLikedJpaRepository;
-
     @Override
-    public int create(Long replyId) {
+    public long create(Long replyId) {
 
+        ReplyEntity reply = replyJpaRepository.findById(replyId).orElseThrow();
 
+        LikedEntity likedEntity = LikedEntity.builder()
+                .reply(reply)
+                .build();
 
-        return -1;
+        LikedEntity result = likedJpaRepository.save(likedEntity);
+
+        return result.getLikedId();
     }
 
     @Override
-    public int create(String targetId) {
+    public long create(String targetId) throws UnsupportedOperationException {
 
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getCreatedBy(Long likedId) throws NoSuchElementException {
+
+        return likedJpaRepository.findById(likedId).orElseThrow().getCreatedBy();
     }
 
     @Override
@@ -54,28 +64,26 @@ public class LikedReplyRepositoryImpl implements LikedRepository {
     }
 
     @Override
-    public void delete(Long likedId, Long replyId) {
-        log.info("좋아요 제거");
+    public void delete(Long likedId) throws NoSuchElementException {
 
         LikedEntity entity = likedJpaRepository.findById(likedId).orElseThrow();
         likedJpaRepository.delete(entity);
-        ReplyEntity replyEntity = replyJpaRepository.findById(replyId).orElseThrow();
-        replyJpaRepository.save(replyEntity);
     }
 
     @Override
-    public void delete(Long likedId, String targetId) {
+    public boolean checkAlreadyLiked(String userId, String classroomId) throws Exception {
+        return false;
+    }
 
-        throw new UnsupportedOperationException();
+    @Override
+    public boolean checkAlreadyLiked(String userId, Long replyId) throws Exception {
+        return false;
     }
 
     @Override
     public int countById(Long replyId) {
 
-
-        // return likedJpaRepository.countByReplyId(replyId);
-
-        return (int) replyLikedJpaRepository.countByReply_commentId(replyId);
+        return likedJpaRepository.countByReply_commentId(replyId);
     }
 
     @Override

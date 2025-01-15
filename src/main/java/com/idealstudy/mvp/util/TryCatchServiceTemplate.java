@@ -1,14 +1,10 @@
 package com.idealstudy.mvp.util;
 
 import com.idealstudy.mvp.enums.error.DBErrorMsg;
-import com.idealstudy.mvp.enums.error.SecurityErrorMsg;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.util.concurrent.Callable;
-import java.util.function.Supplier;
 
 @Slf4j
 public class TryCatchServiceTemplate {

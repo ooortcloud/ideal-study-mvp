@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-01-06T17:50:37+0900",
+    date = "2025-01-12T11:32:39+0900",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21 (Oracle Corporation)"
 )
 @Component
@@ -61,16 +61,17 @@ public class MemberMapperImpl implements MemberMapper {
             return null;
         }
 
-        MemberListDto.MemberListDtoBuilder memberListDto = MemberListDto.builder();
+        MemberListDto memberListDto = new MemberListDto();
 
-        memberListDto.userId( entity.getUserId() );
-        memberListDto.name( entity.getName() );
+        memberListDto.setUserId( entity.getUserId() );
+        memberListDto.setName( entity.getName() );
+        memberListDto.setRole( entity.getRole() );
         byte[] profile = entity.getProfile();
         if ( profile != null ) {
-            memberListDto.profile( Arrays.copyOf( profile, profile.length ) );
+            memberListDto.setProfile( Arrays.copyOf( profile, profile.length ) );
         }
 
-        return memberListDto.build();
+        return memberListDto;
     }
 
     @Override

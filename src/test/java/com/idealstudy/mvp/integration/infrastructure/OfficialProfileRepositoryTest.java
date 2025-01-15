@@ -2,13 +2,10 @@ package com.idealstudy.mvp.integration.infrastructure;
 
 import com.idealstudy.mvp.application.dto.OfficialProfileDto;
 import com.idealstudy.mvp.application.dto.member.TeacherDto;
-import com.idealstudy.mvp.application.repository.MemberRepository;
 import com.idealstudy.mvp.application.repository.OfficialProfileRepository;
 import com.idealstudy.mvp.enums.member.Role;
-import com.idealstudy.mvp.integration.infrastructure.helper.DummyMemberGenerator;
-import com.idealstudy.mvp.security.dto.JwtPayloadDto;
+import com.idealstudy.mvp.integration.infrastructure.helper.InfraDummyMemberGenerator;
 import com.idealstudy.mvp.util.RandomValueGenerator;
-import jakarta.servlet.http.HttpServletRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +18,13 @@ public class OfficialProfileRepositoryTest {
 
     private final OfficialProfileRepository officialProfileRepository;
 
-    private final DummyMemberGenerator dummyMemberGenerator;
+    private final InfraDummyMemberGenerator dummyMemberGenerator;
 
     private final RandomValueGenerator randomValueGenerator;
 
     @Autowired
     public OfficialProfileRepositoryTest(OfficialProfileRepository repository,
-                                         DummyMemberGenerator dummyMemberGenerator, RandomValueGenerator randomValueGenerator) {
+                                         InfraDummyMemberGenerator dummyMemberGenerator, RandomValueGenerator randomValueGenerator) {
 
         this.officialProfileRepository = repository;
         this.dummyMemberGenerator = dummyMemberGenerator;

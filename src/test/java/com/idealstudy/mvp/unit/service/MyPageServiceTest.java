@@ -1,6 +1,6 @@
 package com.idealstudy.mvp.unit.service;
 
-import com.idealstudy.mvp.unit.util.TestServiceUtil;
+import com.idealstudy.mvp.unit.util.ServiceDummyMemberGenerator;
 import com.idealstudy.mvp.application.dto.member.MemberDto;
 import com.idealstudy.mvp.application.repository.MemberRepository;
 import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
@@ -29,7 +29,7 @@ public class MyPageServiceTest {
     @Test
     public void updateIntroduction() {
 
-        MemberDto dummyDto = TestServiceUtil.createDummyMemberDto();
+        MemberDto dummyDto = ServiceDummyMemberGenerator.createDummyMemberDto();
 
         Mockito.when(memberRepository.findById(dummyDto.getUserId()))
                 .thenReturn(dummyDto);
