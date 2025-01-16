@@ -36,7 +36,7 @@ public class EnrollmentController {
         JwtPayloadDto payload = (JwtPayloadDto)  request.getAttribute("jwtPayload");
         String studentId = payload.getSub();
 
-        return TryCatchControllerTemplate.execute(() -> enrollmentService.enrollForStudent(
+        return TryCatchControllerTemplate.execute(() -> enrollmentService.requestForStudent(
                 dto.getClassroomId(),
                 studentId,
                 dto.getCurScore(),
@@ -56,7 +56,7 @@ public class EnrollmentController {
 
          */
 
-        return TryCatchControllerTemplate.execute(() -> enrollmentService.enrollForParents(
+        return TryCatchControllerTemplate.execute(() -> enrollmentService.requestForParents(
                 dto.getClassroomId(),
                 dto.getStudentId(),
                 dto.getCurScore(),
@@ -194,6 +194,32 @@ public class EnrollmentController {
 
         return TryCatchControllerTemplate.execute(() -> {
             enrollmentService.accept(enrollmentId, teacherId);
+            return null;
+        });
+    }
+
+    @ForStudent
+    @PatchMapping("/api/enrollments/{enrollmentId}/student/permit")
+    public ResponseEntity<Object> enrollForStudent(@PathVariable Long enrollmentId, HttpServletRequest request) {
+
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String studentId = payload.getSub();
+
+        return TryCatchControllerTemplate.execute(() -> {
+            enrollmentService.enrollForStudent(enrollmentId, studentId);
+            return null;
+        });
+    }
+
+    @ForParents
+    @PatchMapping("/api/enrollments/{enrollmentId}/parents/permit")
+    public ResponseEntity<Object> enrollForParents(@PathVariable Long enrollmentId, HttpServletRequest request) {
+
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String parentsId = payload.getSub();
+
+        return TryCatchControllerTemplate.execute(() -> {
+            enrollmentService.enrollForParents(enrollmentId, parentsId);
             return null;
         });
     }

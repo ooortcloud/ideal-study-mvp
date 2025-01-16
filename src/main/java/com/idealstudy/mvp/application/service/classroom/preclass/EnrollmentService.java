@@ -27,21 +27,21 @@ public class EnrollmentService {
     @Autowired
     private final ValidationManager validationManager;
 
-    public EnrollmentDto enrollForStudent(String classroomId, String studentId, String curScore,
-                                          String targetScore, String request, String determination) {
+    public EnrollmentDto requestForStudent(String classroomId, String studentId, String curScore,
+                                           String targetScore, String request, String determination) {
 
         return TryCatchServiceTemplate.execute(() -> {
 
             // 강사에게 알림을 전달할 필요가 있다.
 
-            return enrollmentRepository.enroll(classroomId, studentId, curScore, targetScore,
+            return enrollmentRepository.request(classroomId, studentId, curScore, targetScore,
                     request, determination);
         }, null, DBErrorMsg.CREATE_ERROR);
 
     }
 
-    public EnrollmentDto enrollForParents(String classroomId, String studentId, String curScore,
-                                          String targetScore, String request, String determination) {
+    public EnrollmentDto requestForParents(String classroomId, String studentId, String curScore,
+                                           String targetScore, String request, String determination) {
 
         return TryCatchServiceTemplate.execute(() -> {
 
@@ -50,7 +50,7 @@ public class EnrollmentService {
 
             // 강사에게 알림을 전달할 필요가 있다.
 
-            return enrollmentRepository.enroll(classroomId, studentId, curScore, targetScore,
+            return enrollmentRepository.request(classroomId, studentId, curScore, targetScore,
                     request, determination);
         }, null, DBErrorMsg.CREATE_ERROR);
 
@@ -204,5 +204,55 @@ public class EnrollmentService {
     /// 추가기능: 강사가 강제로 특정 학생을 수강 취소시킬 수 있음
     public void kick() {
         
+    }
+
+    public void enrollForStudent(Long enrollmentId, String studentId) {
+
+        TryCatchServiceTemplate.execute(() -> {
+            
+            EnrollmentDto findDto = enrollmentRepository.getInfo(enrollmentId);
+            
+            /// 결제자와 신청자가 꼭 같아야 할까?
+
+            if(findDto.getStatus() == EnrollmentStatus.PERMITTED)
+                throw new CustomException(ErrorCode.ALREADY_PROCEEDED);
+
+            if(findDto.getStatus() != EnrollmentStatus.CHECKED)
+                throw new CustomException(ErrorCode.ABNORMAL_REQUEST);
+
+            /// 결제 로직을 거쳐야 함(외부 결제 서버와 통신하는 로직 구현 필요)
+
+
+
+            /// PERMITTED로 변경
+            enrollmentRepository.permit(enrollmentId);
+
+            return null;
+            
+        }, null, DBErrorMsg.UPDATE_ERROR);
+    }
+
+    public void enrollForParents(Long enrollmentId, String parentsId) {
+
+        TryCatchServiceTemplate.execute(() -> {
+
+            EnrollmentDto findDto = enrollmentRepository.getInfo(enrollmentId);
+
+            /// 결제자와 신청자가 꼭 같아야 할까?
+
+            if(findDto.getStatus() == EnrollmentStatus.PERMITTED)
+                throw new CustomException(ErrorCode.ALREADY_PROCEEDED);
+
+            if(findDto.getStatus() != EnrollmentStatus.CHECKED)
+                throw new CustomException(ErrorCode.ABNORMAL_REQUEST);
+
+            /// 결제 로직을 거쳐야 함(외부 결제 서버와 통신하는 로직 구현 필요)
+
+            /// PERMITTED로 변경
+            enrollmentRepository.permit(enrollmentId);
+
+            return null;
+
+        }, null, DBErrorMsg.UPDATE_ERROR);
     }
 }

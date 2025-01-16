@@ -40,8 +40,8 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository {
     private static final int SIZE = 10;
 
     @Override
-    public EnrollmentDto enroll(String classroomId, String studentId, String curScore,
-                                String targetScore, String request, String determination) {
+    public EnrollmentDto request(String classroomId, String studentId, String curScore,
+                                 String targetScore, String request, String determination) {
 
         ClassroomEntity classroom = classroomJpaRepository.findById(classroomId).orElseThrow();
 
@@ -157,6 +157,15 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository {
         // enrollmentJpaRepository.delete(entity);
 
         entity.setStatus(EnrollmentStatus.REJECTED);
+        enrollmentJpaRepository.save(entity);
+    }
+
+    @Override
+    public void permit(Long enrollmentId) {
+
+        EnrollmentEntity entity = enrollmentJpaRepository.findById(enrollmentId).orElseThrow();
+
+        entity.setStatus(EnrollmentStatus.PERMITTED);
         enrollmentJpaRepository.save(entity);
     }
 

@@ -4,13 +4,10 @@ import com.idealstudy.mvp.application.dto.classroom.ClassroomResponseDto;
 import com.idealstudy.mvp.application.dto.member.StudentDto;
 import com.idealstudy.mvp.integration.infrastructure.helper.InfraDummyClassGenerator;
 import com.idealstudy.mvp.integration.infrastructure.helper.InfraDummyMemberGenerator;
-import com.idealstudy.mvp.integration.infrastructure.util.TestRepositoryUtil;
 import com.idealstudy.mvp.application.dto.classroom.preclass.EnrollmentDto;
-import com.idealstudy.mvp.application.dto.classroom.preclass.EnrollmentPageResultDto;
 import com.idealstudy.mvp.enums.classroom.EnrollmentStatus;
 import com.idealstudy.mvp.application.repository.inclass.EnrollmentRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,7 +51,7 @@ public class EnrollmentRepositoryTest {
         StudentDto dummyStudent = dummyMemberGenerator.createDummyStudent(studentId);
 
         EnrollmentDto enrollmentDto = enrollmentRepository
-                .enroll(dummyClassroom.getId(), studentId, CUR_SCORE, TARGET_SCORE, REQUEST, DETERMINATION);
+                .request(dummyClassroom.getId(), studentId, CUR_SCORE, TARGET_SCORE, REQUEST, DETERMINATION);
 
         EnrollmentDto findDto = enrollmentRepository.getInfo(enrollmentDto.getEnrollmentId());
 
@@ -106,7 +103,7 @@ public class EnrollmentRepositoryTest {
         StudentDto dummyStudent = dummyMemberGenerator.createDummyStudent(studentId);
 
         EnrollmentDto enrollmentDto = enrollmentRepository
-                .enroll(dummyClassroom.getId(), studentId, CUR_SCORE, TARGET_SCORE, REQUEST, DETERMINATION);
+                .request(dummyClassroom.getId(), studentId, CUR_SCORE, TARGET_SCORE, REQUEST, DETERMINATION);
 
         EnrollmentDto acceptEnrollment = enrollmentRepository.accept(enrollmentDto.getEnrollmentId());
         Assertions.assertThat(acceptEnrollment.getStatus()).isEqualTo(EnrollmentStatus.CHECKED);
