@@ -5,7 +5,6 @@ import com.idealstudy.mvp.application.dto.PageResultDto;
 import com.idealstudy.mvp.application.dto.classroom.preclass.EnrollmentDto;
 import com.idealstudy.mvp.application.dto.classroom.preclass.EnrollmentPageResultDto;
 import com.idealstudy.mvp.enums.classroom.EnrollmentStatus;
-import com.idealstudy.mvp.enums.error.DBErrorMsg;
 import com.idealstudy.mvp.infrastructure.jpa.entity.classroom.ClassroomEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.classroom.inclass.EnrollmentEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.StudentEntity;
@@ -41,7 +40,7 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository {
     private static final int SIZE = 10;
 
     @Override
-    public EnrollmentDto enroll(String classroomId, String applicantId, String studentId, String curScore,
+    public EnrollmentDto enroll(String classroomId, String studentId, String curScore,
                                 String targetScore, String request, String determination) {
 
         ClassroomEntity classroom = classroomJpaRepository.findById(classroomId).orElseThrow();
@@ -50,12 +49,12 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository {
 
         EnrollmentEntity entity = EnrollmentEntity.builder()
                 .classroom(classroom)
-                .createdBy(applicantId)
                 .student(student)
                 .curScore(curScore)
                 .targetScore(targetScore)
                 .request(request)
                 .determination(determination)
+                .status(EnrollmentStatus.REQUEST)
                 .build();
 
         return EnrollmentMapper.INSTANCE.toDto(enrollmentJpaRepository.save(entity));
@@ -66,16 +65,11 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository {
 
         EnrollmentEntity entity = enrollmentJpaRepository.findById(id).orElseThrow();
 
-        if( !entity.getCreatedBy().equals(applicantId)) {
-            log.error(DBErrorMsg.DELETE_ERROR.getMsg() + ": 일치하지 않는 신청자 ID");
-            throw new RuntimeException(DBErrorMsg.DELETE_ERROR.getMsg());
-        }
-
         enrollmentJpaRepository.delete(entity);
     }
 
     @Override
-    public EnrollmentDto check(Long id) {
+    public EnrollmentDto accept(Long id) {
 
         EnrollmentEntity entity = enrollmentJpaRepository.findById(id).orElseThrow();
         entity.setStatus(EnrollmentStatus.CHECKED);
@@ -91,21 +85,14 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository {
         return EnrollmentMapper.INSTANCE.toDto(entity);
     }
 
+    /**
+     * 추후 검색 조건이 필요하다고 판단하면 개선 필요
+     * @param classroomId
+     * @param page
+     * @return
+     */
     @Override
-    public boolean checkAffiliated(String classroomId, String studentId) {
-
-        EnrollmentStatus status = EnrollmentStatus.PERMITTED;
-
-        Optional<EnrollmentEntity> entity = enrollmentJpaRepository.
-                findByClassroom_ClassroomIdAndStudent_UserIdAndStatus(classroomId, studentId, status);
-
-        log.info("해당 학생이 존재하는가? " + entity.isPresent());
-
-        return entity.isPresent();
-    }
-
-    @Override
-    public EnrollmentPageResultDto getList(String classroomId, int page) {
+    public EnrollmentPageResultDto getListForTeacher(String classroomId, int page) {
 
         PageRequestDto requestDto = PageRequestDto.builder()
                 .page(page)
@@ -117,15 +104,72 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository {
 
         Function<EnrollmentEntity, EnrollmentDto> fn = EnrollmentMapper.INSTANCE::toDto;
 
-        PageResultDto<EnrollmentDto, EnrollmentEntity> pageResultDto = new PageResultDto(pageResult, fn);
+        PageResultDto<EnrollmentDto, EnrollmentEntity> pageResultDto = new PageResultDto<>(pageResult, fn);
 
         return EnrollmentMapper.INSTANCE.toPageResultDto(pageResultDto);
     }
 
     @Override
-    public void refuse(Long id) {
+    public EnrollmentPageResultDto getListForApplicant(String applicantId, int page) {
+
+        PageRequestDto requestDto = PageRequestDto.builder()
+                .page(page)
+                .size(SIZE)
+                .build();
+
+        Page<EnrollmentEntity> pageResult = enrollmentJpaRepository.findByCreatedBy(applicantId,
+                requestDto.getPageable(Sort.by("regDate").descending()));
+
+        Function<EnrollmentEntity, EnrollmentDto> fn = EnrollmentMapper.INSTANCE::toDto;
+
+        PageResultDto<EnrollmentDto, EnrollmentEntity> pageResultDto = new PageResultDto<>(pageResult, fn);
+
+        return EnrollmentMapper.INSTANCE.toPageResultDto(pageResultDto);
+    }
+
+    @Override
+    public EnrollmentDto update(Long id, String curScore, String targetScore, String request, String determination) {
 
         EnrollmentEntity entity = enrollmentJpaRepository.findById(id).orElseThrow();
-        enrollmentJpaRepository.delete(entity);
+
+        if (curScore != null) {
+            entity.setCurScore(curScore);
+        }
+        if (targetScore != null) {
+            entity.setTargetScore(targetScore);
+        }
+        if (request != null) {
+            entity.setRequest(request);
+        }
+        if (determination != null) {
+            entity.setDetermination(determination);
+        }
+
+        return EnrollmentMapper.INSTANCE.toDto(enrollmentJpaRepository.save(entity));
+    }
+
+    @Override
+    public void reject(Long id) {
+
+        EnrollmentEntity entity = enrollmentJpaRepository.findById(id).orElseThrow();
+
+        /// 거절됨 상태를 만들어야 할듯?
+        // enrollmentJpaRepository.delete(entity);
+
+        entity.setStatus(EnrollmentStatus.REJECTED);
+        enrollmentJpaRepository.save(entity);
+    }
+
+    @Override
+    public boolean checkAffiliated(String classroomId, String studentId) {
+
+        EnrollmentStatus status = EnrollmentStatus.PERMITTED;
+
+        Optional<EnrollmentEntity> entity = enrollmentJpaRepository.
+                findByClassroom_ClassroomIdAndStudent_UserIdAndStatus(classroomId, studentId, status);
+
+        log.info("해당 학생이 존재하는가? " + entity.isPresent());
+
+        return entity.isPresent();
     }
 }

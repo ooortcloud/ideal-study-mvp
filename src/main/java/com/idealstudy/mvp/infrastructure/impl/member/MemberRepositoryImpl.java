@@ -76,10 +76,8 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public StudentDto createStudent(String userId, String encodedPassword, String email, Integer fromSocial) {
 
-        String uuid = UUID.randomUUID().toString();
-
         StudentEntity entity = StudentEntity.builder()
-                .userId(uuid)
+                .userId(userId)
                 .password(encodedPassword)
                 .email(email)
                 .fromSocial(fromSocial)

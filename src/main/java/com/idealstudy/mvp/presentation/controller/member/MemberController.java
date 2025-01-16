@@ -1,5 +1,6 @@
 package com.idealstudy.mvp.presentation.controller.member;
 
+import com.idealstudy.mvp.application.dto.member.StudentDto;
 import com.idealstudy.mvp.application.service.member.EmailService;
 import com.idealstudy.mvp.application.service.member.MemberService;
 import com.idealstudy.mvp.application.dto.member.MemberDto;
@@ -100,6 +101,8 @@ public class MemberController {
         });
     }
 
+    /// TODO: 강사, 학생 각각의 세부 정보에 대한 조회를 지원해야 함
+
     @GetMapping("/users")
     public ResponseEntity<MemberPageResultDto> findMemberList(@RequestParam Integer page) {
 
@@ -123,6 +126,7 @@ public class MemberController {
         return null;
     }
 
+    /// 공통 정보에 대한 수정
     @ForUser
     @PatchMapping("/api/users/update")
     public ResponseEntity<MemberResponseDto> updateMember(HttpServletRequest request, @RequestBody MemberDto dto) {
@@ -133,6 +137,8 @@ public class MemberController {
         return TryCatchControllerTemplate.execute(() ->
                 memberService.updateMember(userId, dto.getPhoneAddress(), null));
     }
+
+    /// TODO: 강사, 학생 각각의 세부 정보에 대한 update를 지원해야 함
 
     private ResponseEntity<String> sendEmail(String email, Role role) {
         try{

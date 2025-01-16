@@ -138,6 +138,9 @@ public class MemberService {
     public boolean isFirst(String userId) {
 
         MemberDto dto = memberRepository.findById(userId);
+
+        /// TODO: 최초 로그인 시
+
         return dto.getInit() == 1;
     }
 

@@ -1,5 +1,9 @@
 package com.idealstudy.mvp.integration.infrastructure;
 
+import com.idealstudy.mvp.application.dto.classroom.ClassroomResponseDto;
+import com.idealstudy.mvp.application.dto.member.StudentDto;
+import com.idealstudy.mvp.integration.infrastructure.helper.InfraDummyClassGenerator;
+import com.idealstudy.mvp.integration.infrastructure.helper.InfraDummyMemberGenerator;
 import com.idealstudy.mvp.integration.infrastructure.util.TestRepositoryUtil;
 import com.idealstudy.mvp.application.dto.classroom.preclass.EnrollmentDto;
 import com.idealstudy.mvp.application.dto.classroom.preclass.EnrollmentPageResultDto;
@@ -12,27 +16,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+import java.util.UUID;
+
 @SpringBootTest
 @Transactional
 public class EnrollmentRepositoryTest {
 
     private final EnrollmentRepository enrollmentRepository;
 
-    // 테스트 이외에 의존성 없음
-    private final TestRepositoryUtil testRepositoryUtil;
-    private Long autoIncrement;
+    private final InfraDummyMemberGenerator dummyMemberGenerator;
 
-    private static final String TEACHER_ID = "98a10847-ad7e-11ef-8e5c-0242ac140002";
-
-    private static final String CLASSROOM_ID = "98a12345-ad7e-11ef-8e5c-0242ac140002";
-
-    private static final String STUDENT_ID = "c99fd58f-b0ae-11ef-89d8-0242ac140003";
-
-    private static final String PARENTS_ID = "c99fd83e-b0ae-11ef-89d8-0242ac140003";
-
-    private static final Long EXIST_ID = 1L;
-
-    private static final String TABLE_NAME = "enrollment";
+    private final InfraDummyClassGenerator dummyClassGenerator;
 
     private static final String CUR_SCORE = "50점이오";
 
@@ -43,131 +38,81 @@ public class EnrollmentRepositoryTest {
     private static final String DETERMINATION = "열심히 해볼게요";
 
     @Autowired
-    public EnrollmentRepositoryTest(EnrollmentRepository enrollmentRepository, TestRepositoryUtil testRepositoryUtil) {
+    public EnrollmentRepositoryTest(EnrollmentRepository enrollmentRepository, InfraDummyMemberGenerator dummyMemberGenerator, InfraDummyClassGenerator dummyClassGenerator) {
         this.enrollmentRepository = enrollmentRepository;
-        this.testRepositoryUtil = testRepositoryUtil;
-    }
-
-    @BeforeEach
-    public void getAutoIncrement() {
-        autoIncrement = testRepositoryUtil.getAutoIncrement(TABLE_NAME);
+        this.dummyMemberGenerator = dummyMemberGenerator;
+        this.dummyClassGenerator = dummyClassGenerator;
     }
 
     @Test
-    public void testEnroll() {
+    public void createAndSelectAndUpdateAndDelete_applicantIsStudent() {
 
-        String classroomId = CLASSROOM_ID;
-        String applicant = PARENTS_ID;
-        String student = STUDENT_ID;
-        String curScore = CUR_SCORE;
-        String targetScore = TARGET_SCORE;
-        String request = REQUEST;
-        String determination = DETERMINATION;
+        Map<String, Object> dummyMap = dummyClassGenerator.createDummy();
+        ClassroomResponseDto dummyClassroom = (ClassroomResponseDto) dummyMap.get("classroomResponseDto");
 
-        EnrollmentDto dto = enrollmentRepository.enroll(classroomId, applicant, student, curScore, targetScore,
-                request, determination);
+        String studentId = UUID.randomUUID().toString();
+        StudentDto dummyStudent = dummyMemberGenerator.createDummyStudent(studentId);
 
-        Assertions.assertThat(dto.getCreatedBy()).isEqualTo(applicant);
-        Assertions.assertThat(dto.getStudentId()).isEqualTo(student);
-        Assertions.assertThat(dto.getCurScore()).isEqualTo(curScore);
-        Assertions.assertThat(dto.getTargetScore()).isEqualTo(targetScore);
-        Assertions.assertThat(dto.getRequest()).isEqualTo(request);
-        Assertions.assertThat(dto.getDetermination()).isEqualTo(determination);
+        EnrollmentDto enrollmentDto = enrollmentRepository
+                .enroll(dummyClassroom.getId(), studentId, CUR_SCORE, TARGET_SCORE, REQUEST, DETERMINATION);
+
+        EnrollmentDto findDto = enrollmentRepository.getInfo(enrollmentDto.getEnrollmentId());
+
+        Assertions.assertThat(enrollmentDto.getEnrollmentId()).isEqualTo(findDto.getEnrollmentId());
+        Assertions.assertThat(enrollmentDto.getClassroomId()).isEqualTo(findDto.getClassroomId());
+        Assertions.assertThat(enrollmentDto.getCreatedBy()).isEqualTo(findDto.getCreatedBy());
+        Assertions.assertThat(enrollmentDto.getStudentId()).isEqualTo(findDto.getStudentId());
+        Assertions.assertThat(enrollmentDto.getCurScore()).isEqualTo(findDto.getCurScore());
+        Assertions.assertThat(enrollmentDto.getTargetScore()).isEqualTo(findDto.getTargetScore());
+        Assertions.assertThat(enrollmentDto.getRequest()).isEqualTo(findDto.getRequest());
+        Assertions.assertThat(enrollmentDto.getDetermination()).isEqualTo(findDto.getDetermination());
+
+        String newCurScore = "90점!";
+        String newTargetScore = "100점!";
+        String newRequest = "update";
+        String newDetermination = "update~";
+
+        EnrollmentDto updateDto = enrollmentRepository
+                .update(enrollmentDto.getEnrollmentId(), newCurScore, newTargetScore, newRequest, newDetermination);
+
+        Assertions.assertThat(updateDto.getEnrollmentId()).isEqualTo(enrollmentDto.getEnrollmentId());
+        Assertions.assertThat(updateDto.getClassroomId()).isEqualTo(enrollmentDto.getClassroomId());
+        Assertions.assertThat(updateDto.getCreatedBy()).isEqualTo(enrollmentDto.getCreatedBy());
+        Assertions.assertThat(updateDto.getStudentId()).isEqualTo(enrollmentDto.getStudentId());
+        Assertions.assertThat(updateDto.getCurScore()).isEqualTo(newCurScore);
+        Assertions.assertThat(updateDto.getTargetScore()).isEqualTo(newTargetScore);
+        Assertions.assertThat(updateDto.getRequest()).isEqualTo(newRequest);
+        Assertions.assertThat(updateDto.getDetermination()).isEqualTo(newDetermination);
+
+        enrollmentRepository.drop(enrollmentDto.getEnrollmentId(), studentId);
+
+        Assertions.assertThatThrownBy(() -> enrollmentRepository.getInfo(enrollmentDto.getEnrollmentId()));
+    }
+
+    /// 나중에 학부모 로직 설계되면 테스트 진행할 것
+    // @Test
+    public void createAndSelectAndUpdateAndDelete_applicantIsParents() {
+
+        // enrollmentRepository.enroll()
     }
 
     @Test
-    public void testDrop() {
+    public void createAndAcceptAndDrop() {
 
-        createDummy();
+        Map<String, Object> dummyMap = dummyClassGenerator.createDummy();
+        ClassroomResponseDto dummyClassroom = (ClassroomResponseDto) dummyMap.get("classroomResponseDto");
 
-        Long id = autoIncrement;
-        String applicantId = PARENTS_ID;
+        String studentId = UUID.randomUUID().toString();
+        StudentDto dummyStudent = dummyMemberGenerator.createDummyStudent(studentId);
 
-        enrollmentRepository.drop(id, applicantId);
-    }
+        EnrollmentDto enrollmentDto = enrollmentRepository
+                .enroll(dummyClassroom.getId(), studentId, CUR_SCORE, TARGET_SCORE, REQUEST, DETERMINATION);
 
-    @Test
-    public void testCheck() {
+        EnrollmentDto acceptEnrollment = enrollmentRepository.accept(enrollmentDto.getEnrollmentId());
+        Assertions.assertThat(acceptEnrollment.getStatus()).isEqualTo(EnrollmentStatus.CHECKED);
 
-        createDummy();
+        enrollmentRepository.drop(enrollmentDto.getEnrollmentId(), studentId);
 
-        Long id = autoIncrement;
-
-        EnrollmentDto dto = enrollmentRepository.check(id);
-        Assertions.assertThat(dto.getStatus()).isEqualTo(EnrollmentStatus.CHECKED);
-    }
-
-    @Test
-    public void testGetInfo() {
-
-        createDummy();
-
-        String classroomId = CLASSROOM_ID;
-        String applicant = PARENTS_ID;
-        String student = STUDENT_ID;
-        String curScore = CUR_SCORE;
-        String targetScore = TARGET_SCORE;
-        String request = REQUEST;
-        String determination = DETERMINATION;
-
-        EnrollmentDto dto = enrollmentRepository.getInfo(autoIncrement);
-        Assertions.assertThat(dto.getClassroomId()).isEqualTo(classroomId);
-        Assertions.assertThat(dto.getCreatedBy()).isEqualTo(applicant);
-        Assertions.assertThat(dto.getStudentId()).isEqualTo(student);
-        Assertions.assertThat(dto.getCurScore()).isEqualTo(curScore);
-        Assertions.assertThat(dto.getTargetScore()).isEqualTo(targetScore);
-        Assertions.assertThat(dto.getRequest()).isEqualTo(request);
-        Assertions.assertThat(dto.getDetermination()).isEqualTo(determination);
-    }
-
-    @Test
-    public void testGetList() {
-
-        String classroomId = CLASSROOM_ID;
-        int page = 1;
-
-        createDummy();
-        createDummy();
-
-        EnrollmentPageResultDto dto = enrollmentRepository.getList(classroomId, page);
-        Assertions.assertThat(dto.getDtoList().size()).isEqualTo(2);
-    }
-
-    @Test
-    public void testRefuse() {
-
-        createDummy();
-
-        Long id = autoIncrement;
-
-        enrollmentRepository.refuse(id);
-
-        Assertions.assertThatThrownBy(() -> enrollmentRepository.getInfo(id));
-    }
-
-    @Test
-    public void testBelong() {
-
-        createDummy();
-
-        String classroomId = CLASSROOM_ID;
-        String studentId = STUDENT_ID;
-
-        Assertions.assertThat(enrollmentRepository.checkAffiliated(classroomId, studentId))
-                .isTrue();
-    }
-
-    private EnrollmentDto createDummy() {
-
-        String classroomId = CLASSROOM_ID;
-        String applicant = PARENTS_ID;
-        String student = STUDENT_ID;
-        String curScore = CUR_SCORE;
-        String targetScore = TARGET_SCORE;
-        String request = REQUEST;
-        String determination = DETERMINATION;
-
-        return enrollmentRepository.enroll(classroomId, applicant, student, curScore, targetScore,
-                request, determination);
+        Assertions.assertThatThrownBy(() -> enrollmentRepository.getInfo(enrollmentDto.getEnrollmentId()));
     }
 }

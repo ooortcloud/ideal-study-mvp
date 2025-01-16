@@ -8,7 +8,7 @@ public interface EnrollmentRepository {
     /**
      * 신청자(학생 또는 학부모)가 수업 신청을 함
      */
-    EnrollmentDto enroll(String classroomId, String applicantId, String studentId, String curScore, String targetScore, String request, String determination);
+    EnrollmentDto enroll(String classroomId, String studentId, String curScore, String targetScore, String request, String determination);
 
     /**
      * 신청자(학생 또는 학부모)가 수업 신청을 포기함.
@@ -21,22 +21,27 @@ public interface EnrollmentRepository {
      * 강사가 enroll된 신청을 받아들임.
      * 신청자의 '결제' 상태를 대기.
      */
-    EnrollmentDto check(Long id);
+    EnrollmentDto accept(Long id);
 
     /**
      * 특정 수업 신청 정보 확인
      */
     EnrollmentDto getInfo(Long id);
 
-    boolean checkAffiliated(String classroomId, String studentId);
-
     /**
      * 특정 클래스의 수업 신청 리스트 조회
      */
-    EnrollmentPageResultDto getList(String classroomId, int page);
+    EnrollmentPageResultDto getListForTeacher(String classroomId, int page);
+
+    EnrollmentPageResultDto getListForApplicant(String applicantId, int page);
+
+    EnrollmentDto update(Long id, String curScore, String targetScore,
+                         String request, String determination);
 
     /**
      * 신청자의 enroll을 거절함.
      */
-    void refuse(Long id);
+    void reject(Long id);
+
+    boolean checkAffiliated(String classroomId, String studentId);
 }
