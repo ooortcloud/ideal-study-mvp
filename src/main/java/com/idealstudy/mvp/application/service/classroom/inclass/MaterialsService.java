@@ -21,6 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 
+/**
+ * 수업이 만료된 상태면 해당 클래스의 인강과 자료에 대한 접근은 할 수 없다.
+ * 하지만 수업이 만료되더라도 본인이 제출했던 과제나 시험 및 피드백 정도는 조회 및 다운로드가 가능해야 한다.
+ */
+
 @Service
 @Slf4j
 @Transactional

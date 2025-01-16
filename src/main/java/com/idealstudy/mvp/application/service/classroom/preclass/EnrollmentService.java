@@ -33,6 +33,8 @@ public class EnrollmentService {
         return TryCatchServiceTemplate.execute(() -> {
 
             // 강사에게 알림을 전달할 필요가 있다.
+            
+            /// TODO: 이미 학부모가 등록 시 추가 등록 불가
 
             return enrollmentRepository.request(classroomId, studentId, curScore, targetScore,
                     request, determination);
@@ -48,6 +50,8 @@ public class EnrollmentService {
             // applicantId와 studentId가 다른 경우: 학부모의 신청
             ///TODO: 신청한 학부모가 정말 해당 학생의 학부모인지 체크하는 로직 필요  << 추가 기능: 현재는 학부모 로직을 배제하여 개발하자.(설계가 하나도 되어 있지 않음)
 
+            /// TODO: 이미 학생이 등록 시 추가 등록 불가
+        
             // 강사에게 알림을 전달할 필요가 있다.
 
             return enrollmentRepository.request(classroomId, studentId, curScore, targetScore,
@@ -69,6 +73,8 @@ public class EnrollmentService {
 
             // DB에 저장된 신청자와 요청자의 id가 서로 동일하지 않는 경우 로직 실행 거부
             validationManager.validateIndividual(applicantId, dto.getCreatedBy());
+
+            /// TODO: 이미 결제를 한 경우에는 환불 처리해야 함(정책에 따라서 환불 불가일 수도 있고)
 
             enrollmentRepository.drop(id, applicantId);
 
@@ -212,7 +218,7 @@ public class EnrollmentService {
             
             EnrollmentDto findDto = enrollmentRepository.getInfo(enrollmentId);
             
-            /// 결제자와 신청자가 꼭 같아야 할까?
+            /// TODO: 결제자와 신청자가 꼭 같아야 할까?
 
             if(findDto.getStatus() == EnrollmentStatus.PERMITTED)
                 throw new CustomException(ErrorCode.ALREADY_PROCEEDED);
@@ -220,9 +226,7 @@ public class EnrollmentService {
             if(findDto.getStatus() != EnrollmentStatus.CHECKED)
                 throw new CustomException(ErrorCode.ABNORMAL_REQUEST);
 
-            /// 결제 로직을 거쳐야 함(외부 결제 서버와 통신하는 로직 구현 필요)
-
-
+            /// TODO: 결제 로직을 거쳐야 함(외부 결제 서버와 통신하는 로직 구현 필요)
 
             /// PERMITTED로 변경
             enrollmentRepository.permit(enrollmentId);
@@ -238,7 +242,7 @@ public class EnrollmentService {
 
             EnrollmentDto findDto = enrollmentRepository.getInfo(enrollmentId);
 
-            /// 결제자와 신청자가 꼭 같아야 할까?
+            /// TODO: 결제자와 신청자가 꼭 같아야 할까?
 
             if(findDto.getStatus() == EnrollmentStatus.PERMITTED)
                 throw new CustomException(ErrorCode.ALREADY_PROCEEDED);
@@ -246,7 +250,7 @@ public class EnrollmentService {
             if(findDto.getStatus() != EnrollmentStatus.CHECKED)
                 throw new CustomException(ErrorCode.ABNORMAL_REQUEST);
 
-            /// 결제 로직을 거쳐야 함(외부 결제 서버와 통신하는 로직 구현 필요)
+            /// TODO: 결제 로직을 거쳐야 함(외부 결제 서버와 통신하는 로직 구현 필요)
 
             /// PERMITTED로 변경
             enrollmentRepository.permit(enrollmentId);
