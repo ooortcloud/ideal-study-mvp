@@ -1,6 +1,5 @@
 package com.idealstudy.mvp.error;
 
-import com.idealstudy.mvp.enums.error.ErrorCode;
 import lombok.Getter;
 
 /**
@@ -12,11 +11,11 @@ import lombok.Getter;
 @Getter
 public class CustomException extends RuntimeException {
 
-    private final ErrorCode errorCode;
+    private final ExceptionInfo exceptionInfo;
 
-    public CustomException(ErrorCode errorCode) {
+    public CustomException(ExceptionInfo exceptionInfo) {
 
-        super(errorCode.getMsg());
-        this.errorCode = errorCode;
+        super(exceptionInfo.getMessage());
+        this.exceptionInfo = exceptionInfo;
     }
 }
