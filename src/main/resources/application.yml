@@ -8,8 +8,10 @@ spring:
         - "dev"
         - "private"
       deployment:
-        - "prod"
+        - "deploy"
         - "private"
+      production:
+        - "prod"
       test:
         - "test"
     active: development
