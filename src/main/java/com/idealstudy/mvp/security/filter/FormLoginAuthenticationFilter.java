@@ -3,7 +3,7 @@ package com.idealstudy.mvp.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.idealstudy.mvp.enums.member.Role;
 import com.idealstudy.mvp.security.dto.UserLoginResponseDto;
-import com.idealstudy.mvp.util.JwtUtil;
+import com.idealstudy.mvp.helper.JwtHelper;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,7 +31,7 @@ import java.nio.charset.StandardCharsets;
 public class FormLoginAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Autowired
-    private final JwtUtil jwtUtil;
+    private final JwtHelper jwtUtil;
 
     @PostConstruct
     void setup() {

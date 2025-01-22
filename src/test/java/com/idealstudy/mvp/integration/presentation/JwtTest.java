@@ -1,11 +1,7 @@
 package com.idealstudy.mvp.integration.presentation;
 
 import com.idealstudy.mvp.MvpApplication;
-import com.idealstudy.mvp.application.dto.member.MemberDto;
-import com.idealstudy.mvp.enums.member.Role;
-import com.idealstudy.mvp.util.JwtUtil;
-import lombok.RequiredArgsConstructor;
-import org.assertj.core.api.Assertions;
+import com.idealstudy.mvp.helper.JwtHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,10 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 // @RequiredArgsConstructor
 public class JwtTest {
 
-    private final JwtUtil jwtUtil;
+    private final JwtHelper jwtUtil;
 
     @Autowired
-    public JwtTest(JwtUtil jwtUtil) {
+    public JwtTest(JwtHelper jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
 

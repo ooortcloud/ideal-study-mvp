@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.util;
+package com.idealstudy.mvp.helper;
 
 import com.idealstudy.mvp.application.dto.member.MemberDto;
 import com.idealstudy.mvp.enums.member.Role;
@@ -18,7 +18,7 @@ import java.util.Date;
 
 @Component
 @Slf4j(topic = "JwtUtil")
-public class JwtUtil {
+public class JwtHelper {
 
     // Header KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";

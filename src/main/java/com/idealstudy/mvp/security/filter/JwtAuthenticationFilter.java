@@ -3,7 +3,7 @@ package com.idealstudy.mvp.security.filter;
 import com.idealstudy.mvp.security.dto.JwtPayloadDto;
 import com.idealstudy.mvp.security.token.JwtAuthenticationToken;
 import com.idealstudy.mvp.security.userDetailsImpl.JwtDetails;
-import com.idealstudy.mvp.util.JwtUtil;
+import com.idealstudy.mvp.helper.JwtHelper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,9 +27,9 @@ import java.util.Collection;
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     @Autowired
-    private final JwtUtil jwtUtil;
+    private final JwtHelper jwtUtil;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    public JwtAuthenticationFilter(JwtHelper jwtUtil) {
         // request 보안 설정이 우선 적용되고, permitAll이 아닌 나머지에 대해서 filter에 걸리기를 기대함.
         super("/api/**");
         this.jwtUtil = jwtUtil;

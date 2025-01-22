@@ -1,7 +1,7 @@
 package com.idealstudy.mvp.security.filter;
 
 import com.idealstudy.mvp.security.dto.JwtPayloadDto;
-import com.idealstudy.mvp.util.JwtUtil;
+import com.idealstudy.mvp.helper.JwtHelper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ import java.io.IOException;
 public class JwtParserFilter extends OncePerRequestFilter {
 
     @Autowired
-    private final JwtUtil jwtUtil;
+    private final JwtHelper jwtUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
