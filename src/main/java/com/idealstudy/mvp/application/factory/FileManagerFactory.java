@@ -1,6 +1,6 @@
 package com.idealstudy.mvp.application.factory;
 
-import com.idealstudy.mvp.application.service.domain_service.FileManager;
+import com.idealstudy.mvp.application.domain_service.FileManager;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -3,7 +3,7 @@ package com.idealstudy.mvp.application.service.classroom.inclass;
 import com.idealstudy.mvp.application.dto.classroom.inclass.MaterialsDto;
 import com.idealstudy.mvp.application.dto.classroom.inclass.MaterialsPageResultDto;
 import com.idealstudy.mvp.application.component.ClassroomComponent;
-import com.idealstudy.mvp.application.service.domain_service.FileManager;
+import com.idealstudy.mvp.application.domain_service.FileManager;
 import com.idealstudy.mvp.enums.classroom.MaterialsStatus;
 import com.idealstudy.mvp.enums.error.DBErrorMsg;
 import com.idealstudy.mvp.enums.error.SecurityErrorMsg;

@@ -4,7 +4,7 @@ import com.idealstudy.mvp.application.dto.member.MemberDto;
 import com.idealstudy.mvp.application.dto.member.MemberListDto;
 import com.idealstudy.mvp.application.dto.member.MemberPageResultDto;
 import com.idealstudy.mvp.application.repository.MemberRepository;
-import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
+import com.idealstudy.mvp.application.domain_service.ValidationManager;
 import com.idealstudy.mvp.application.service.member.MemberService;
 import com.idealstudy.mvp.enums.member.Gender;
 import com.idealstudy.mvp.enums.member.Role;

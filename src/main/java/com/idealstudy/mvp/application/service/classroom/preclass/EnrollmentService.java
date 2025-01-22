@@ -3,10 +3,10 @@ package com.idealstudy.mvp.application.service.classroom.preclass;
 import com.idealstudy.mvp.application.dto.classroom.preclass.EnrollmentDto;
 import com.idealstudy.mvp.application.dto.classroom.preclass.EnrollmentPageResultDto;
 import com.idealstudy.mvp.application.repository.inclass.EnrollmentRepository;
-import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
+import com.idealstudy.mvp.application.domain_service.ValidationManager;
 import com.idealstudy.mvp.enums.classroom.EnrollmentStatus;
 import com.idealstudy.mvp.enums.error.DBErrorMsg;
-import com.idealstudy.mvp.enums.error.ErrorCode;
+import com.idealstudy.mvp.enums.error.UserErrorMsg;
 import com.idealstudy.mvp.error.CustomException;
 import com.idealstudy.mvp.util.TryCatchServiceTemplate;
 import lombok.RequiredArgsConstructor;
@@ -94,10 +94,10 @@ public class EnrollmentService {
             validationManager.validateTeacher(teacherId, findDto.getClassroomId());
 
             if(findDto.getStatus() == EnrollmentStatus.CHECKED)
-                throw new CustomException(ErrorCode.ALREADY_PROCEEDED);
+                throw new CustomException(UserErrorMsg.ALREADY_PROCEEDED);
 
             if(findDto.getStatus() != EnrollmentStatus.REQUEST)
-                throw new CustomException(ErrorCode.ABNORMAL_REQUEST);
+                throw new CustomException(UserErrorMsg.ABNORMAL_REQUEST);
 
             // 신청자에게 알림을 전달할 필요가 있다.
 
@@ -193,10 +193,10 @@ public class EnrollmentService {
             validationManager.validateTeacher(teacherId, findDto.getClassroomId());
 
             if(findDto.getStatus() == EnrollmentStatus.REJECTED)
-                throw new CustomException(ErrorCode.ALREADY_PROCEEDED);
+                throw new CustomException(UserErrorMsg.ALREADY_PROCEEDED);
 
             if(findDto.getStatus() != EnrollmentStatus.REQUEST)
-                throw new CustomException(ErrorCode.ABNORMAL_REQUEST);
+                throw new CustomException(UserErrorMsg.ABNORMAL_REQUEST);
 
             enrollmentRepository.reject(id);
 
@@ -221,10 +221,10 @@ public class EnrollmentService {
             /// TODO: 결제자와 신청자가 꼭 같아야 할까?
 
             if(findDto.getStatus() == EnrollmentStatus.PERMITTED)
-                throw new CustomException(ErrorCode.ALREADY_PROCEEDED);
+                throw new CustomException(UserErrorMsg.ALREADY_PROCEEDED);
 
             if(findDto.getStatus() != EnrollmentStatus.CHECKED)
-                throw new CustomException(ErrorCode.ABNORMAL_REQUEST);
+                throw new CustomException(UserErrorMsg.ABNORMAL_REQUEST);
 
             /// TODO: 결제 로직을 거쳐야 함(외부 결제 서버와 통신하는 로직 구현 필요)
 
@@ -245,10 +245,10 @@ public class EnrollmentService {
             /// TODO: 결제자와 신청자가 꼭 같아야 할까?
 
             if(findDto.getStatus() == EnrollmentStatus.PERMITTED)
-                throw new CustomException(ErrorCode.ALREADY_PROCEEDED);
+                throw new CustomException(UserErrorMsg.ALREADY_PROCEEDED);
 
             if(findDto.getStatus() != EnrollmentStatus.CHECKED)
-                throw new CustomException(ErrorCode.ABNORMAL_REQUEST);
+                throw new CustomException(UserErrorMsg.ABNORMAL_REQUEST);
 
             /// TODO: 결제 로직을 거쳐야 함(외부 결제 서버와 통신하는 로직 구현 필요)
 

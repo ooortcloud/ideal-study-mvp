@@ -3,7 +3,7 @@ package com.idealstudy.mvp.unit.service;
 import com.idealstudy.mvp.unit.util.ServiceDummyMemberGenerator;
 import com.idealstudy.mvp.application.dto.member.MemberDto;
 import com.idealstudy.mvp.application.repository.MemberRepository;
-import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
+import com.idealstudy.mvp.application.domain_service.ValidationManager;
 import com.idealstudy.mvp.application.service.member.MyPageService;
 import com.idealstudy.mvp.presentation.dto.member.MemberResponseDto;
 import org.assertj.core.api.Assertions;

@@ -2,7 +2,7 @@ package com.idealstudy.mvp.presentation.controller;
 
 import com.idealstudy.mvp.application.service.member.MemberService;
 import com.idealstudy.mvp.security.dto.JwtPayloadDto;
-import com.idealstudy.mvp.util.JwtUtil;
+import com.idealstudy.mvp.helper.JwtHelper;
 import com.idealstudy.mvp.util.TryCatchControllerTemplate;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,7 +22,7 @@ import java.io.IOException;
 public class CommonController {
 
     @Autowired
-    private final JwtUtil jwtUtil;
+    private final JwtHelper jwtUtil;
 
     @Autowired
     private final MemberService memberService;
