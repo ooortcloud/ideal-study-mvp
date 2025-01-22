@@ -1,28 +1,29 @@
 package com.idealstudy.mvp.presentation.controller.member;
 
-import com.idealstudy.mvp.application.dto.member.StudentDto;
 import com.idealstudy.mvp.application.service.member.EmailService;
 import com.idealstudy.mvp.application.service.member.MemberService;
-import com.idealstudy.mvp.application.dto.member.MemberDto;
 import com.idealstudy.mvp.application.dto.member.MemberPageResultDto;
 import com.idealstudy.mvp.application.service.OfficialProfileService;
 import com.idealstudy.mvp.enums.HttpResponse;
+import com.idealstudy.mvp.enums.error.UserErrorMsg;
 import com.idealstudy.mvp.enums.member.Role;
+import com.idealstudy.mvp.error.CustomException;
 import com.idealstudy.mvp.infrastructure.dto.SignUpDto;
-import com.idealstudy.mvp.presentation.dto.member.MemberResponseDto;
-import com.idealstudy.mvp.presentation.dto.member.SignUpUserRequestDto;
+import com.idealstudy.mvp.presentation.dto.member.*;
+import com.idealstudy.mvp.security.annotation.ForStudent;
+import com.idealstudy.mvp.security.annotation.ForTeacher;
 import com.idealstudy.mvp.security.annotation.ForUser;
 import com.idealstudy.mvp.security.dto.JwtPayloadDto;
-import com.idealstudy.mvp.util.HttpResponseUtil;
-import com.idealstudy.mvp.util.TryCatchControllerTemplate;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -51,16 +52,16 @@ public class MemberController {
 
     private static final Pattern emailPattern = Pattern.compile(EMAIL_REGEX);
 
+    @Operation(summary = "회원가입", description = "사용자가 회원가입을 신청한 이메일로 등록 메일을 보냅니다.")
     @PostMapping("/users/sign-up")
-    public ResponseEntity<String> signUp(@RequestBody SignUpUserRequestDto dto) {
+    public ResponseEntity<String> signUp(@RequestBody SignUpUserRequestDto dto) throws Exception {
 
-        ResponseEntity<String> response = sendEmail(dto.getEmail(), dto.getRole());
-        if(response != null)
-            return response;
+        sendEmail(dto.getEmail(), dto.getRole());
 
-        return HttpResponseUtil.responseString(HttpResponse.SUCCESS_EMAIL);
+        return ResponseEntity.ok(HttpResponse.SUCCESS.getMsg());
     }
 
+    @Operation(summary = "이메일 인증", description = "사용자가 발급받은 이메일 경로를 입력했을 때 접속되는 엔드포인트입니다.")
     @GetMapping("/users/email-authentication")
     public ResponseEntity<String> emailAuthentication(@RequestParam String emailToken,
                                                       HttpServletRequest request) {
@@ -68,47 +69,70 @@ public class MemberController {
         request.setAttribute("jwtPayload", JwtPayloadDto.builder()
                 .sub(UUID.randomUUID().toString()).build());
 
-        return TryCatchControllerTemplate.execute(() -> {
+        Map<String, Object> returnMap = memberService.addMember(emailToken);
+        SignUpDto signUpDto = (SignUpDto) returnMap.get("signUpDto");
+        String password = (String) returnMap.get("password");
+        String userId = (String) returnMap.get("userId");
 
-                Map<String, Object> returnMap = memberService.addMember(emailToken);
-                SignUpDto signUpDto = (SignUpDto) returnMap.get("signUpDto");
-                String password = (String) returnMap.get("password");
-                String userId = (String) returnMap.get("userId");
+        /// 마이페이지 자동 생성
+        // 현재는 마이페이지에 필요한 모든 데이터가 member 테이블에 있어서 mypage 관련 테이블이 존재하지 않음.
+        // 그래서 관련 로직이 없는 상태. (정확히는, 이 로직이 없어도 작동에는 문제 없는 상태)
 
-                /// 마이페이지 자동 생성
-                // 현재는 마이페이지에 필요한 모든 데이터가 member 테이블에 있어서 mypage 관련 테이블이 존재하지 않음.
-                // 그래서 관련 로직이 없는 상태. (정확히는, 이 로직이 없어도 작동에는 문제 없는 상태)
+        /// (강사에 한해서) 공식 페이지 자동 생성
+        if(signUpDto.getRole() == Role.ROLE_TEACHER)
+            officialProfileService.create(userId);
 
-                /// (강사에 한해서) 공식 페이지 자동 생성
-                if(signUpDto.getRole() == Role.ROLE_TEACHER)
-                    officialProfileService.create(userId);
-
-                return password;
-            }
-        );
+        return ResponseEntity.ok(password);
     }
 
+    @Operation(summary = "학생 정보 조회")
+    @GetMapping("/student/{studentId}")
+    public ResponseEntity<StudentResponseDto> findStudent(@PathVariable String studentId, HttpServletRequest request) {
+
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String userId = null;
+        if(payload != null)
+            userId = payload.getSub();
+
+        return ResponseEntity.ok(memberService.findStudentById(studentId, userId));
+    }
+
+    @Operation(summary = "강사 정보 조회")
+    @GetMapping("/teacher/{teacherId}")
+    public ResponseEntity<TeacherResponseDto> findTeacher(@PathVariable String teacherId, HttpServletRequest request) {
+
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+
+        String userId = null;
+        if(payload != null)
+            userId = payload.getSub();
+
+        return ResponseEntity.ok( memberService.findTeacherById(teacherId, userId));
+    }
+
+    /*
+    @Operation(summary = "학부모 정보 조회")
     @ForUser
-    @GetMapping("/api/users/{userId}")
-    public ResponseEntity<MemberResponseDto> findMember(@PathVariable String userId, HttpServletRequest request) {
+    @GetMapping("/api/parents/{studentId}")
+    public ResponseEntity<MemberResponseDto> findParents(@PathVariable String studentId, HttpServletRequest request) {
 
-        return TryCatchControllerTemplate.execute(() -> {
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String tokenId = payload.getSub();
 
-            JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
-            String tokenId = payload.getSub();
 
-            return memberService.findById(userId, tokenId);
-        });
+        return ResponseEntity.ok(memberService.findById(studentId, tokenId));
     }
 
-    /// TODO: 강사, 학생 각각의 세부 정보에 대한 조회를 지원해야 함
+     */
 
+    @Operation(summary = "회원 목록 조회")
     @GetMapping("/users")
     public ResponseEntity<MemberPageResultDto> findMemberList(@RequestParam Integer page) {
 
-        return TryCatchControllerTemplate.execute(() -> memberService.findMembers(page));
+        return ResponseEntity.ok(memberService.findMembers(page));
     }
 
+    @Operation(summary = "회원 정보 삭제")
     @ForUser
     @DeleteMapping("/api/users")
     public ResponseEntity<String> deleteMember(HttpServletRequest request) {
@@ -119,14 +143,14 @@ public class MemberController {
         boolean result = memberService.deleteMember(userId);
 
         if( !result)
-            return new ResponseEntity<String>("회원탈퇴에 실패했습니다.", HttpStatusCode.valueOf(500));
+            return new ResponseEntity<String>(HttpResponse.FAILED.getMsg(), HttpResponse.FAILED.getHttpStatus());
         if(result)
-            return new ResponseEntity<String>("성공적으로 회원탈퇴 되었습니다.", HttpStatusCode.valueOf(200));
+            return new ResponseEntity<String>(HttpResponse.SUCCESS.getMsg(), HttpResponse.SUCCESS.getHttpStatus());
 
         return null;
     }
 
-    /// 공통 정보에 대한 수정
+    /*
     @ForUser
     @PatchMapping("/api/users/update")
     public ResponseEntity<MemberResponseDto> updateMember(HttpServletRequest request, @RequestBody MemberDto dto) {
@@ -134,32 +158,98 @@ public class MemberController {
         JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
         String userId = payload.getSub();
 
-        return TryCatchControllerTemplate.execute(() ->
-                memberService.updateMember(userId, dto.getPhoneAddress(), null));
+        return ResponseEntity.ok(memberService.updateMember(userId, dto.getPhoneAddress(), null));
     }
 
-    /// TODO: 강사, 학생 각각의 세부 정보에 대한 update를 지원해야 함
+     */
+    @Operation(summary = "학생 정보 수정", description = "이미지 정보를 포함하여 데이터를 입력받습니다.")
+    @ForStudent
+    @PatchMapping(value = "/api/student/update", consumes = "multipart/form-data")
+    public ResponseEntity<StudentResponseDto> updateStudent(HttpServletRequest request,
+                                                           @RequestPart("dto") StudentRequestDto dto,
+                                                           @RequestPart(value = "profile", required = false) MultipartFile profile)
+            throws IOException {
 
-    private ResponseEntity<String> sendEmail(String email, Role role) {
-        try{
-            if(!isValidEmailPattern(email))
-                return new ResponseEntity<String>("잘못된 이메일 양식입니다.", HttpStatusCode.valueOf(400));
+        if(!isImage(profile))
+            throw new CustomException(UserErrorMsg.INVALID_CONTENT_TYPE);
 
-            log.info("입력받은 이메일: "+ email);
-            if(emailService.isEmailDuplication(email)) {
-                return new ResponseEntity<String>("현재 등록 중이거나 이미 등록된 이메일입니다.",
-                        HttpStatusCode.valueOf(400));
-            }
-            emailService.sendSignUpEmail(email, role);
-        } catch (Exception e) {
-            log.error(e.toString() + ":: " + e.getMessage());
-            return new ResponseEntity<String>("failed to send email", HttpStatusCode.valueOf(500));
-        }
-        return null;
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String studentId = payload.getSub();
+
+        return ResponseEntity.ok(
+                memberService.updateStudent(studentId, dto.getName(), dto.getPhoneAddress(), dto.getSex(),
+                        dto.getSchool(), dto.getGrade(), profile));
+    }
+
+    @Operation(summary = "학생 정보 수정(JSON)", description = "이미지 정보를 제외한 나머지 정보들에 대해 입력받습니다.")
+    @ForStudent
+    @PatchMapping(value = "/api/student/update/json")
+    public ResponseEntity<StudentResponseDto> updateStudentOnlyJson(HttpServletRequest request,
+                                                            @RequestBody StudentRequestDto dto)
+            throws IOException {
+
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String studentId = payload.getSub();
+
+        return ResponseEntity.ok(
+                memberService.updateStudent(studentId, dto.getName(), dto.getPhoneAddress(), dto.getSex(),
+                        dto.getSchool(), dto.getGrade(), null));
+    }
+
+    @Operation(summary = "강사 정보 수정")
+    @ForTeacher
+    @PatchMapping(value = "/api/teacher/update", consumes = "multipart/form-data")
+    public ResponseEntity<TeacherResponseDto> updateTeacher(HttpServletRequest request,
+                                                           @RequestPart("dto") TeacherRequestDto dto,
+                                                           @RequestPart(value = "profile", required = false) MultipartFile profile)
+            throws IOException {
+
+        if(!isImage(profile))
+            throw new CustomException(UserErrorMsg.INVALID_CONTENT_TYPE);
+
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String teacherId = payload.getSub();
+
+        return ResponseEntity.ok(
+                memberService.updateTeacher(teacherId,  dto.getName(), dto.getPhoneAddress(), dto.getSex(),
+                        dto.getUniv(), dto.getStatus(), dto.getSubject(), profile));
+    }
+
+    @Operation(summary = "강사 정보 수정(JSON)", description = "이미지 정보를 제외한 나머지 정보들에 대해 입력받습니다.")
+    @ForTeacher
+    @PatchMapping("/api/teacher/update/json")
+    public ResponseEntity<TeacherResponseDto> updateTeacher(HttpServletRequest request,
+                                                            @RequestBody TeacherRequestDto dto)
+            throws IOException {
+
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String teacherId = payload.getSub();
+
+        return ResponseEntity.ok(
+                memberService.updateTeacher(teacherId,  dto.getName(), dto.getPhoneAddress(), dto.getSex(),
+                        dto.getUniv(), dto.getStatus(), dto.getSubject(), null));
+    }
+
+    private void sendEmail(String email, Role role) throws Exception {
+
+        if(!isValidEmailPattern(email))
+            throw new CustomException(UserErrorMsg.ILLEGAL_EMAIL);
+
+        log.info("입력받은 이메일: "+ email);
+        if(emailService.isEmailDuplication(email))
+            throw new CustomException(UserErrorMsg.DUPLICATION_EMAIL_REQUEST);
+
+        emailService.sendSignUpEmail(email, role);
     }
 
     private boolean isValidEmailPattern(String email) {
 
         return emailPattern.matcher(email).matches();
+    }
+
+    private boolean isImage(MultipartFile file) {
+
+        String contentType = file.getContentType();
+        return contentType != null && contentType.startsWith("image/");
     }
 }

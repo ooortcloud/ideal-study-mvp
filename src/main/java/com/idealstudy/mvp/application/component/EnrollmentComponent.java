@@ -2,6 +2,7 @@ package com.idealstudy.mvp.application.component;
 
 import com.idealstudy.mvp.enums.error.SecurityErrorMsg;
 import com.idealstudy.mvp.application.repository.inclass.EnrollmentRepository;
+import com.idealstudy.mvp.error.CustomException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,14 +20,11 @@ public class EnrollmentComponent {
      * 일단 현재 활용 방식이 클래스가 활성화되어 있을 때 학생이 동작할 권한을 체크하는 것이므로 당장은 PERMITTED 상태로만 보는 것이 좋은듯.
      * @param classroomId
      * @param studentId
-     * @throws SecurityException
      */
     public void checkAffiliated(String classroomId, String studentId)
-        throws SecurityException{
-
-
+        throws CustomException {
 
         if( !enrollmentRepository.checkAffiliated(classroomId, studentId))
-            throw new SecurityException(SecurityErrorMsg.NOT_AFFILIATED.toString());
+            throw new CustomException(SecurityErrorMsg.NOT_AFFILIATED);
     }
 }
