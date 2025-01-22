@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
+@Deprecated
 @Slf4j
 public class TryCatchControllerTemplate {
 
@@ -23,7 +24,7 @@ public class TryCatchControllerTemplate {
             log.error(e + " : " + e.getMessage());
             /// custom 예외 클래스를 사용
             /// error message를 전달하기 위해서는 현재 모든 컨트롤러의 반환 타입을 wildcard를 사용하도록 변경해야 함...
-            return new ResponseEntity<>(result, HttpStatusCode.valueOf(e.getErrorCode().getHttpStatusCode()));
+            return new ResponseEntity<>(result, HttpStatusCode.valueOf(e.getExceptionInfo().getHttpStatusCode()));
         } catch (SecurityException e) {
             log.error(e + " : " + e.getMessage());
             return new ResponseEntity<>(result, HttpStatusCode.valueOf(403));
