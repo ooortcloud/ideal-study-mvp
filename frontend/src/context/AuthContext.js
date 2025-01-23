@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
       console.log("[debug]: 토큰정보에서 추출한 유저정보", user);
 
       setUserInfo(user);
-      return;
+      return user.id;
     }
 
     // 토큰이 없을경우 바디로 받은 username만

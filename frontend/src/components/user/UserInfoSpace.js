@@ -10,14 +10,13 @@ const UserInfoSpace = ({
   onSave,
 }) => {
   const [updatedUser, setUpdatedUser] = useState({
-    name: user.name || "새로운 이름", // 변경된 이름
-    password: user.password || "새로운 비밀번호", // 변경된 비밀번호
-    phone: user.phone || "새로운 전화번호", // 변경된 전화번호
-    email: user.email || "새로운 이메일", // 변경된 이메일
-    school: user.school || "새로운 학교", // 변경된 학교
-    gender: user.gender || "새로운 성별", // 변경된 성별
-    grade: user.grade || "새로운 등급", // 변경된 등급
-    level: user.level || 17, // 기존 값 유지
+    name: user.name || "이름 안들어옴", // 변경된 이름
+    password: user.password || "", // 변경된 비밀번호
+    phone: user.phoneAddress || "전화번호 안들어옴", // 변경된 전화번호
+    email: user.email || "이메일 안들어옴", // 변경된 이메일
+    school: user.school || "", // 변경된 학교
+    gender: user.sex || "성별 안들어옴", // 변경된 성별
+    level: user.level || "레벨 안들어옴", // 기존 값 유지
   }); // 수정될 유저정보
 
   const handleChange = (e) => {

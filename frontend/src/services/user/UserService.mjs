@@ -15,19 +15,19 @@ export const makeDummyUser = async () => {
 /**
  * 회원 생성(가입)
  */
- export const signUpUser = async (data) => {
-   console.log("회원가입 API 시도:", data);
-   try {
-     const response = await apiClient.post("/users/sign-up", {
-       email: data.userEmail,
-       role: data.userRole,
-     });
-     console.log("회원가입 API 성공:", response);
-     return response.data;
-   } catch (err) {
-     console.error("회원가입 API 실패", err);
-   }
- };
+export const signUpUser = async (data) => {
+  console.log("회원가입 API 시도:", data);
+  try {
+    const response = await apiClient.post("/users/sign-up", {
+      email: data.userEmail,
+      role: data.userRole,
+    });
+    console.log("회원가입 API 성공:", response);
+    return response.data;
+  } catch (err) {
+    console.error("회원가입 API 실패", err);
+  }
+};
 
 /**
  * 회원 조회
@@ -122,12 +122,12 @@ export const readStudentsByTeacher = async (teacherId) => {
 export const updateUser = async (userId, accountData) => {
   console.error("회원수정 API 시도:", accountData);
   try {
-    const response = await apiClient.post(`/api/users/update/${userId}`, {
+    const response = await apiClient.patch(`/api/users/update`, {
       accountData,
     });
-    console.error("회원수정 API 성공:", response);
-
-    if (response.ok) {
+    console.log("회원수정 API 성공:", response);
+    console.log("response.ok", response.status);
+    if (response.status) {
       alert("내용이 제출되었습니다!");
     } else {
       alert("제출 실패");
