@@ -1,20 +1,20 @@
 services:
-  # mySQL
-  mysql-db:
-    image: mysql:8.0
-    container_name: mysql-db
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: idealstudy # 배포용 데이터베이스 이름
-      MYSQL_USER: manager
-      MYSQL_PASSWORD: manager
-    ports:
-      - "3306:3306"
-    networks:
-      - idealstudy-network
-    volumes:
-      - mysql-data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # init.sql 파일을 복사
+  # mySQL -> aws RDS로 변경
+  # mysql-db:
+  #   image: mysql:8.0
+  #   container_name: mysql-db
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root
+  #     MYSQL_DATABASE: idealstudy # 배포용 데이터베이스 이름
+  #     MYSQL_USER: manager
+  #     MYSQL_PASSWORD: manager
+  #   ports:
+  #     - "3306:3306"
+  #   networks:
+  #     - idealstudy-network
+  #   volumes:
+  #     - mysql-data:/var/lib/mysql
+  #     - ./init.sql:/docker-entrypoint-initdb.d/init.sql # init.sql 파일을 복사
 
   # redis 컨테이너
   redis-db:
@@ -54,9 +54,9 @@ services:
     volumes:
       - /home/user/logs:/var/log/spring-logs # 호스트와 컨테이너 간 로그 디렉토리 연결
     environment: # 환경변수
-      - SPRING_PROFILES_ACTIVE=deployment
+      - SPRING_PROFILES_ACTIVE=production
     depends_on: # mysql, redis 컨테이너 '시작'후 서버 띄움. '준비' 후 띄우려면 wait-for-it 해야함
-      - mysql-db
+      # - mysql-db -> rds 로 변경
       - redis-db
     restart: on-failure
 #   # 로키 서버 컨테이너 (로그를 저장하고 쿼리)
@@ -98,7 +98,7 @@ networks:
     driver: bridge
 
 volumes: # 컨테이너의 데이터를 호스트 시스템에 영구적으로 저장, 컨테이너간의 데이터 공유 목적
-  mysql-data:
+  # mysql-data: -> RDS 로 변경
   redis-data:
   loki-data:
   promtail-data:

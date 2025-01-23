@@ -1,3 +1,5 @@
+# 로컬 개발환경
+
 spring:
   # mysql 설정
   datasource:
