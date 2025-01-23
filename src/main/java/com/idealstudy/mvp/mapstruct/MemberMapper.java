@@ -4,6 +4,8 @@ import com.idealstudy.mvp.application.dto.PageResultDto;
 import com.idealstudy.mvp.application.dto.member.*;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.*;
 import com.idealstudy.mvp.presentation.dto.member.MemberResponseDto;
+import com.idealstudy.mvp.presentation.dto.member.StudentResponseDto;
+import com.idealstudy.mvp.presentation.dto.member.TeacherResponseDto;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -21,10 +23,8 @@ public interface MemberMapper {
     MemberListDto entityToListDto(MemberEntity entity);
 
     MemberResponseDto toResponseDto(MemberDto dto);
-
-    TeacherEntity dtoToEntity(TeacherDto dto);
-    ParentsEntity dtoToEntity(ParentsDto dto);
-    StudentEntity dtoToEntity(StudentDto dto);
+    TeacherResponseDto toResponseDto(TeacherDto dto);
+    StudentResponseDto toResponseDto(StudentDto dto);
 
     TeacherDto entityToDto(TeacherEntity entity);
     ParentsDto entityToDto(ParentsEntity entity);

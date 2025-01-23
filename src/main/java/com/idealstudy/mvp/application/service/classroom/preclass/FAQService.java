@@ -4,7 +4,7 @@ import com.idealstudy.mvp.application.dto.PageRequestDto;
 import com.idealstudy.mvp.application.dto.classroom.preclass.FAQDto;
 import com.idealstudy.mvp.application.dto.classroom.preclass.FAQPageResultDto;
 import com.idealstudy.mvp.application.repository.preclass.FAQRepository;
-import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
+import com.idealstudy.mvp.application.domain_service.ValidationManager;
 import com.idealstudy.mvp.enums.error.DBErrorMsg;
 import com.idealstudy.mvp.util.TryCatchServiceTemplate;
 import lombok.RequiredArgsConstructor;

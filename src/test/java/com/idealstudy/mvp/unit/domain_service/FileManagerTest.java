@@ -1,7 +1,7 @@
 package com.idealstudy.mvp.unit.domain_service;
 
 
-import com.idealstudy.mvp.application.service.domain_service.FileManager;
+import com.idealstudy.mvp.application.domain_service.FileManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

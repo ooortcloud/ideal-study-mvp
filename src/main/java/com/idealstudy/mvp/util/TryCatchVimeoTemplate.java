@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 
 @Slf4j
+@Deprecated
 public class TryCatchVimeoTemplate {
 
     public static <T> T execute(Callable<T> fn) {

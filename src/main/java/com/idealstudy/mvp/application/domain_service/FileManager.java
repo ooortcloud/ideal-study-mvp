@@ -1,4 +1,4 @@
-package com.idealstudy.mvp.application.service.domain_service;
+package com.idealstudy.mvp.application.domain_service;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -6,6 +6,7 @@ import java.io.*;
 import java.nio.file.FileSystemException;
 import java.util.UUID;
 
+@Deprecated
 @Slf4j
 public class FileManager {
 

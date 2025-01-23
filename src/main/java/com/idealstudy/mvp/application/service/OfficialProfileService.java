@@ -2,10 +2,9 @@ package com.idealstudy.mvp.application.service;
 
 import com.idealstudy.mvp.application.dto.OfficialProfileDto;
 import com.idealstudy.mvp.application.repository.OfficialProfileRepository;
-import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
+import com.idealstudy.mvp.application.domain_service.ValidationManager;
 import com.idealstudy.mvp.enums.error.DBErrorMsg;
 import com.idealstudy.mvp.util.TryCatchServiceTemplate;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

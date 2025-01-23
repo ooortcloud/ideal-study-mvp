@@ -16,8 +16,10 @@ import java.util.List;
 @SuperBuilder
 @Getter
 @Setter
+@PrimaryKeyJoinColumn(name = "parents_id")
 public class ParentsEntity extends MemberEntity {
 
+    /*
     // PARENTS - STUDENT 다대다 단방향 비식별 관계
     @ManyToMany
     @JoinTable( name = "PARENTS_STUDENT",
@@ -25,6 +27,8 @@ public class ParentsEntity extends MemberEntity {
             inverseJoinColumns = @JoinColumn(name = "STUDENT_ID", referencedColumnName = "student_id")
     )
     private List<StudentEntity> students;
+
+     */
 
     public ParentsEntity() {
 

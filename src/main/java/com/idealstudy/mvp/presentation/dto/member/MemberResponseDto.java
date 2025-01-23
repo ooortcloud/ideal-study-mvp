@@ -2,15 +2,15 @@ package com.idealstudy.mvp.presentation.dto.member;
 
 import com.idealstudy.mvp.enums.member.Gender;
 import com.idealstudy.mvp.enums.member.Role;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @ToString
-@Builder
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberResponseDto {
 
     private String userId;
@@ -29,6 +29,5 @@ public class MemberResponseDto {
 
     private String introduction;
 
-    // 나중에 url로 바꾸고
-    private byte[] profile;
+    private String profileUri;
 }

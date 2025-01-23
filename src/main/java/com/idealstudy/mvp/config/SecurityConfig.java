@@ -3,7 +3,7 @@ package com.idealstudy.mvp.config;
 import com.idealstudy.mvp.enums.member.Role;
 import com.idealstudy.mvp.security.filter.*;
 import com.idealstudy.mvp.security.provider.JwtAuthenticationProvider;
-import com.idealstudy.mvp.util.JwtUtil;
+import com.idealstudy.mvp.helper.JwtHelper;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
@@ -39,7 +39,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -52,7 +51,7 @@ public class SecurityConfig {
 
     // TODO: 추후 Spring Security에서 제공하는 Jwt 라이브러리로 대체될 수 있음
     @Autowired
-    private final JwtUtil jwtUtil;
+    private final JwtHelper jwtUtil;
     @Autowired
     private final UserDetailsService userDetailsService;
 
@@ -184,13 +183,14 @@ public class SecurityConfig {
 
         setCors(http);
 
-        // 경로 별 권한 설정
+        // 전체 권한 open  << 메소드 레벨에서 권한 처리함
         setAuthorizeHttpRequests(http);
 
         // 로그아웃 설정(추후 변경 필요)
         setLogout(http);
 
         registerFilters(http);
+
         return http.build();
     }
 
@@ -221,23 +221,13 @@ public class SecurityConfig {
                 }
         ));
     }
-    
+
     private void setAuthorizeHttpRequests(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(auth ->
                 auth
                         .anyRequest().permitAll()
         );
-
-        /*
-        setMetadataPermission(http);
-
-        setGuestPermission(http);
-
-        if(isDev.equals("true"))
-            setTestPermission(http);
-
-         */
     }
 
     private void setLogout(HttpSecurity http) throws Exception {
@@ -341,6 +331,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.GET, "/api/users").hasRole(Role.ROLE_ADMIN.toString())
                 .requestMatchers(HttpMethod.DELETE, "/api/users/*").hasRole(Role.ROLE_ADMIN.toString())
+               // .requestMatchers(HttpMethod.GET, "/swagger-ui.html", "/v3/api-docs").hasRole(Role.ROLE_ADMIN.toString())
+                /// TODO: 나중에 Admin 추가할 때 같이 풀 것.
         );
     }
 }

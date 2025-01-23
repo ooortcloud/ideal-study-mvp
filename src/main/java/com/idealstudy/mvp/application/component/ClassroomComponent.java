@@ -3,6 +3,7 @@ package com.idealstudy.mvp.application.component;
 import com.idealstudy.mvp.application.dto.classroom.ClassroomResponseDto;
 import com.idealstudy.mvp.enums.error.SecurityErrorMsg;
 import com.idealstudy.mvp.application.repository.ClassroomRepository;
+import com.idealstudy.mvp.error.CustomException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,10 +16,10 @@ public class ClassroomComponent {
     }
 
     public void checkMyClassroom(String teacherId, String classroomId)
-            throws SecurityException {
+            throws CustomException {
 
         ClassroomResponseDto dto = classroomRepository.findById(classroomId);
         if( !dto.getCreatedBy().equals(teacherId))
-            throw new SecurityException(SecurityErrorMsg.NOT_YOURS.toString());
+            throw new CustomException(SecurityErrorMsg.NOT_YOURS);
     }
 }

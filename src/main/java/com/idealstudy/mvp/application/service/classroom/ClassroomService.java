@@ -3,15 +3,15 @@ package com.idealstudy.mvp.application.service.classroom;
 import com.idealstudy.mvp.application.dto.classroom.ClassroomPageResultDto;
 import com.idealstudy.mvp.application.component.ClassroomComponent;
 import com.idealstudy.mvp.application.factory.FileManagerFactory;
-import com.idealstudy.mvp.application.service.domain_service.FileManager;
-import com.idealstudy.mvp.application.service.domain_service.ValidationManager;
+import com.idealstudy.mvp.application.domain_service.FileManager;
+import com.idealstudy.mvp.application.domain_service.ValidationManager;
 import com.idealstudy.mvp.enums.classroom.ClassroomStatus;
 import com.idealstudy.mvp.enums.error.DBErrorMsg;
 import com.idealstudy.mvp.application.repository.ClassroomRepository;
 import com.idealstudy.mvp.application.repository.LikedRepository;
 import com.idealstudy.mvp.application.dto.classroom.ClassroomResponseDto;
 
-import com.idealstudy.mvp.enums.error.ErrorCode;
+import com.idealstudy.mvp.enums.error.UserErrorMsg;
 import com.idealstudy.mvp.enums.error.SystemErrorMsg;
 import com.idealstudy.mvp.error.CustomException;
 import com.idealstudy.mvp.util.TryCatchServiceTemplate;
@@ -142,7 +142,7 @@ public class ClassroomService {
         return TryCatchServiceTemplate.execute(() -> {
 
             if(likedRepository.checkAlreadyLiked(userId, classroomId))
-                throw new CustomException(ErrorCode.DUPLICATION_ERROR);
+                throw new CustomException(UserErrorMsg.DUPLICATION_ERROR);
 
             return likedRepository.create(classroomId);
         },

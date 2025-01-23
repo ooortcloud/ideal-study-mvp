@@ -46,10 +46,10 @@ VALUES
 (2, '그렇군요, 알겠습니다.', 'PUBLIC', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', NOW(), 1, 1),
 (3, '비밀 댓글입니다. 비밀.', 'PRIVATE', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', NOW(), NULL, 1);
 
-INSERT INTO enrollment (classroom_id, student_id, created_by, status, cur_score, target_score, request, determination, reg_date)
-VALUES
-('98a12345-ad7e-11ef-8e5c-0242ac140002', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'PERMITTED' ,'50점', '100 이요', '없습니다', '화이팅', NOW()),
-('76b12345-ad7e-11ef-8e5c-0242ac140002', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'PERMITTED' ,'50점', '100 이요', '없습니다', '화이팅', NOW());
+-- INSERT INTO enrollment (classroom_id, student_id, created_by, status, cur_score, target_score, request, determination, reg_date)
+-- VALUES
+-- ('98a12345-ad7e-11ef-8e5c-0242ac140002', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'PERMITTED' ,'50점', '100 이요', '없습니다', '화이팅', NOW()),
+-- ('76b12345-ad7e-11ef-8e5c-0242ac140002', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'c99fd58f-b0ae-11ef-89d8-0242ac140003', 'PERMITTED' ,'50점', '100 이요', '없습니다', '화이팅', NOW());
 
 INSERT INTO record_lecture
 (id, classroom_id, created_by, del_date, deleted_by, description, mod_date, modified_by, order_num, playtime, reg_date, title, url)

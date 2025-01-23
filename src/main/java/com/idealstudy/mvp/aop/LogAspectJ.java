@@ -27,17 +27,23 @@ public class LogAspectJ {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
+        // request url 로그 출력
+        printUrl(request);
+        
         // Request Parameters 로그 출력
         printRequestParameter(request);
-
-        // Request Body 로그 출력: 사용 금지...
-        // printRequestBody(request);
     }
 
     private void printControllerInfo(JoinPoint joinPoint) {
         String controllerName = joinPoint.getTarget().getClass().getSimpleName();
         String methodName = joinPoint.getSignature().getName();
         log.info(controllerName + " " + methodName + "() 실행");
+    }
+
+    private void printUrl(HttpServletRequest request) {
+
+        String requestUrl = request.getRequestURL().toString();
+        log.info("Request URL: " + requestUrl);
     }
 
     private void printRequestParameter(HttpServletRequest request) {

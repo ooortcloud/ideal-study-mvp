@@ -2,7 +2,7 @@ package com.idealstudy.mvp.security.provider;
 
 import com.idealstudy.mvp.security.token.JwtAuthenticationToken;
 import com.idealstudy.mvp.security.userDetailsImpl.JwtDetails;
-import com.idealstudy.mvp.util.JwtUtil;
+import com.idealstudy.mvp.helper.JwtHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -14,7 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
-    private final JwtUtil jwtUtil;
+    private final JwtHelper jwtUtil;
 
     // Performs authentication with the same contract as AuthenticationManager.authenticate(Authentication) .
     @Override

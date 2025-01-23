@@ -16,9 +16,7 @@ public class MemberListDto {
 
     private String name;
 
-
     private Role role;
 
-    // 나중에 uri로 변경해야 함
-    private byte[] profile;
+    private String profileUri;
 }
