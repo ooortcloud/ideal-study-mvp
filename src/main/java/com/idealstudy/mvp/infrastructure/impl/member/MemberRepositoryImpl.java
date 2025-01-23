@@ -3,8 +3,11 @@ package com.idealstudy.mvp.infrastructure.impl.member;
 import com.idealstudy.mvp.application.dto.PageRequestDto;
 import com.idealstudy.mvp.application.dto.PageResultDto;
 import com.idealstudy.mvp.application.dto.member.*;
+import com.idealstudy.mvp.enums.error.MemberErrorMsg;
 import com.idealstudy.mvp.enums.member.*;
 import com.idealstudy.mvp.application.repository.MemberRepository;
+import com.idealstudy.mvp.error.CustomException;
+import com.idealstudy.mvp.helper.WebUrlHelper;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.MemberEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.ParentsEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.StudentEntity;
@@ -24,25 +27,35 @@ import java.util.function.Function;
 @Log4j2
 public class MemberRepositoryImpl implements MemberRepository {
 
-    @Autowired
-    private MemberJpaRepository memberJpaRepository;
+    private final MemberJpaRepository memberJpaRepository;
 
-    @Autowired
-    private TeacherJpaRepository teacherJpaRepository;
+    private final TeacherJpaRepository teacherJpaRepository;
 
-    @Autowired
-    private StudentJpaRepository studentJpaRepository;
+    private final StudentJpaRepository studentJpaRepository;
 
-    @Autowired
-    private ParentsJpaRepository parentsJpaRepository;
+    private final  ParentsJpaRepository parentsJpaRepository;
 
-    @Autowired
-    private MemberMapper memberMapper;
+    private final  MemberMapper memberMapper;
+
+    private final WebUrlHelper webUrlBuilder;
 
     private static final int SIZE = 10;
 
+    @Autowired
+    public MemberRepositoryImpl(MemberJpaRepository memberJpaRepository, TeacherJpaRepository teacherJpaRepository,
+                                StudentJpaRepository studentJpaRepository, ParentsJpaRepository parentsJpaRepository,
+                                MemberMapper memberMapper, WebUrlHelper webUrlBuilder) {
+        this.memberJpaRepository = memberJpaRepository;
+        this.teacherJpaRepository = teacherJpaRepository;
+        this.studentJpaRepository = studentJpaRepository;
+        this.parentsJpaRepository = parentsJpaRepository;
+        this.memberMapper = memberMapper;
+        this.webUrlBuilder = webUrlBuilder;
+    }
+
     @Override
-    public TeacherDto createTeacher(String userId, String encodedPassword, String email, Integer fromSocial) {
+    public TeacherDto createTeacher(String userId, String encodedPassword, String email, Integer fromSocial,
+                                    String defaultImage) {
 
         TeacherEntity entity = TeacherEntity.builder()
                 .userId(userId)
@@ -51,13 +64,18 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .fromSocial(fromSocial)
                 .role(Role.ROLE_TEACHER)
                 .init(1)
+                .profileUri(defaultImage)
                 .build();
 
-        return MemberMapper.INSTANCE.entityToDto(teacherJpaRepository.save(entity));
+        TeacherDto teacherDto = MemberMapper.INSTANCE.entityToDto(teacherJpaRepository.save(entity));
+        setProfileForCdn(teacherDto);
+
+        return teacherDto;
     }
 
     @Override
-    public ParentsDto createParents(String userId, String encodedPassword, String email, Integer fromSocial) {
+    public ParentsDto createParents(String userId, String encodedPassword, String email, Integer fromSocial,
+                                    String defaultImage) {
 
         String uuid = UUID.randomUUID().toString();
 
@@ -68,13 +86,18 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .fromSocial(fromSocial)
                 .role(Role.ROLE_PARENTS)
                 .init(1)
+                .profileUri(defaultImage)
                 .build();
 
-        return MemberMapper.INSTANCE.entityToDto(parentsJpaRepository.save(entity));
+        ParentsDto parentsDto = MemberMapper.INSTANCE.entityToDto(parentsJpaRepository.save(entity));
+        setProfileForCdn(parentsDto);
+
+        return parentsDto;
     }
 
     @Override
-    public StudentDto createStudent(String userId, String encodedPassword, String email, Integer fromSocial) {
+    public StudentDto createStudent(String userId, String encodedPassword, String email, Integer fromSocial,
+                                    String defaultImage) {
 
         StudentEntity entity = StudentEntity.builder()
                 .userId(userId)
@@ -83,25 +106,27 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .fromSocial(fromSocial)
                 .role(Role.ROLE_STUDENT)
                 .init(1)
+                .profileUri(defaultImage)
                 .build();
 
-        return MemberMapper.INSTANCE.entityToDto(studentJpaRepository.save(entity));
+        StudentDto studentDto = MemberMapper.INSTANCE.entityToDto(studentJpaRepository.save(entity));
+        setProfileForCdn(studentDto);
+
+        return studentDto;
     }
 
-    /**
-     * MEMBER table에 저장된 데이터에 한해서만 조회하는 메소드
-     * @param id
-     * @return
-     */
     @Override
     public MemberDto findById(String id) {
 
         Optional<MemberEntity> result = memberJpaRepository.findById(id);
 
         if(result.isEmpty())
-            throw new IllegalArgumentException(MemberError.NOT_REGISTERED_MEMBER.getMsg());
+            throw new CustomException(MemberErrorMsg.NOT_REGISTERED_MEMBER);
 
-        return memberMapper.entityToDto(result.get());
+        MemberDto dto = memberMapper.entityToDto(result.get());
+        setProfileForCdn(dto);
+
+        return dto;
     }
 
     @Override
@@ -110,9 +135,12 @@ public class MemberRepositoryImpl implements MemberRepository {
         Optional<TeacherEntity> result = teacherJpaRepository.findById(id);
 
         if(result.isEmpty())
-            throw new IllegalArgumentException(MemberError.NOT_REGISTERED_MEMBER.getMsg());
+            throw new CustomException(MemberErrorMsg.NOT_REGISTERED_MEMBER);
 
-        return memberMapper.entityToDto(result.get());
+        TeacherDto teacherDto = memberMapper.entityToDto(result.get());
+        setProfileForCdn(teacherDto);
+
+        return teacherDto;
     }
 
     @Override
@@ -121,9 +149,12 @@ public class MemberRepositoryImpl implements MemberRepository {
         Optional<ParentsEntity> result = parentsJpaRepository.findById(id);
 
         if(result.isEmpty())
-            throw new IllegalArgumentException(MemberError.NOT_REGISTERED_MEMBER.getMsg());
+            throw new CustomException(MemberErrorMsg.NOT_REGISTERED_MEMBER);
 
-        return memberMapper.entityToDto(result.get());
+        ParentsDto parentsDto = memberMapper.entityToDto(result.get());
+        setProfileForCdn(parentsDto);
+
+        return parentsDto;
     }
 
     @Override
@@ -132,9 +163,12 @@ public class MemberRepositoryImpl implements MemberRepository {
         Optional<StudentEntity> result = studentJpaRepository.findById(id);
 
         if(result.isEmpty())
-            throw new NullPointerException(MemberError.NOT_REGISTERED_MEMBER.getMsg());
+            throw new CustomException(MemberErrorMsg.NOT_REGISTERED_MEMBER);
 
-        return memberMapper.entityToDto(result.get());
+        StudentDto studentDto = memberMapper.entityToDto(result.get());
+        setProfileForCdn(studentDto);
+
+        return studentDto;
     }
 
 
@@ -144,9 +178,12 @@ public class MemberRepositoryImpl implements MemberRepository {
         MemberEntity result = memberJpaRepository.findByEmail(email);
 
         if(result == null)
-            throw new NullPointerException(MemberError.NOT_REGISTERED_MEMBER.getMsg());
+            throw new CustomException(MemberErrorMsg.NOT_REGISTERED_MEMBER);
 
-        return memberMapper.entityToDto(result);
+        MemberDto memberDto = memberMapper.entityToDto(result);
+        setProfileForCdn(memberDto);
+
+        return memberDto;
     }
 
     @Override
@@ -158,7 +195,12 @@ public class MemberRepositoryImpl implements MemberRepository {
 
         Page<MemberEntity> result = memberJpaRepository.findAll(pageable);
 
-        Function<MemberEntity, MemberListDto> fn = (entity -> memberMapper.entityToListDto(entity));
+        Function<MemberEntity, MemberListDto> fn = (entity -> {
+            MemberListDto memberListDto = memberMapper.entityToListDto(entity);
+            setProfileForCdn(memberListDto);
+
+            return memberListDto;
+        });
 
         /// error
         MemberPageResultDto returnDto = memberMapper.toApplicationPageResult(
@@ -169,6 +211,7 @@ public class MemberRepositoryImpl implements MemberRepository {
         return returnDto;
     }
 
+    /*
     @Override
     public MemberDto update(String userId, String phoneAddress, String profile) {
 
@@ -185,10 +228,26 @@ public class MemberRepositoryImpl implements MemberRepository {
         return memberMapper.entityToDto(result);
     }
 
+     */
+
     @Override
-    public TeacherDto update(String teacherId, String univ, SchoolRegister status, String subject) {
+    public TeacherDto update(String teacherId, String name, String phoneAddress, Gender gender,
+                             String univ, SchoolRegister status, String subject) {
 
         TeacherEntity entity = teacherJpaRepository.findById(teacherId).orElseThrow();
+
+        // 초기 로그인 후처리
+        if(entity.getInit() == 0)
+            entity.setInit(1);
+
+        if(name != null)
+            entity.setName(name);
+
+        if(phoneAddress != null)
+            entity.setPhoneAddress(phoneAddress);
+
+        if(gender != null)
+            entity.setSex(gender);
 
         if(univ != null)
             entity.setUniv(univ);
@@ -199,13 +258,30 @@ public class MemberRepositoryImpl implements MemberRepository {
         if(subject != null)
             entity.setSubject(subject);
 
-        return memberMapper.entityToDto(teacherJpaRepository.save(entity));
+        TeacherDto teacherDto = memberMapper.entityToDto(teacherJpaRepository.save(entity));
+        setProfileForCdn(teacherDto);
+
+        return teacherDto;
     }
 
     @Override
-    public StudentDto update(String studentId, String school, Grade grade) {
+    public StudentDto update(String studentId, String name, String phoneAddress, Gender gender,
+                             String school, Grade grade) {
 
         StudentEntity entity = studentJpaRepository.findById(studentId).orElseThrow();
+
+        // 초기 로그인 후처리
+        if(entity.getInit() == 0)
+            entity.setInit(1);
+
+        if(name != null)
+            entity.setName(name);
+
+        if(phoneAddress != null)
+            entity.setPhoneAddress(phoneAddress);
+
+        if(gender != null)
+            entity.setSex(gender);
 
         if(school != null)
             entity.setSchool(school);
@@ -213,7 +289,10 @@ public class MemberRepositoryImpl implements MemberRepository {
         if(grade != null)
             entity.setGrade(grade);
 
-        return memberMapper.entityToDto(studentJpaRepository.save(entity));
+        StudentDto studentDto = memberMapper.entityToDto(studentJpaRepository.save(entity));
+        setProfileForCdn(studentDto);
+
+        return studentDto;
     }
 
     @Override
@@ -223,7 +302,21 @@ public class MemberRepositoryImpl implements MemberRepository {
 
         entity.setIntroduction(introduction);
 
-        return MemberMapper.INSTANCE.entityToDto(memberJpaRepository.save(entity));
+        MemberDto memberDto = MemberMapper.INSTANCE.entityToDto(memberJpaRepository.save(entity));
+        setProfileForCdn(memberDto);
+
+        return memberDto;
+    }
+
+    @Override
+    public void updateProfile(String userId, String profileUri) {
+
+        MemberEntity entity = memberJpaRepository.findById(userId).orElseThrow();
+
+        entity.setProfileUri(profileUri);
+
+        MemberEntity savedEntity = memberJpaRepository.save(entity);
+        // log.info("DB에 저장된 profileUri: " + savedEntity.getProfileUri());
     }
 
     /**
@@ -255,5 +348,12 @@ public class MemberRepositoryImpl implements MemberRepository {
         return true;
     }
 
+    private void setProfileForCdn(MemberDto dto) {
+        dto.setProfileUri(webUrlBuilder.makeCdnLink(dto.getProfileUri()));
+    }
+
+    private void setProfileForCdn(MemberListDto dto) {
+        dto.setProfileUri(webUrlBuilder.makeCdnLink(dto.getProfileUri()));
+    }
 }
 

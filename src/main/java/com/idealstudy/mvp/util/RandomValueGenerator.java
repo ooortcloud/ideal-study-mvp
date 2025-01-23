@@ -1,13 +1,14 @@
 package com.idealstudy.mvp.util;
 
-import org.springframework.stereotype.Component;
-
 import java.util.UUID;
 
-@Component
-public class RandomValueGenerator {
+public final class RandomValueGenerator {
 
-    public String createRandomValue() {
+    private RandomValueGenerator() {
+
+    }
+
+    public static String createRandomValue() {
         return UUID.randomUUID().toString();
     }
 }

@@ -24,7 +24,7 @@ public class MemberDto {
 
     private Gender sex;
 
-    private String referralId;
+    private String referralId;  // 추가 기능: 추천인 설정
 
     private Integer level;
 
@@ -32,7 +32,7 @@ public class MemberDto {
 
     private String introduction; //
 
-    private byte[] profile; //
+    private String profileUri; //
 
     private int fromSocial;
 

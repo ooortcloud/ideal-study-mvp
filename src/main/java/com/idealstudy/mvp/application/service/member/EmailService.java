@@ -32,12 +32,10 @@ public class EmailService {
     @Autowired
     private final EmailSender emailSender;
 
-    @Autowired
-    private final RandomValueGenerator randomValueGenerator;
 
     public SignUpDto sendSignUpEmail(String userEmail, Role role) throws Exception {
 
-        String token = randomValueGenerator.createRandomValue().split("-")[0];
+        String token = RandomValueGenerator.createRandomValue().split("-")[0];
         SignUpDto dto = emailRepository.addToken(token, userEmail, role);
 
         emailSender.sendEmail(userEmail, token);

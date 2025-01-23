@@ -86,6 +86,15 @@ dependencies {
 	implementation 'org.springframework:spring-aspects:6.2.0'
 
 	implementation 'com.clickntap:vimeo:2.0'
+
+	// https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+
+	implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.3.0")
+	// https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-aws-starter
+	implementation 'io.awspring.cloud:spring-cloud-aws-starter'
+	// https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-aws-s3
+	implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3'
 }
 
 test {

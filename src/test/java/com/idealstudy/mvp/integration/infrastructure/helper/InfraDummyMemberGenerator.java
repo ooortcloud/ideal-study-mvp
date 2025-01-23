@@ -19,6 +19,8 @@ public class InfraDummyMemberGenerator {
 
     private final HttpServletRequest request;
 
+    private static final String DEFAULT_IMAGE = "logo.webp";
+
     @Autowired
     public InfraDummyMemberGenerator(MemberRepository memberRepository, HttpServletRequest request) {
         this.memberRepository = memberRepository;
@@ -32,7 +34,7 @@ public class InfraDummyMemberGenerator {
         String email = "teststudent@gmail.com";
         Integer fromSocial = 0;
 
-        return memberRepository.createStudent(userId, password, email, fromSocial);
+        return memberRepository.createStudent(userId, password, email, fromSocial, DEFAULT_IMAGE);
     }
 
     public ParentsDto createDummyParents(String userId) {
@@ -42,7 +44,7 @@ public class InfraDummyMemberGenerator {
         String email = "testparents@gmail.com";
         Integer fromSocial = 0;
 
-        return memberRepository.createParents(userId, password, email, fromSocial);
+        return memberRepository.createParents(userId, password, email, fromSocial, DEFAULT_IMAGE);
     }
 
     public TeacherDto createDummyTeacher(String userId) {
@@ -52,7 +54,7 @@ public class InfraDummyMemberGenerator {
         String email = "testteacher@gmail.com";
         Integer fromSocial = 0;
 
-        return memberRepository.createTeacher(userId, password, email, fromSocial);
+        return memberRepository.createTeacher(userId, password, email, fromSocial, DEFAULT_IMAGE);
     }
 
     public void setToken(String userId, Role role) {
