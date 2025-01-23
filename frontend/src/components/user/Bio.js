@@ -3,14 +3,13 @@ import React, { useState } from "react";
 import Button from "../Button";
 
 const Bio = ({
-  user,
   fetchedBio,
   isAuthenticated,
   isEditing,
   setIsEditing,
   onSave,
 }) => {
-  const [bio, setBio] = useState(fetchedBio?.bio || "");
+  const [bio, setBio] = useState(fetchedBio || "");
 
   const handleChange = (e) => {
     setBio(e.target.value); // 입력값 상태 업데이트

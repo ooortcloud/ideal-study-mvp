@@ -24,24 +24,21 @@ const ProfilePage = ({ userInfo }) => {
     const fetchUserProfile = async () => {
       const data = await readUser(id);
       setUser(data);
+      setBio(data.introduction);
     };
 
-    const fetchReadBio = async () => {
-      const data = await readBio(id);
-      setBio(data);
-    };
+    // readUser 시 introduction 이 사실상 bio
+    // const fetchReadBio = async () => {
+    //   const data = await readBio(id);
+    //   setBio(data);
+    // };
 
     fetchUserProfile();
-    fetchReadBio();
+    // fetchReadBio();
   }, [id]);
 
   if (!user) return <p>Loading...</p>;
 
-  // 디버깅
-  console.log("userInfo.id", userInfo);
-  console.log("id", id);
-  console.log("본인여부", userInfo.id === id);
-  console.log(typeof userInfo.id, typeof id);
   // 개인정보
   const handleUserUpdate = async (newUserInfo) => {
     await updateUser(userInfo.id, user);
@@ -67,7 +64,6 @@ const ProfilePage = ({ userInfo }) => {
       </div>
       <div className="section">
         <Bio
-          user={user}
           fetchedBio={bio}
           isAuthenticated={userInfo.id === id}
           isEditing={isEditingBio}
