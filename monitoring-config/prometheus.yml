@@ -1,0 +1,39 @@
+global:
+  scrape_interval: 15s # 메트릭 수집 주기
+
+scrape_configs:
+  - job_name: "spring-boot-app"
+    metrics_path: "/actuator/prometheus" # Spring Boot 애플리케이션의 Prometheus 메트릭 경로
+    static_configs:
+      - targets:
+          - "server:8080" # Spring Boot 애플리케이션의 서비스 이름과 포트
+
+  - job_name: "node-exporter"
+    static_configs:
+      - targets:
+          - "node-exporter:9100" # Node Exporter의 서비스 이름과 포트
+
+#   - job_name: "loki"
+#     metrics_path: "/loki/api/v1/query"
+#     static_configs:
+#       - targets:
+#           - "loki:3100"
+
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets:
+#             - "alertmanager:9093" # targets는 배열로 작성해야 하며 따옴표로 감싸는 것이 좋습니다.
+
+# rule_files:
+#   - "/etc/prometheus/prometheus-alerts.yml" # alert 디테일한 규칙을 정의한 파일
+
+# mysql-exporter, redis-exporter 도 사용해서 다 감시할 수 있음
+
+#  - job_name: 'mysql-exporter'
+#   static_configs:
+#     - targets: ['mysql-exporter:9104']  # MySQL Exporter의 메트릭을 수집
+
+# - job_name: 'redis-exporter'
+#   static_configs:
+#     - targets: ['redis-exporter:9121']  # Redis Exporter의 메트릭을 수집
