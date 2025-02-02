@@ -120,7 +120,7 @@ jobs:
 
       # BE 시크릿 파일 생성
       - name: Create application-private.yml for backend
-        run: echo "${{ secrets.APPLICATION_PRIVATE }}" > backend/src/main/resources/application-private.yml
+        run: echo "${{ secrets.APPLICATION_PRIVATE }}" > src/main/resources/application-private.yml
 
       # EC2로 .env 파일 복사
       - name: Copy .env file to EC2 (frontend)
