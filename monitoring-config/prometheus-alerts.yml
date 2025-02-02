@@ -1,0 +1,22 @@
+groups:
+  - name: log-alerts
+    rules:
+      - alert: HighErrorLogs
+        expr: count_over_time({job="app-logs"} |= "ERROR" [5m]) > 10
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "애플리케이션 에러 발생"
+          description: "5분 동안 ERROR 로그가 10개 이상 발생하였습니다."
+
+  - name: system-alerts
+    rules:
+      - alert: PrometheusStarted
+        expr: up{job="prometheus"} == 1
+        for: 30s
+        labels:
+          severity: info
+        annotations:
+          summary: "Prometheus Started"
+          description: "Prometheus 감지가 시작되었습니다!"
