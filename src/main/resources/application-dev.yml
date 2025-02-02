@@ -1,7 +1,9 @@
+# 로컬 개발환경
+
 spring:
   # mysql 설정
   datasource:
-    url: jdbc:mysql://172.21.138.60:3306/idealstudy
+    url: jdbc:mysql://172.21.138.60:3306/idealstudy?createDatabaseIfNotExist=true
     #    url: jdbc:mysql://172.17.129.27:3306/idealstudy (성진 wsl 주소)
 
 # redis 설정(커스텀)

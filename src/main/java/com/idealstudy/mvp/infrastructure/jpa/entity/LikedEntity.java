@@ -15,12 +15,25 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class LikedEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long likedId;
 
+    /// 선택적 비식별관계
+    @ManyToOne
+    @JoinColumn(name = "classroom_id", nullable = true)
+    private ClassroomEntity classroom;
+
+    /// 선택적 비식별관계
+    @ManyToOne
+    @JoinColumn(name = "comment_id", nullable = true)
+    private ReplyEntity reply;
+
+    // @ManyToMany를 사용하지 말자. 개발 생산성이 오히려 떨어진다.
+    /*
     @ManyToMany
     @JoinTable(
         name = "liked_reply",
@@ -50,19 +63,16 @@ public class LikedEntity extends BaseEntity {
 
     public void addClassroom(ClassroomEntity classroom) {
 
-        // 영문을 모르겠지만 초기에 this.replies가 항상 null이어서 이 분기문을 추가해주었다.
+        // 영문을 모르겠지만 초기에 this.classrooms 항상 null이어서 이 분기문을 추가해주었다.
         if (this.classrooms == null) {
             this.classrooms = new ArrayList<>();
         }
 
+        // Liked 엔티티의 Classroom 엔티티 리스트에 직접 read 정보를 추가해준다.
         this.classrooms.add(classroom);
+        // Classroom 엔티티의 Liked 엔티티 리스트에 직접 read 정보를 추가해준다.
         classroom.getLikes().add(this);
     }
 
-    @Override
-    public String toString() {
-        return "LikedEntity{" +
-                "likedId=" + likedId +
-                '}';
-    }
+     */
 }

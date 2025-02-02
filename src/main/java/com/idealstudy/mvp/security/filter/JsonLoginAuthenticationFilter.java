@@ -5,7 +5,7 @@ import com.idealstudy.mvp.application.dto.member.MemberDto;
 import com.idealstudy.mvp.security.userDetailsImpl.MemberDetails;
 import com.idealstudy.mvp.security.dto.UserLoginRequestDto;
 import com.idealstudy.mvp.security.dto.UserLoginResponseDto;
-import com.idealstudy.mvp.util.JwtUtil;
+import com.idealstudy.mvp.helper.JwtHelper;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,7 +30,7 @@ import java.nio.charset.StandardCharsets;
 public class JsonLoginAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Autowired
-    private final JwtUtil jwtUtil;
+    private final JwtHelper jwtUtil;
 
     @PostConstruct
     void setup() {

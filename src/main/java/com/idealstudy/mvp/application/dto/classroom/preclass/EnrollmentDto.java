@@ -16,7 +16,7 @@ public class EnrollmentDto {
 
     private String studentId;
 
-    private String createdBy;
+    private String createdBy;  // applicantId
 
     private EnrollmentStatus status;
 

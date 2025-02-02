@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.idealstudy.mvp.TestRepositoryUtil;
+import com.idealstudy.mvp.integration.infrastructure.util.TestRepositoryUtil;
 import com.idealstudy.mvp.application.dto.ReplyDto;
 import com.idealstudy.mvp.enums.classroom.Visibility;
 import com.idealstudy.mvp.application.repository.ReplyRepository;

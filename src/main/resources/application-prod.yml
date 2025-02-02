@@ -1,10 +1,20 @@
+# 실제 운영환경
+
 spring:
-  # mysql 설정
+  # 운영환경에선 RDS 사용
   datasource:
-    url: jdbc:mysql://mysql-db:3306/idealstudy
+    url: jdbc:mysql://mysql-db.c128s4yi2c9t.ap-northeast-2.rds.amazonaws.com:3306/idealstudy?createDatabaseIfNotExist=true
     username: manager
-    password: manager
-    #    url: jdbc:mysql://172.17.129.27:3306/idealstudy (성진 wsl 주소)
+    password: manager1234 # rds 는 비밀번호 8자이상 제한
+
+  jpa:
+    hibernate:
+      ddl-auto: validate # 운영환경에서는 ddl-auto OFF
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
 
 # redis 설정
 redis:

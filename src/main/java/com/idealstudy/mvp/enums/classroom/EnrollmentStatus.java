@@ -11,5 +11,6 @@ public enum EnrollmentStatus {
     REQUEST,
     CHECKED,
     PERMITTED,
-    EXPIRED;
+    EXPIRED,
+    REJECTED;
 }

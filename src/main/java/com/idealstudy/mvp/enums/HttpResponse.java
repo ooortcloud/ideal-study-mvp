@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum HttpResponse {
 
-    SUCCESS_EMAIL(HttpStatus.OK, "success to send email"),
-
+    SUCCESS(HttpStatus.OK, "success"),
+    FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "failed")
     ;
 
     private final HttpStatus httpStatus;

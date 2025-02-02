@@ -38,3 +38,5 @@ out/
 
 application.properties
 application-private.yml
+
+/src/main/generated/

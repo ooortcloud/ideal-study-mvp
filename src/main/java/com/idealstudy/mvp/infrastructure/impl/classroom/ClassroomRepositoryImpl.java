@@ -33,8 +33,8 @@ public class ClassroomRepositoryImpl implements ClassroomRepository {
     private final static int SIZE = 10;
 
     @Override
-    public ClassroomResponseDto save(String title, String description, Integer capacity, String thumbnail,
-                                     String teacherId) {
+    public ClassroomResponseDto create(String title, String description, Integer capacity, String thumbnail,
+                                       String teacherId) {
 
         TeacherEntity teacher = teacherJpaRepository.findById(teacherId).orElseThrow();
 
@@ -44,22 +44,22 @@ public class ClassroomRepositoryImpl implements ClassroomRepository {
                 .description(description)
                 .capacity(capacity)
                 .thumbnail(thumbnail)
-                .status(ClassroomStatus.OPEN)
+                .status(ClassroomStatus.SETUP)  // setup 상태로 설정
                 .build();
 
         return ClassroomMapper.INSTANCE.toDto(classroomJpaRepository.save(entity));
     }
 
     @Override
-    public ClassroomResponseDto findById(String id) {
+    public ClassroomResponseDto findById(String likedId) {
 
-        ClassroomEntity entity = classroomJpaRepository.findById(id).orElseThrow();
+        ClassroomEntity entity = classroomJpaRepository.findById(likedId).orElseThrow();
 
         return ClassroomMapper.INSTANCE.toDto(entity);
     }
 
     @Override
-    public ClassroomPageResultDto findAll(int page, ClassroomStatus status) {
+    public ClassroomPageResultDto findList(int page, ClassroomStatus status) {
 
         PageRequestDto requestDto = PageRequestDto.builder()
                 .page(page)
@@ -85,6 +85,32 @@ public class ClassroomRepositoryImpl implements ClassroomRepository {
     }
 
     @Override
+    public ClassroomPageResultDto findListForTeacher(int page, String teacherId, ClassroomStatus status) {
+
+        PageRequestDto requestDto = PageRequestDto.builder()
+                .page(page)
+                .size(SIZE)
+                .build();
+
+        Page<ClassroomEntity> pageResult = null;
+
+        if(status == null)
+            pageResult = classroomJpaRepository.findByTeacher_userId(teacherId,
+                    requestDto.getPageable(Sort.by("regDate").descending()));
+
+        if(status != null)
+            pageResult = classroomJpaRepository.findByTeacher_userIdAndStatus(teacherId, status,
+                    requestDto.getPageable(Sort.by("regDate").descending()));
+
+        Function<ClassroomEntity, ClassroomResponseDto> fn = ClassroomMapper.INSTANCE::toDto;
+
+        PageResultDto<ClassroomResponseDto, ClassroomEntity> pageResultDto = new PageResultDto<>(
+                pageResult, fn);
+
+        return ClassroomMapper.INSTANCE.toPageResultDto(pageResultDto);
+    }
+
+    @Override
     public ClassroomResponseDto update(String id, String title, String description, Integer capacity,
                                        String thumbnailUri) {
 
@@ -102,6 +128,15 @@ public class ClassroomRepositoryImpl implements ClassroomRepository {
         if (thumbnailUri != null) {
             entity.setThumbnail(thumbnailUri);
         }
+
+        return ClassroomMapper.INSTANCE.toDto(classroomJpaRepository.save(entity));
+    }
+
+    @Override
+    public ClassroomResponseDto updateClassroomStatus(String id, ClassroomStatus status) {
+
+        ClassroomEntity entity = classroomJpaRepository.findById(id).orElseThrow();
+        entity.setStatus(status);
 
         return ClassroomMapper.INSTANCE.toDto(classroomJpaRepository.save(entity));
     }

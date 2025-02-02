@@ -10,8 +10,10 @@ import java.util.Objects;
 
 import com.idealstudy.mvp.security.annotation.ForStudent;
 import com.idealstudy.mvp.security.annotation.ForTeacher;
+import com.idealstudy.mvp.security.annotation.ForUser;
 import com.idealstudy.mvp.security.dto.JwtPayloadDto;
 import com.idealstudy.mvp.util.TryCatchControllerTemplate;
+import com.idealstudy.mvp.util.TryCatchServiceTemplate;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,15 +36,19 @@ public class ClassroomController {
                                                             @RequestPart("image") MultipartFile image,
                                                             HttpServletRequest request) {
 
+        log.debug("Received Create Class Request: {}, imageName={}", dto, image.getOriginalFilename());
+
         JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
         String teacherId = payload.getSub();
 
-        return TryCatchControllerTemplate.execute(() -> service.createClassroom(dto, teacherId, image.getInputStream()));
+        return TryCatchControllerTemplate.execute(() ->
+                service.createClassroom(dto.getTitle(), dto.getDescription(), dto.getCapacity(),
+                        teacherId, image.getInputStream(), image.getOriginalFilename()));
     }
 
-    @GetMapping("/api/classes")
+    @GetMapping("/classes")
     public ResponseEntity<ClassroomPageResultDto> getAllClasses(@RequestParam int page,
-                                                                @RequestParam ClassroomStatus status) {
+                                                                @RequestParam(required = false) ClassroomStatus status) {
 
         return TryCatchControllerTemplate.execute(() -> service.getAllClassrooms(page, status));
     }
@@ -50,7 +56,7 @@ public class ClassroomController {
     @ForStudent
     @GetMapping("/api/classes/student")
     public ResponseEntity<ClassroomPageResultDto> getClassesForStudent(@RequestParam int page,
-                                                                @RequestParam ClassroomStatus status,
+                                                                @RequestParam(required = false) ClassroomStatus status,
                                                                        HttpServletRequest request) {
 
         JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
@@ -63,17 +69,17 @@ public class ClassroomController {
     @ForTeacher
     @GetMapping("/api/classes/teacher")
     public ResponseEntity<ClassroomPageResultDto> getClassesForTeacher(@RequestParam Integer page,
-                                                                       @RequestParam ClassroomStatus status,
+                                                                       @RequestParam(required = false) ClassroomStatus status,
                                                                        HttpServletRequest request) {
 
         JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
         String teacherId = payload.getSub();
 
         // 구현 필요
-        return TryCatchControllerTemplate.execute(() -> service.getAllClassrooms(page, status));
+        return TryCatchControllerTemplate.execute(() -> service.getAllClassroomsForTeacher(page, status, teacherId));
     }
 
-    @GetMapping("/api/classes/{classId}")
+    @GetMapping("/classes/{classId}")
     public ResponseEntity<ClassroomResponseDto> getClassById(@PathVariable String classId) {
 
         return TryCatchControllerTemplate.execute(() -> service.getClassroomById(classId));
@@ -89,8 +95,23 @@ public class ClassroomController {
         JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
         String teacherId = payload.getSub();
 
-        return TryCatchControllerTemplate.execute(() -> service.updateClassroom(classId, requestDto, teacherId,
-                image.getInputStream()));
+        return TryCatchControllerTemplate.execute(() -> service.updateClassroom(
+                classId, requestDto.getTitle(), requestDto.getDescription(), requestDto.getCapacity(),
+                teacherId, image.getInputStream()));
+    }
+
+    @ForTeacher
+    @PatchMapping(value = "/api/classes/{classroomId}", consumes = "text/plain")
+    public ResponseEntity<Object> updateClassroomStatus(@PathVariable String classroomId, HttpServletRequest request,
+                                                        @RequestBody ClassroomStatus status) {
+
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String teacherId = payload.getSub();
+
+        return TryCatchControllerTemplate.execute(() -> {
+            service.updateClassroomStatus(classroomId, status, teacherId);
+            return null;
+        });
     }
 
     @ForTeacher
@@ -104,5 +125,21 @@ public class ClassroomController {
             service.deleteClassroom(classId, teacherId);
             return null;
         });
+    }
+
+    @ForUser
+    @PostMapping(value = "/api/classes/liked/{classroomId}", produces = "text/plain")
+    public ResponseEntity<String> addLike(@PathVariable String classroomId, HttpServletRequest request) {
+
+        JwtPayloadDto payload = (JwtPayloadDto) request.getAttribute("jwtPayload");
+        String userId = payload.getSub();
+
+        return TryCatchControllerTemplate.execute(() -> String.valueOf(service.createLiked(classroomId, userId)));
+    }
+
+    @GetMapping(value = "/classes/liked/{classroomId}", produces = "text/plain")
+    public ResponseEntity<String> getLike(@PathVariable String classroomId) {
+
+        return TryCatchControllerTemplate.execute(() -> String.valueOf(service.countLiked(classroomId)));
     }
 }

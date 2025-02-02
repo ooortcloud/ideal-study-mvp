@@ -1,7 +1,7 @@
 package com.idealstudy.mvp.security.filter;
 
 import com.idealstudy.mvp.security.dto.JwtPayloadDto;
-import com.idealstudy.mvp.util.JwtUtil;
+import com.idealstudy.mvp.helper.JwtHelper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +20,7 @@ import java.io.IOException;
 public class JwtTokenGrepper extends OncePerRequestFilter {
 
     @Autowired
-    private final JwtUtil jwtUtil;
+    private final JwtHelper jwtUtil;
 
     /**
      * 이 필터는 비회원 접근 가능한 서비스에서 token 정보를 필요로 하는 경우 Payload 정보를 넘겨주기 위해 구현되었다.

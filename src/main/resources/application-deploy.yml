@@ -1,0 +1,34 @@
+# 로컬 배포환경
+
+spring:
+  # 배포환경에선 mysql을 컨테이너로 띄움
+  datasource:
+    url: jdbc:mysql://mysql-db:3306/idealstudy?createDatabaseIfNotExist=true
+    username: manager
+    password: manager # rds 는 비밀번호 8자이상 제한
+
+  jpa:
+    hibernate:
+      ddl-auto: update # 로컬 배포환경에서는 ddl-auto ON
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always # 로컬 배포환경에서는 data.sql 실행
+      continue-on-error: true # data.sql 삽입오류시에도 서버 종료하지 않도록
+
+# redis 설정
+redis:
+  hostname: redis-db
+  port: 6379
+  password: ""
+
+server:
+  backend-domain-url: http://localhost:8080 # 이메일 클릭시 이동하는 주소
+  backend-domain: localhost # 추후 배포 환경 도메인으로 변경할 것
+  dev: false # dev 일땐 true, false 일땐 true - 시큐리티 설정에서 사용
+  https: false # https일 때 true, 아니면 false

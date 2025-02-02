@@ -1,15 +1,13 @@
 package com.idealstudy.mvp.util;
 
 import com.idealstudy.mvp.enums.error.DBErrorMsg;
-import com.idealstudy.mvp.enums.error.SecurityErrorMsg;
+import com.idealstudy.mvp.error.CustomException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.util.concurrent.Callable;
-import java.util.function.Supplier;
 
+@Deprecated
 @Slf4j
 public class TryCatchServiceTemplate {
 
@@ -20,6 +18,9 @@ public class TryCatchServiceTemplate {
                 runnable.run();
 
             return callable.call();
+        } catch (CustomException e) {
+            log.error(e.getMessage());
+            throw e;
         } catch (SecurityException e) {
             log.error(e.getMessage());
             throw new SecurityException(e);

@@ -6,6 +6,7 @@ import com.idealstudy.mvp.infrastructure.jpa.entity.OfficialProfileEntity;
 import com.idealstudy.mvp.infrastructure.jpa.entity.member.TeacherEntity;
 import com.idealstudy.mvp.infrastructure.jpa.repository.OfficialProfileJpaRepository;
 import com.idealstudy.mvp.infrastructure.jpa.repository.member.TeacherJpaRepository;
+import com.idealstudy.mvp.mapstruct.OfficialProfileMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -21,9 +22,7 @@ public class OfficialProfileRepositoryImpl implements OfficialProfileRepository 
     private final TeacherJpaRepository teacherJpaRepository;
 
     @Override
-    public void create(String teacherId) {
-
-        String initContent = "<p>최초 프로필 생성됨</p>";
+    public OfficialProfileDto create(String teacherId, String initContent) {
 
         TeacherEntity teacherEntity = teacherJpaRepository.findById(teacherId).orElseThrow();
 
@@ -33,7 +32,7 @@ public class OfficialProfileRepositoryImpl implements OfficialProfileRepository 
                 .content(initContent)
                 .build();
 
-        officialProfileJpaRepository.save(entity);
+        return OfficialProfileMapper.INSTANCE.toDto(officialProfileJpaRepository.save(entity));
     }
 
     @Override

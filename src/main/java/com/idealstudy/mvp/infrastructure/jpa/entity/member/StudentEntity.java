@@ -24,9 +24,16 @@ public class StudentEntity extends MemberEntity {
     @Enumerated(EnumType.STRING)
     private Grade grade;
 
+    /* EnrollmentEntity로 대체함
     // Classroom과 N:M 관계
     @ManyToMany(mappedBy = "students")
     private List<ClassroomEntity> classrooms; // 참여한 수업 목록
+
+     */
+
+    @ManyToOne
+    @JoinColumn(name = "parents_id")
+    private ParentsEntity parents;
 
     public StudentEntity() {
         super();

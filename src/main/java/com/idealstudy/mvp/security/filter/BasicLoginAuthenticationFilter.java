@@ -3,7 +3,7 @@ package com.idealstudy.mvp.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.idealstudy.mvp.enums.member.Role;
 import com.idealstudy.mvp.security.dto.UserLoginResponseDto;
-import com.idealstudy.mvp.util.JwtUtil;
+import com.idealstudy.mvp.helper.JwtHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +22,9 @@ import java.nio.charset.StandardCharsets;
 @Slf4j(topic = "로그인 필터")
 public class BasicLoginAuthenticationFilter extends BasicAuthenticationFilter {
 
-    private final JwtUtil jwtUtil;
+    private final JwtHelper jwtUtil;
 
-    public BasicLoginAuthenticationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public BasicLoginAuthenticationFilter(AuthenticationManager authenticationManager, JwtHelper jwtUtil) {
         super(authenticationManager);
         this.jwtUtil = jwtUtil;
     }

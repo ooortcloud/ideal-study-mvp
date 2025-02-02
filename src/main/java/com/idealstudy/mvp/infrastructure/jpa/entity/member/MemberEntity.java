@@ -20,7 +20,6 @@ public class MemberEntity extends BaseEntity {
     // 주의: UUID를 직접 KEY로 사용하는 것은 성능적으로 문제가 있다고 한다.
     // 참고문헌 : https://planetscale.com/blog/the-problem-with-using-a-uuid-primary-key-in-mysql#best-ways-to-use-a-uuid-primary-key-with-mysql
     @Id
-    // @GeneratedValue(strategy = GenerationType.UUID)
     // @Column(columnDefinition = "char(36)")
     private String userId;
 
@@ -50,19 +49,10 @@ public class MemberEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    /* DB 원자성까지 엄격히 고려하는 경우.
-    @ElementCollection(fetch = FetchType.LAZY)
-    @Builder.Default
-    private Set<Role> roleSet = new HashSet<>();
-
-    public void addRole(Role role) {
-        roleSet.add(role);
-    }
-     */
-
     // @Column(columnDefinition = "varchar(200) default '안녕하세요. 잘 부탁드립니다.'")
     private String introduction;
 
+    /*
     // 리팩토링 대상 1순위
     // Specifies that a persistent property or field should be persisted as a large object
     // to a database-supported large object type.
@@ -70,6 +60,10 @@ public class MemberEntity extends BaseEntity {
     // LONGBLOB: MySQL에서 대용량 바이너리 데이터를 저장하기 위한 데이터 타입을 지정
     @Column(name = "image_data", columnDefinition="LONGBLOB")
     private byte[] profile;
+
+     */
+
+    private String profileUri;
 
     // @Column(columnDefinition = "TINYINT")
     private int fromSocial;

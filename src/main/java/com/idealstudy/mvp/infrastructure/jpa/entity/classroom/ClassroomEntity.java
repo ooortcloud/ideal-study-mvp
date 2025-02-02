@@ -19,6 +19,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Getter
 @Setter
+@ToString
 public class ClassroomEntity extends BaseEntity {
 
     @Id
@@ -42,6 +43,7 @@ public class ClassroomEntity extends BaseEntity {
     @JoinColumn(name = "teacher_id", nullable = false)
     private TeacherEntity teacher; // 강사ID (수업을 운영)
 
+    /// TODO: 일다대-다대일로 변경 필요
     // Student과 N:M 관계 (중간 테이블 설정)
     @ManyToMany
     @JoinTable(
@@ -51,21 +53,7 @@ public class ClassroomEntity extends BaseEntity {
     )
     private List<StudentEntity> students; // 학생ID (수업에 참가)
 
-    @ManyToMany(mappedBy = "classrooms")
-    private List<LikedEntity> likes;
-
     public ClassroomEntity() {
 
-    }
-
-    @Override
-    public String toString() {
-        return "ClassroomEntity{" +
-                "classroomId='" + classroomId + '\'' +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", capacity=" + capacity +
-                ", thumbnail='" + thumbnail + '\'' +
-                '}';
     }
 }
