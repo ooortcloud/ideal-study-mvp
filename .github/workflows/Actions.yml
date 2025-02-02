@@ -114,16 +114,35 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # init.sql 파일 복사
-      - name: EC2로 init.sql 파일 복사
+      # FE 시크릿 파일 생성
+      - name: Create .env file for frontend
+        run: echo "${{ secrets.FRONTEND_ENV_FILE }}" > frontend/.env
+
+      # BE 시크릿 파일 생성
+      - name: Create application-private.yml for backend
+        run: echo "${{ secrets.APPLICATION_PRIVATE }}" > src/main/resources/application-private.yml
+
+      # EC2로 .env 파일 복사
+      - name: Copy .env file to EC2 (frontend)
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: ./init.sql
-          target: /home/ubuntu
+          source: ./frontend/.env
+          target: /home/ubuntu/.env
           debug: true
+
+      # EC2로 application-yml 파일 복사
+      - name: EC2로 application-private.yml 복사
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        source: ./src/main/resources/application-private.yml
+        target: /home/ubuntu
+        debug: true
 
       # monitoring-config 폴더 복사
       - name: EC2로 monitoring-config 폴더 복사
@@ -136,7 +155,7 @@ jobs:
           target: /home/ubuntu
           debug: true
 
-      - name: EC2로 docker-compose.yml 복사
+      - name: EC2로 docker-compose-prod.yml 복사
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}

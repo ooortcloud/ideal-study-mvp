@@ -3,7 +3,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:8080", // 기본 URL 설정
+  baseURL: process.env.REACT_APP_API_BASE_URL, // 기본 URL 설정
   timeout: 5000, // 요청 제한 시간 설정
   headers: { "Content-Type": "application/json" }, // 기본 헤더 설정
 });

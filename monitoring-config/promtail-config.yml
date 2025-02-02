@@ -1,20 +1,20 @@
 # 로그 수집 방법을 설정
 
 server:
-  http_listen_port: 9080  # Promtail의 HTTP 포트
-  grpc_listen_port: 0     # gRPC 포트는 사용하지 않음
+  http_listen_port: 9080 # Promtail의 HTTP 포트
+  grpc_listen_port: 0 # gRPC 포트는 사용하지 않음
 
 clients: # 로그를 전송할 대상, 즉 loki의 URL 설정
-  - url: http://loki:3100/loki/api/v1/push  # Loki의 API URL (로그를 보낼 URL)
+  - url: http://loki:3100/loki/api/v1/push # Loki의 API URL (로그를 보낼 URL)
 
 positions: # Promtail 이 마지막으로 읽은 로그의 위치를 추적하여 중복데이터 생성 방지
-  filename: /tmp/positions.yaml  # 로그의 마지막 읽은 위치를 저장하는 파일
+  filename: /tmp/positions.yaml # 로그의 마지막 읽은 위치를 저장하는 파일
 
 scrape_configs: # 어떤 로그파일을 수집할 것인지 결정
-  - job_name: system_logs  # 잡 이름
+  - job_name: system_logs # 잡 이름
     static_configs:
       - targets:
-          - localhost  # 로컬 호스트에서 로그 수집
+          - localhost # 로컬 호스트에서 로그 수집
         labels:
-          job: springlogs  # 로그에 'springlogs'라는 라벨을 추가
-          __path__: /var/log/spring-logs/*.log  # 이 경로의 로그파일을 읽고 로키로 보낸다
+          job: springlogs # 로그에 'springlogs'라는 라벨을 추가
+          __path__: /var/log/spring-logs/*.log # 이 경로의 로그파일을 읽고 로키로 보낸다

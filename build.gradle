@@ -95,6 +95,11 @@ dependencies {
 	implementation 'io.awspring.cloud:spring-cloud-aws-starter'
 	// https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-aws-s3
 	implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3'
+
+	// 스프링부트 애플리케이션 상태와 메트릭을 제공하는 Actuator
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    // 이 메트릭을 프로메테우스가 읽을 수 있도록 노출하는 micrometer
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 test {

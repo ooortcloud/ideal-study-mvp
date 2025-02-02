@@ -18,7 +18,7 @@
     </appender>
 
     <!-- 로그 레벨 설정 -->
-    <root level="TRACE">
+    <root level="TRACE"> <!-- TRACE, DEBUG, INFO, WARN, ERROR 등 모든 로그 출력 -->
         <appender-ref ref="CONSOLE" />  <!-- 콘솔에 로그 출력 -->
         <appender-ref ref="FILE" />     <!-- 파일에 로그 기록 -->
     </root>
