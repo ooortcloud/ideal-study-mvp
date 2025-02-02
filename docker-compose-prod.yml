@@ -33,6 +33,8 @@ services:
       - idealstudy-network
     container_name: frontend
     image: idealstudy/frontend-app:latest
+    volumes:
+      - /home/ubuntu/.env:/app/.env # EC2의 .env 파일을 컨테이너에 마운트
     # build:
     #   context: .
     #   dockerfile: ./frontend/Dockerfile
@@ -53,6 +55,7 @@ services:
       - "19090:19090" # Actuator 엔드포인트 포트 (운영환경)
     volumes:
       - /home/user/logs:/var/log/spring-logs # 호스트와 컨테이너 간 로그 디렉토리 연결
+      - /home/ubuntu/application-private.yml:/app/src/main/resources/application-private.yml # EC2에서 복사한 파일 마운트
     environment: # 환경변수
       - SPRING_PROFILES_ACTIVE=production
     depends_on: # mysql, redis 컨테이너 '시작'후 서버 띄움. '준비' 후 띄우려면 wait-for-it 해야함
