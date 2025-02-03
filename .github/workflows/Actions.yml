@@ -117,10 +117,16 @@ jobs:
       - name: Create .env file for frontend
         run: echo "${{ secrets.FRONTEND_ENV_FILE }}" > frontend/.env
 
+      - name: Check current directory
+        run: pwd
+
       # BE 시크릿 파일 생성
       - name: Create application-private.yml for backend
         run: echo "${{ secrets.APPLICATION_PRIVATE }}" > src/main/resources/application-private.yml
 
+      - name: Check current directory
+        run: pwd
+        
       # EC2로 .env 파일 복사
       - name: Copy .env file to EC2 (frontend)
         uses: appleboy/scp-action@v0.1.7
@@ -132,6 +138,9 @@ jobs:
           target: "/home/ubuntu/a"
           debug: true
 
+      - name: Check current directory
+        run: pwd
+        
       # EC2로 application-yml 파일 복사
       - name: EC2로 application-private.yml 복사
         uses: appleboy/scp-action@v0.1.7
@@ -143,6 +152,9 @@ jobs:
           target: "/home/ubuntu/b"
           debug: true
 
+      - name: Check current directory
+        run: pwd
+        
       # monitoring-config 폴더 복사
       - name: EC2로 monitoring-config 폴더 복사
         uses: appleboy/scp-action@v0.1.7
