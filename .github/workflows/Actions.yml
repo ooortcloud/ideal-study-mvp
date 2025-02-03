@@ -1,4 +1,4 @@
-# gitAction 이 실행할 workflow 를 정의하는 yml 파일입니다!
+# gitAction 이 실행할 workflow 를 정의하는 yml 파일입니다
 name: CI/CD Pipeline
 
 # 이벤트 트리거 (main 브렌치에 push 될 경우 본 파일실행)
@@ -113,14 +113,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # FE 시크릿 파일 생성 직전
-      - name : Check before secret files are created
-        run : ls -al ./frontend
-
-      # BE 시크릿 파일 생성 직전
-      - name : Check before secret files are created
-        run : ls -al ./src/main/resources
-        
       # FE 시크릿 파일 생성
       - name: Create .env file for frontend
         run: echo "${{ secrets.FRONTEND_ENV_FILE }}" > frontend/.env
@@ -129,31 +121,15 @@ jobs:
       - name: Create application-private.yml for backend
         run: echo "${{ secrets.APPLICATION_PRIVATE }}" > src/main/resources/application-private.yml
 
-      # FE 시크릿 파일 생성 확인
-      - name : Check if secret files are created
-        run : ls -al ./frontend
-
-      # BE 시크릿 파일 생성 확인
-      - name : Check if secret files are created
-        run : ls -al ./src/main/resources
-
-      # FE 시크릿 파일 생성 확인
-      - name: show .env file contents for frontend
-        run: cat ./frontend/.env
-      
-      # BE 시크릿 파일 생성 확인
-      - name: show application-private.yml contents for backend
-        run: cat ./src/main/resources/application-private.yml
-  
       # EC2로 .env 파일 복사
-      - name: EC2로 .env 복사
+      - name: Copy .env file to EC2 (frontend)
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           source: ./frontend/.env
-          target: /home/ubuntu
+          target: "/home/ubuntu"
           debug: true
 
       # EC2로 application-yml 파일 복사
@@ -164,7 +140,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           source: ./src/main/resources/application-private.yml
-          target: /home/ubuntu
+          target: "/home/ubuntu"
           debug: true
 
       # monitoring-config 폴더 복사
@@ -196,7 +172,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ubuntu  # docker-compose.yml이 위치한 디렉토리로 이동
-            docker compose down -v  # 기존 컨테이너 중지 및 제거
+            docker compose -f docker-compose-prod.yml down -v  # 기존 컨테이너 중지 및 제거
 
       - name: EC2에서 사용하지 않는 이미지와 컨테이너 정리
         uses: appleboy/ssh-action@v0.1.5
@@ -218,7 +194,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ubuntu
-            docker compose pull  # 최신 이미지를 강제로 가져오기
+            docker compose -f docker-compose-prod.yml pull  # 최신 이미지를 강제로 가져오기
 
       - name: EC2에서 배포 실행
         uses: appleboy/ssh-action@v0.1.5
