@@ -121,6 +121,10 @@ jobs:
       - name: Create application-private.yml for backend
         run: echo "${{ secrets.APPLICATION_PRIVATE }}" > src/main/resources/application-private.yml
 
+      # 시크릿 파일 생성 확인
+      - name : Check if secret files are created
+        run : ls -al
+        
       # EC2로 .env 파일 복사
       - name: Copy .env file to EC2 (frontend)
         uses: appleboy/scp-action@v0.1.7
@@ -140,7 +144,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           source: ./src/main/resources/application-private.yml
-          target: /home/ubuntu
+          target: /home/ubuntu/application-private.yml
           debug: true
 
       # monitoring-config 폴더 복사
