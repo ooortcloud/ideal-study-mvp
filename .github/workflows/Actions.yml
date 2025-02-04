@@ -148,8 +148,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: ./frontend/.env
-          target: "/home/ubuntu"
+          source: "./frontend/.env"
+          target: "/home/ubuntu/.env"
           debug: true
           
       # EC2로 application-yml 파일 복사
@@ -159,8 +159,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: ./src/main/resources/application-private.yml
-          target: "/home/ubuntu"
+          source: "./src/main/resources/application-private.yml"
+          target: /home/ubuntu
           debug: true
         
       # monitoring-config 폴더 복사
