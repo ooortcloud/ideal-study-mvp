@@ -119,11 +119,11 @@ jobs:
         
       # FE 시크릿 파일 생성
       - name: Create .env file for frontend
-        run: printf "${{ secrets.FRONTEND_ENV_FILE }}" > ./frontend/.env
+        run: printf "${{ secrets.FRONTEND_ENV_FILE }}" > ./.env
 
       # BE 시크릿 파일 생성
       - name: Create application-private.yml for backend
-        run: printf "${{ secrets.APPLICATION_PRIVATE }}" > ./src/main/resources/application-private.yml
+        run: printf "${{ secrets.APPLICATION_PRIVATE }}" > ./application-private.yml
       
       # 이상한점
       - name: 이상한점
@@ -148,8 +148,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "./frontend/.env"
-          target: "/home/ubuntu"
+          source: "./.env"
+          target: "/home/ubuntu/secrets"
           debug: true
           
       # EC2로 application-yml 파일 복사
@@ -159,8 +159,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "./src/main/resources/application-private.yml"
-          target: /home/ubuntu
+          source: "./application-private.yml"
+          target: /home/ubuntu/secrets
           debug: true
         
       # monitoring-config 폴더 복사
