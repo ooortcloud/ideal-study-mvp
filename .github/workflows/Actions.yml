@@ -112,15 +112,27 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      # debug
+      - name : 시크릿 파일 생성전 폴더확인
+        run: ls -al
         
       # FE 시크릿 파일 생성
       - name: Create .env file for frontend
-        run: echo "${{ secrets.FRONTEND_ENV_FILE }}" > frontend/.env
+        run: printf "${{ secrets.FRONTEND_ENV_FILE }}" > frontend/.env
 
       # BE 시크릿 파일 생성
       - name: Create application-private.yml for backend
-        run: echo "${{ secrets.APPLICATION_PRIVATE }}" > src/main/resources/application-private.yml
+        run: printf "${{ secrets.APPLICATION_PRIVATE }}" > src/main/resources/application-private.yml
 
+      # debug
+      - name : frontend 폴더확인
+        run: ls -al frontend
+
+      # debug
+      - name : frontend 폴더확인
+        run: ls -al src/main/resources
+        
       # EC2로 .env 파일 복사
       - name: Copy .env file to EC2 (frontend)
         uses: appleboy/scp-action@v0.1.7
@@ -129,7 +141,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           source: ./frontend/.env
-          target: "/home/ubuntu/.env"
+          target: "/home/ubuntu"
           debug: true
           
       # EC2로 application-yml 파일 복사
@@ -140,7 +152,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           source: ./src/main/resources/application-private.yml
-          target: "/home/ubuntu/ab.yml"
+          target: "/home/ubuntu"
           debug: true
         
       # monitoring-config 폴더 복사
