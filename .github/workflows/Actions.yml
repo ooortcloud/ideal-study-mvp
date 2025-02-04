@@ -124,6 +124,10 @@ jobs:
       # BE 시크릿 파일 생성
       - name: Create application-private.yml for backend
         run: printf "${{ secrets.APPLICATION_PRIVATE }}" > src/main/resources/application-private.yml
+      
+      # 이상한점
+      - name: 이상한점
+        run: printf "${{ secrets.FRONTEND_ENV_FILE }}" > 이따위로생긴다고
 
       # debug
       - name : frontend 폴더확인
@@ -140,7 +144,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: ./frontend/.env
+          source: frontend/.env
           target: "/home/ubuntu"
           debug: true
           
@@ -151,7 +155,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: ./src/main/resources/application-private.yml
+          source: src/main/resources/application-private.yml
           target: "/home/ubuntu"
           debug: true
         
