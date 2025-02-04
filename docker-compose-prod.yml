@@ -34,7 +34,9 @@ services:
     container_name: frontend
     image: idealstudy/frontend-app:latest
     volumes:
-      - /home/ubuntu/.env:/app/.env # EC2의 .env 파일을 컨테이너에 마운트
+      - /home/ubuntu/secrets/.env:/app/.env # EC2의 .env 파일을 컨테이너에 마운트 (Dockerfile 에서 작업디렉토리를 app 으로 설정)
+    env_file:
+      - /home/ubuntu/secrets/.env
     # build:
     #   context: .
     #   dockerfile: ./frontend/Dockerfile
@@ -55,9 +57,10 @@ services:
       - "19090:19090" # Actuator 엔드포인트 포트 (운영환경)
     volumes:
       - /home/user/logs:/var/log/spring-logs # 호스트와 컨테이너 간 로그 디렉토리 연결
-      - /home/ubuntu/application-private.yml:/app/src/main/resources/application-private.yml # EC2에서 복사한 파일 마운트
+      - /home/ubuntu/secrets/application-private.yml:/app/application-private.yml # EC2에서 복사한 파일 마운트 (Dockerfile 에서 작업디렉토리를 app 으로 설정)
     environment: # 환경변수
       - SPRING_PROFILES_ACTIVE=production
+      - SPRING_CONFIG_LOCATION=file:/app/application-private.yml
     depends_on: # mysql, redis 컨테이너 '시작'후 서버 띄움. '준비' 후 띄우려면 wait-for-it 해야함
       # - mysql-db -> rds 로 변경
       - redis-db
