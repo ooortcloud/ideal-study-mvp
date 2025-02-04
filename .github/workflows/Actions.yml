@@ -140,7 +140,12 @@ jobs:
       # debug
       - name : frontend 폴더확인
         run: ls -al src/main/resources
-        
+
+      #################################
+      # scp 에서 source 를 " "로 감싸면 파일로 인식하지만 그냥 쓰면 폴더로 인식해서 가져감
+      # scp 에서 target 은 folder path 라서 " "를 감싸든 안감싸든 의미 없음
+      #################################
+      
       # EC2로 .env 파일 복사
       - name: Copy .env file to EC2 (frontend)
         uses: appleboy/scp-action@v0.1.7
