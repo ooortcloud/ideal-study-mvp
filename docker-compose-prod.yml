@@ -36,7 +36,7 @@ services:
     volumes:
       - /home/ubuntu/secrets/.env:/.env # EC2의 .env 파일을 컨테이너에 마운트 (Dockerfile 에서 작업디렉토리를 app 으로 설정)
     env_file:
-      - /.env
+      - /home/ubuntu/secrets/.env
     # build:
     #   context: .
     #   dockerfile: ./frontend/Dockerfile
