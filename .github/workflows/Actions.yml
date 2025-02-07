@@ -110,7 +110,7 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest
 
   deploy:
-    name: 배포하자~
+    name: 배포하자~!
     needs:
       - dockerize-frontend
       - dockerize-backend
