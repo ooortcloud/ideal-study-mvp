@@ -97,7 +97,7 @@ jobs:
 
       - name: .env 만들어졌나?
         run: ls ./frontend
-        
+
       - name: Docker 이미지 빌드하기
         run: docker build -t frontend-app:latest ./frontend
 
@@ -118,6 +118,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      # FE 시크릿 파일 생성 (안씀)
 
       # debug
       - name : 시크릿 파일 생성전 폴더확인
