@@ -27,6 +27,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -41,6 +42,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -92,6 +94,22 @@ public class SecurityConfig {
     }
 
      */
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration config = new CorsConfiguration();
+        // CORS 요청을 허용할 출처
+        config.setAllowedOrigins(Arrays.asList("http://3.38.162.79:3000", "https://www.idealstudy.store", "http://localhost:3000"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // CORS 요청을 허용할 메서드
+        config.setAllowCredentials(true); // CORS 쿠키나 인증정보를 포함한 요청 허용
+        config.setAllowedHeaders(Collections.singletonList("*")); // CORS 요청을 허용할 헤더
+        config.setMaxAge(3600L); // pre-flight 요청을 캐싱할 1시간
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
 
     @Bean
     public JsonLoginAuthenticationFilter jsonLoginAuthenticationFilter() {
@@ -204,6 +222,11 @@ public class SecurityConfig {
     }
 
     private void setCors(HttpSecurity http) throws Exception {
+
+        http.cors(Customizer.withDefaults());
+
+        // 매 요청마다 CorsConfiguration 객체를 생성하는 비정상적인 로직
+        /*
         http.cors(customizer -> customizer.configurationSource( // HttpServletRequest를 기반으로 CORS 설정을 반환
                 new CorsConfigurationSource() { // CORS 설정을 직접 정의하는 익명 클래스
                     @Override
@@ -212,7 +235,7 @@ public class SecurityConfig {
                         CorsConfiguration config = new CorsConfiguration();
                         // CORS 요청을 허용할 출처
                         config.setAllowedOrigins(Arrays.asList("http://3.38.162.79:3000", "https://www.idealstudy.store", "http://localhost:3000"));
-                        config.setAllowedMethods(Collections.singletonList("*")); // CORS 요청을 허용할 메서드
+                        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // CORS 요청을 허용할 메서드
                         config.setAllowCredentials(true); // CORS 쿠키나 인증정보를 포함한 요청 허용
                         config.setAllowedHeaders(Collections.singletonList("*")); // CORS 요청을 허용할 헤더
                         config.setMaxAge(3600L); // pre-flight 요청을 캐싱할 1시간
@@ -220,7 +243,10 @@ public class SecurityConfig {
                     }
                 }
         ));
+
+         */
     }
+
 
     private void setAuthorizeHttpRequests(HttpSecurity http) throws Exception {
 
