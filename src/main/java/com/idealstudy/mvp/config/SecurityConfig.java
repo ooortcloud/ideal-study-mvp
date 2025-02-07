@@ -211,7 +211,7 @@ public class SecurityConfig {
                         // corsConfiguration 객체를 생성하여 CORS 설정을 담을 컨테이너로 사용
                         CorsConfiguration config = new CorsConfiguration();
                         // CORS 요청을 허용할 출처
-                        config.setAllowedOrigins(Arrays.asList("http://3.38.162.79:3000", "http://localhost:3000"));
+                        config.setAllowedOrigins(Arrays.asList("http://3.38.162.79:3000", "https://www.idealstudy.store", "http://localhost:3000"));
                         config.setAllowedMethods(Collections.singletonList("*")); // CORS 요청을 허용할 메서드
                         config.setAllowCredentials(true); // CORS 쿠키나 인증정보를 포함한 요청 허용
                         config.setAllowedHeaders(Collections.singletonList("*")); // CORS 요청을 허용할 헤더
