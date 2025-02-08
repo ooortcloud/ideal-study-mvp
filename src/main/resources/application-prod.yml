@@ -9,12 +9,17 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate # 운영환경에서는 ddl-auto OFF
+      ddl-auto: create # 운영환경에서는 ddl-auto OFF
     show-sql: true
     properties:
       hibernate:
         format_sql: true
     defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always # 로컬 개발환경에서는 data.sql 실행
+      continue-on-error: true # data.sql 삽입오류시에도 서버 종료하지 않도록
 
 # redis 설정
 redis:
