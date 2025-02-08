@@ -60,11 +60,13 @@ services:
       - /home/ubuntu/secrets/application-private.yml:/application-private.yml # EC2에서 복사한 파일 마운트 (Dockerfile 에서 작업디렉토리를 app 으로 설정)
     environment: # 환경변수
       - SPRING_PROFILES_ACTIVE=production
-      - SPRING_CONFIG_LOCATION=classpath:/application.yml,file:/application-private.yml
+      - SPRING_CONFIG_LOCATION=file:/application-private.yml
     depends_on: # mysql, redis 컨테이너 '시작'후 서버 띄움. '준비' 후 띄우려면 wait-for-it 해야함
       # - mysql-db -> rds 로 변경
       - redis-db
     restart: on-failure
+
+#- SPRING_CONFIG_LOCATION=classpath:/application.yml,file:/application-private.yml
 
   # 로키 서버 컨테이너 (로그를 저장하고 쿼리)
   loki:
