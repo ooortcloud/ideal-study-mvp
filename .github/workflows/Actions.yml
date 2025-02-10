@@ -1,4 +1,4 @@
-# gitAction 이 실행할 workflow 를 정의하는 yml 파일입니다
+# gitAction 이 실행할 workflow 를 정의하는 yml 파일입니다!
 name: CI/CD Pipeline
 
 # 이벤트 트리거 (main 브렌치에 push 될 경우 본 파일실행)
