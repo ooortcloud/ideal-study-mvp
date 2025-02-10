@@ -31,9 +31,9 @@ public class StudentEntity extends MemberEntity {
 
      */
 
-    @ManyToOne
-    @JoinColumn(name = "parents_id")
-    private ParentsEntity parents;
+    // @ManyToOne
+    // @JoinColumn(name = "parents_id")
+    // private ParentsEntity parents;
 
     public StudentEntity() {
         super();
