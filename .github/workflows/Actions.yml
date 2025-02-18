@@ -89,6 +89,7 @@ jobs:
       - name: 레포지토리 코드 가져오기
         uses: actions/checkout@v3
 
+
       - name: 현재 폴더경로 조회
         run: ls -al ./frontend
 
