@@ -33,10 +33,10 @@ services:
       - idealstudy-network
     container_name: frontend
     image: idealstudy/frontend-app:latest
-    volumes:
-      - /home/ubuntu/secrets/.env:/.env # EC2의 .env 파일을 컨테이너에 마운트 (Dockerfile 에서 작업디렉토리를 app 으로 설정)
+    # volumes:
+    #   - /home/ubuntu/secrets/.env:/.env # EC2의 .env 파일을 컨테이너에 마운트 (Dockerfile 에서 작업디렉토리를 app 으로 설정)
     env_file:
-      - /.env
+      - /home/ubuntu/secrets/.env
     # build:
     #   context: .
     #   dockerfile: ./frontend/Dockerfile
@@ -60,80 +60,80 @@ services:
       - /home/ubuntu/secrets/application-private.yml:/application-private.yml # EC2에서 복사한 파일 마운트 (Dockerfile 에서 작업디렉토리를 app 으로 설정)
     environment: # 환경변수
       - SPRING_PROFILES_ACTIVE=production
-      - SPRING_CONFIG_LOCATION=file:/application-private.yml
+      - SPRING_CONFIG_LOCATION=classpath:/application.yml,file:/application-private.yml
     depends_on: # mysql, redis 컨테이너 '시작'후 서버 띄움. '준비' 후 띄우려면 wait-for-it 해야함
       # - mysql-db -> rds 로 변경
       - redis-db
     restart: on-failure
 
-  # 로키 서버 컨테이너 (로그를 저장하고 쿼리)
-  loki:
-    image: grafana/loki:latest
-    container_name: loki
-    ports:
-      - "3100:3100"
-    volumes:
-      - loki-data:/tmp/loki # Loki의 데이터를 저장할 볼륨 (로그 관련한 인덱싱 파일 등)
-      - ./monitoring-config/loki-config.yml:/etc/loki/local-config.yml # 호스트 시스템의 loki 설정 파일을 컨테이너로 이동
-    # 로키에게 호스트 시스템 파일권한을 주고 설정불러옴
-    command: -config.file=/etc/loki/local-config.yaml
+  # # 로키 서버 컨테이너 (로그를 저장하고 쿼리)
+  # loki:
+  #   image: grafana/loki:latest
+  #   container_name: loki
+  #   ports:
+  #     - "3100:3100"
+  #   volumes:
+  #     - loki-data:/tmp/loki # Loki의 데이터를 저장할 볼륨 (로그 관련한 인덱싱 파일 등)
+  #     - ./monitoring-config/loki-config.yml:/etc/loki/local-config.yml # 호스트 시스템의 loki 설정 파일을 컨테이너로 이동
+  #   # 로키에게 호스트 시스템 파일권한을 주고 설정불러옴
+  #   command: -config.file=/etc/loki/local-config.yaml
 
-  # 프롬테일 컨테이너 (로그를 수집하고 로키에 전송)
-  promtail:
-    image: grafana/promtail:latest
-    container_name: promtail
-    volumes:
-      - /home/user/logs:/var/log/spring-logs # 호스트의 로그 파일을 프롬테일 컨테이너로 이동
-      - ./monitoring-config/promtail-config.yml:/etc/promtail/config.yml # 호스트 시스템의 promtail 설정 파일을 컨테이너로 이동
-      - promtail-data:/tmp/positions.yml # Promtail의 마지막 읽은 위치 데이터(positions.yml)를 저장할 볼륨. Promtail이 재시작되어도 마지막 위치를 기억
-    command: -config.file=/etc/promtail/config.yml
+  # # 프롬테일 컨테이너 (로그를 수집하고 로키에 전송)
+  # promtail:
+  #   image: grafana/promtail:latest
+  #   container_name: promtail
+  #   volumes:
+  #     - /home/user/logs:/var/log/spring-logs # 호스트의 로그 파일을 프롬테일 컨테이너로 이동
+  #     - ./monitoring-config/promtail-config.yml:/etc/promtail/config.yml # 호스트 시스템의 promtail 설정 파일을 컨테이너로 이동
+  #     - promtail-data:/tmp/positions.yml # Promtail의 마지막 읽은 위치 데이터(positions.yml)를 저장할 볼륨. Promtail이 재시작되어도 마지막 위치를 기억
+  #   command: -config.file=/etc/promtail/config.yml
 
-  # 프로메테우스 컨테이너 (메트릭 데이터 수집)
-  prometheus:
-    container_name: prometheus
-    image: prom/prometheus:latest
-    ports:
-      - "9090:9090" # Prometheus 포트
-    volumes:
-      - ./monitoring-config/prometheus.yml:/etc/prometheus/prometheus.yml # Prometheus 설정 파일
-      - ./monitoring-config/prometheus-alerts.yml:/etc/prometheus/prometheus-alerts.yml
-    networks:
-      - idealstudy-network
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml" # Prometheus 설정 파일 경로
+  # # 프로메테우스 컨테이너 (메트릭 데이터 수집)
+  # prometheus:
+  #   container_name: prometheus
+  #   image: prom/prometheus:latest
+  #   ports:
+  #     - "9090:9090" # Prometheus 포트
+  #   volumes:
+  #     - ./monitoring-config/prometheus.yml:/etc/prometheus/prometheus.yml # Prometheus 설정 파일
+  #     - ./monitoring-config/prometheus-alerts.yml:/etc/prometheus/prometheus-alerts.yml
+  #   networks:
+  #     - idealstudy-network
+  #   command:
+  #     - "--config.file=/etc/prometheus/prometheus.yml" # Prometheus 설정 파일 경로
 
-  alertmanager:
-    image: prom/alertmanager
-    container_name: alertmanager
-    volumes:
-      - ./monitoring-config/alertmanager.yml:/etc/alertmanager/alertmanager.yml
-    ports:
-      - "9093:9093"
-    networks:
-      - idealstudy-network
+  # alertmanager:
+  #   image: prom/alertmanager
+  #   container_name: alertmanager
+  #   volumes:
+  #     - ./monitoring-config/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+  #   ports:
+  #     - "9093:9093"
+  #   networks:
+  #     - idealstudy-network
 
-  # Node Exporter (시스템 메트릭 수집)
-  node-exporter:
-    container_name: node-exporter
-    image: prom/node-exporter:latest
-    ports:
-      - "9100:9100" # Node Exporter 포트
-    networks:
-      - idealstudy-network
+  # # Node Exporter (시스템 메트릭 수집)
+  # node-exporter:
+  #   container_name: node-exporter
+  #   image: prom/node-exporter:latest
+  #   ports:
+  #     - "9100:9100" # Node Exporter 포트
+  #   networks:
+  #     - idealstudy-network
 
-  # 그라파나 컨테이너 (로그를 시각화하고 검색)
-  grafana:
-    image: grafana/grafana:10.1.2
-    container_name: grafana
-    ports:
-      - "3001:3000" # TODO : 리액트 3000과 겹치니 살짝 우회함. 배포시 3000 찍어도됨
-    volumes:
-      - grafana-data:/var/lib/grafana # Grafana의 데이터를 저장할 볼륨. Grafana가 재시작되어도 대시보드 설정 유지
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    networks:
-      - idealstudy-network
+  # # 그라파나 컨테이너 (로그를 시각화하고 검색)
+  # grafana:
+  #   image: grafana/grafana:10.1.2
+  #   container_name: grafana
+  #   ports:
+  #     - "3001:3000" # TODO : 리액트 3000과 겹치니 살짝 우회함. 배포시 3000 찍어도됨
+  #   volumes:
+  #     - grafana-data:/var/lib/grafana # Grafana의 데이터를 저장할 볼륨. Grafana가 재시작되어도 대시보드 설정 유지
+  #   environment:
+  #     - GF_SECURITY_ADMIN_USER=admin
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   networks:
+  #     - idealstudy-network
 
 networks:
   idealstudy-network:

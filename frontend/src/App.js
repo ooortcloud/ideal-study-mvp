@@ -73,7 +73,10 @@ const AppContent = () => {
           <Routes>
             {/*TeacherRoom Routes */}
             <Route path="/teacherRoom">
-              <Route path="classes" element={<TeacherClassroomListPage />} />
+              <Route
+                path="classes"
+                element={<TeacherClassroomListPage userInfo={userInfo} />}
+              />
               <Route path="students" element={<StudentListPage />} />
               <Route path="assignments" element={<AssignmentListPage />} />
               <Route

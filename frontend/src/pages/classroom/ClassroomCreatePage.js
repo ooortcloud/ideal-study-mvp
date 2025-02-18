@@ -10,10 +10,10 @@ const ClassroomCreatePage = () => {
   const handleSubmit = async (formData) => {
     try {
       const response = await createClass(formData);
-      console.log(response);
-      if (response.status === "OPEN") {
+      console.log("클래스 생성 response", response);
+      if (response.status === "SETUP") {
         alert("클래스 생성 완료");
-        navigate(`/classes`); // 클래스 목록 페이지로 이동
+        navigate(`/classes/${response.id}`); // 클래스 목록 페이지로 이동
       }
     } catch (error) {
       alert("클래스 생성 실패");

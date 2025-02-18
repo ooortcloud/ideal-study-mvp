@@ -8,6 +8,8 @@ const apiClient = axios.create({
   headers: { "Content-Type": "application/json" }, // 기본 헤더 설정
 });
 
+console.log("주소", process.env.REACT_APP_API_BASE_URL);
+
 /**
  * 서버에 요청시 토큰이 있으면 헤더에 삽입하여 보냄
  */
