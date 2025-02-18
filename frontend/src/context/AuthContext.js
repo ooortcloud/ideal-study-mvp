@@ -1,4 +1,5 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
+import { parseJwtToken } from "../utils/auth/parseJwtToken";
 
 export const AuthContext = createContext();
 
@@ -11,52 +12,37 @@ export const AuthProvider = ({ children }) => {
     role: "",
   }); // 유저 정보 상태
 
-  // 로그인 시 호출, 유저 정보 및 토큰 설정
-  const login = ({ username }) => {
-    setIsAuthenticated(true);
-
-    const token = localStorage.getItem("jwtToken");
-    var user;
-    console.log("[debug]: username", username);
-    console.log("[debug]: localStorage 에서 꺼내온 토큰", token);
-
-    if (token) {
-      const decodedToken = JSON.parse(atob(token.split(".")[1])); // JWT의 페이로드 부분 파싱
-
-      // Role mapping
-      let role;
-      console.log(typeof decodedToken.role);
-      switch (decodedToken.role) {
-        case "ROLE_TEACHER":
-          role = "teacher";
-          break;
-        case "ROLE_STUDENT":
-          role = "student";
-          break;
-        case "ROLE_PARENTS":
-          role = "parent";
-          break;
-        default:
-          role = ""; // 기본값 설정
-      }
-      console.log(role);
-
-      user = {
-        name: username, // 유저 이름은 인자로 받은 username 사용
-        id: decodedToken.sub, // 파싱한 userId
-        level: "", // 필요에 따라 추가
-        role: role, // 파싱한 userRole
-      };
-
-      console.log("[debug]: 그걸 파싱한 토큰정보", decodedToken);
-      console.log("[debug]: 토큰정보에서 추출한 유저정보", user);
-
+  // 새로고침시 token 등록
+  useEffect(() => {
+    const user = parseJwtToken();
+    if (user) {
+      setIsAuthenticated(true);
       setUserInfo(user);
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, []);
+
+  // 로그인 시 호출, 유저 정보 및 토큰 설정
+  const login = (userId) => {
+    console.log("[debug]: userId", userId);
+
+    var user;
+    user = parseJwtToken(userId);
+
+    console.log("[debug]: jwt 에서 파싱한 유저객체", user);
+
+    // 파싱한 유저객체를 전역 state에 추가
+    if (user) {
+      setUserInfo(user);
+      setIsAuthenticated(true);
       return user.id;
     }
 
-    // 토큰이 없을경우 바디로 받은 username만
-    setUserInfo((prev) => ({ ...prev, username }));
+    // 토큰이 없을경우 바디로 받은 userId만
+    setUserInfo((prev) => ({ ...prev, id: userId }));
+    // 인증된 상태임을 표시
+    setIsAuthenticated(true);
   };
 
   // 로그아웃 시 호출, 유저 정보 초기화
@@ -65,7 +51,7 @@ export const AuthProvider = ({ children }) => {
     setUserInfo({ name: "", id: "", level: "", role: "" });
 
     // 로컬 스토리지에서 토큰과 유저 정보 삭제
-    localStorage.removeItem("token");
+    localStorage.removeItem("jwtToken");
     localStorage.removeItem("user");
   };
 

@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { readClassById } from "../../services/classroom/ClassroomService.mjs";
+import {
+  readClassById,
+  updateClass,
+} from "../../services/classroom/ClassroomService.mjs";
 import LikeButton from "../../components/LikeButton";
 import ClassInfo from "./ClassInfo";
 import ClassEnrollment from "../../components/classroom/preClass/enrollment/Enrollment";
@@ -33,6 +36,16 @@ const ClassroomDetailPage = ({ userInfo }) => {
     fetchClass();
   }, [classId]);
 
+  const handleUpdateClass = async () => {
+    const updatedData = {
+      // 수정할 데이터 예시
+      title: "수정된 클래스 제목",
+      description: "수정된 클래스 설명",
+    };
+    const updatedClass = await updateClass(classId, updatedData);
+    setClassroomInfo(updatedClass); // 수정된 클래스 정보로 상태 업데이트
+  };
+
   if (!classroomInfo) return <p>로딩 중...</p>;
 
   return (
@@ -42,7 +55,9 @@ const ClassroomDetailPage = ({ userInfo }) => {
       <div className="section class-info-section">
         <ClassInfo classroom={classroomInfo} />
       </div>
-      {userInfo.id === classroomInfo.createdBy && <Button>수정</Button>}
+      {userInfo.id === classroomInfo.createdBy && (
+        <Button onClick={handleUpdateClass}>수정</Button>
+      )}
 
       {/* 좋아요 버튼 */}
       <div className="section like-button">

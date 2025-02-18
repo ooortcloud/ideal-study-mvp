@@ -33,7 +33,7 @@ export const createClass = async (data) => {
 export const readClasses = async () => {
   console.log("클래스 목록 조회 API 시도");
   try {
-    const response = await apiClient.get("/api/classes?page=1&status=OPEN");
+    const response = await apiClient.get("/classes?page=1");
     console.log("클래스 목록 조회 API 성공:", response);
     return response.data;
   } catch (error) {
@@ -102,7 +102,7 @@ export const readClassesByUserId = async (userId) => {
 export const readClassById = async (classId) => {
   console.log("클래스 상세 조회 API 시도:", classId);
   try {
-    const response = await apiClient.get(`/api/classes/${classId}`);
+    const response = await apiClient.get(`/classes/${classId}`);
     console.log("클래스 상세 조회 API 성공:", response);
     return response.data;
   } catch (error) {
@@ -120,9 +120,18 @@ export const readClassById = async (classId) => {
  * 클래스 수정
  */
 export const updateClass = async (classId, data) => {
-  console.log("클래스 수정 API 시도:", classId, data);
+  console.log("클래스 수정 API 시도:", data);
+  // FormData 콘솔 출력
+  for (let [key, value] of data.entries()) {
+    console.log(`${key}:`, value);
+  }
+
   try {
-    const response = await apiClient.patch(`/api/classes/${classId}`, data);
+    const response = await apiClient.patch(`/api/classes/${classId}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     console.log("클래스 수정 API 성공:", response);
     return response.data;
   } catch (error) {
