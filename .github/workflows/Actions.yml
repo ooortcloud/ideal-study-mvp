@@ -1,4 +1,4 @@
-# gitAction 이 실행할 workflow 를 정의하는 yml 파일입니다
+# gitAction 이 실행할 workflow 를 정의하는 yml 파일입니다!
 name: CI/CD Pipeline
 
 # 이벤트 트리거 (main 브렌치에 push 될 경우 본 파일실행)
@@ -89,7 +89,8 @@ jobs:
       - name: 레포지토리 코드 가져오기
         uses: actions/checkout@v3
 
-      - name: 현재 frontend 폴더경로 조회
+
+      - name: 현재 폴더경로 조회
         run: ls -al ./frontend
 
       - name: .env 만들기

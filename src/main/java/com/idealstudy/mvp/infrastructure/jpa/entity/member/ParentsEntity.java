@@ -16,7 +16,7 @@ import java.util.List;
 @SuperBuilder
 @Getter
 @Setter
-@PrimaryKeyJoinColumn(name = "parents_id")
+@PrimaryKeyJoinColumn(name = "user_id")
 public class ParentsEntity extends MemberEntity {
 
     /*
