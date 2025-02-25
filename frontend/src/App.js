@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
   useLocation,
 } from "react-router-dom";
-import { AuthProvider, AuthContext } from "./context/AuthContext";
+import useAuthStore from "./stores/authStore";
 import HomePage from "./pages/home/HomePage";
 import SignUpPage from "./pages/auth/SignUpPage";
 import SignUpCompletePage from "./pages/auth/SignUpCompletePage";
@@ -46,19 +46,22 @@ import EnrollmentBoardPage from "./pages/classroom/preClass/enrollment/Enrollmen
 
 const App = () => {
   return (
-    <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </AuthProvider>
+    <Router>
+      <AppContent />
+    </Router>
   );
 };
 
 const AppContent = () => {
-  const { logout, isAuthenticated, userInfo } = useContext(AuthContext);
+  const { logout, isAuthenticated, userInfo, initialize } = useAuthStore();
   const location = useLocation();
-  // 현재 경로 prefix
   const here = location.pathname.split("/")[1];
+
+  // 앱 시작시 인증 상태 초기화
+  useEffect(() => {
+    console.log("[debug]: initialize");
+    initialize();
+  }, [initialize]);
 
   return (
     <>

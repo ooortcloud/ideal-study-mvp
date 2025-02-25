@@ -1,12 +1,12 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import EnrollmentForm from "./EnrollmentForm";
 import enrollmentFormModalcss from "./EnrollmentFormModalcss";
-import { AuthContext } from "../../../../context/AuthContext";
+import useAuthStore from "../../../../stores/authStore";
 import Modal from "react-modal";
 
 const Enrollment = ({ classId }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { userInfo } = useContext(AuthContext);
+  const userInfo = useAuthStore((state) => state.userInfo);
 
   // 모달 열기
   const openModal = () => {

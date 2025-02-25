@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import useAuthStore from "../../stores/authStore";
 import { ReadOfficialProfile } from "../../services/OfficialProfileService.mjs";
 import Button from "../../components/Button";
 
 const OfficialProfilePage = () => {
-  const { userInfo } = useContext(AuthContext);
+  const userInfo = useAuthStore((state) => state.userInfo);
   const { id } = useParams();
   const navigate = useNavigate();
 
