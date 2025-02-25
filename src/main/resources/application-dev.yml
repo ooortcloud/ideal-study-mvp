@@ -3,7 +3,10 @@
 spring:
   # 개발환경에선 로컬 mysql
   datasource:
-    url: jdbc:mysql://172.21.138.60:3306/idealstudy?createDatabaseIfNotExist=true
+    url: jdbc:mysql://mysql-db.c128s4yi2c9t.ap-northeast-2.rds.amazonaws.com:3306/idealstudy?createDatabaseIfNotExist=true
+    username: manager
+    password: manager1234 # rds 는 비밀번호 8자이상 제한
+    # url: jdbc:mysql://172.21.138.60:3306/idealstudy?createDatabaseIfNotExist=true
     #    url: jdbc:mysql://172.17.129.27:3306/idealstudy (성진 wsl 주소)
 
   jpa:
