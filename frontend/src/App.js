@@ -78,7 +78,7 @@ const AppContent = () => {
             <Route path="/teacherRoom">
               <Route
                 path="classes"
-                element={<TeacherClassroomListPage userInfo={userInfo} />}
+                element={<TeacherClassroomListPage />}
               />
               <Route path="students" element={<StudentListPage />} />
               <Route path="assignments" element={<AssignmentListPage />} />
@@ -99,7 +99,7 @@ const AppContent = () => {
               <Route path="classes" element={<StudentClassroomListPage />} />
               <Route
                 path="enrollments"
-                element={<EnrollmentBoardPage userInfo={userInfo} />}
+                element={<EnrollmentBoardPage  />}
               />
               <Route
                 path="assignments"
@@ -135,7 +135,7 @@ const AppContent = () => {
             <Route path="/students" element={<ProfileListPage />} />
             <Route
               path="/myPage/:id"
-              element={<ProfilePage userInfo={userInfo} />}
+              element={<ProfilePage />}
             />
             {/* user - teachers only */}
             <Route
@@ -161,7 +161,7 @@ const AppContent = () => {
             {/* 클래스 상세 */}
             <Route
               path="/classes/:classId"
-              element={<ClassroomDetailPage userInfo={userInfo} />}
+              element={<ClassroomDetailPage />}
             />
 
             {/* classroom - inquiry */}
