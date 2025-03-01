@@ -20,7 +20,9 @@ const LoginPage = () => {
       const userId = login(response.data.username); // context 를 로그인상태로 등록
 
       if (firstLoginResponse.data === "first") {
-        navigate(`/myPage/${userId}`);
+        alert("최초 로그인! 회원 정보 수정 페이지로 이동(추후 구현 예정)");
+        // navigate(`/myPage/${userId}`);
+        navigate("/"); // 일단 회원 정보 수정 페이지는 나중에 구현
       } else {
         navigate("/"); // 로그인시 메인 페이지로 이동
       } // 로그인시 메인 페이지로 이동

@@ -17,13 +17,7 @@ export const loginUser = async (username, password) => {
   } catch (error) {
     console.log("로그인 API 실패", error);
 
-    // 로그인 실패 시 임시 더미 데이터 반환
-    const dummyData = {
-      token: "dummy-token", // 더미 토큰
-      user: { id: 1, name: "최예원", role: "student", level: "3" }, // 더미 유저 정보
-    };
-
-    return dummyData;
+    return null;
   }
 };
 

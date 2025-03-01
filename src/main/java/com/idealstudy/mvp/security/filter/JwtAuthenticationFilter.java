@@ -41,7 +41,10 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
         log.info("JWT 토큰 검사 진행");
         try{
-            String token = jwtUtil.getUserInfoFromToken(request);
+            String token = jwtUtil.getUserInfoFromToken(request).split(" ")[1];
+
+            jwtUtil.validateToken(token);
+
             JwtPayloadDto payload = jwtUtil.getPayloadFromToken(token);
 
             JwtAuthenticationToken authToken = buildJwtAuthenticationToken(token, payload);
@@ -58,8 +61,8 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
             throws IOException, ServletException {
 
         log.info("인증 성공!");
-
-        JwtPayloadDto payload = jwtUtil.getPayloadFromToken(jwtUtil.getUserInfoFromToken(request));
+        String token = jwtUtil.getUserInfoFromToken(request);
+        JwtPayloadDto payload = jwtUtil.getPayloadFromToken(token.split(" ")[1]);
         request.setAttribute("jwtPayload", payload);
 
         SecurityContextHolder.getContext().setAuthentication(authResult);

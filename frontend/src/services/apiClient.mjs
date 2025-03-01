@@ -20,7 +20,7 @@ apiClient.interceptors.request.use(
   (req) => {
     const token = localStorage.getItem("jwtToken"); // localStorage에서 토큰 가져오기
     if (token) {
-      req.headers["Authorization"] = `${token}`; // 토큰을 헤더에 추가
+      req.headers["Authorization"] = `Bearer ${token}`; // 토큰을 헤더에 추가
     }
 
     // 디버깅
