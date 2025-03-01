@@ -26,7 +26,7 @@ export const parseJwtToken = (username) => {
     return {
       id: payload.sub, // userId
       name: payload.name || "", // payload에 username 있을 경우 처리
-      level: "", // 필요에 따라 추가
+      level: payload.level, // 필요에 따라 추가
       role, // 매핑된 role
     };
   } catch (error) {

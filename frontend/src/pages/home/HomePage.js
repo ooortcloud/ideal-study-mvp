@@ -13,7 +13,7 @@ const HomePage = () => {
   return (
     <div>
       <main style={{ padding: "10px" }}>
-        <Button onClick={makeDummy}> 더미유저 생성하기 </Button>
+        { /*<Button onClick={makeDummy}> 더미유저 생성하기 </Button> */}
         <h1>메인 페이지1</h1>
         {isAuthenticated ? (
           <div>
