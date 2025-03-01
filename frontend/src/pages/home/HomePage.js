@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import React from "react";
 import { makeDummyUser } from "../../services/user/UserService.mjs";
 import Button from "../../components/Button";
+import useAuthStore from "../../stores/authStore";  // zustand store import
 
 const HomePage = () => {
-  const { isAuthenticated } = useContext(AuthContext);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const makeDummy = async () => {
     await makeDummyUser();

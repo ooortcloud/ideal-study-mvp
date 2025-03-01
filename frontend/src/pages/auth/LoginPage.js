@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import React, { useState } from "react";
+import useAuthStore from "../../stores/authStore";  // zustand store import
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import { loginUser } from "../../services/auth/AuthService.mjs";
 
 const LoginPage = () => {
-  const { login } = useContext(AuthContext); // 로그인 함수 가져오기
+  const login = useAuthStore((state) => state.login);  // useContext 대신 zustand 사용
   const [userEmail, setUserEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
