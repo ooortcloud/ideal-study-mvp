@@ -3,10 +3,12 @@ import {
   readEnrollmentsByStudentId,
   readEnrollmentsByStudentJWT,
 } from "../../../../services/classroom/EnrollmentService.mjs";
+import useAuthStore from "../../../../stores/authStore";
 
-const EnrollmentList = ({ userInfo }) => {
+const EnrollmentList = () => {
   const [enrollments, setEnrollments] = useState([]);
   const [enrollmentsParent, setEnrollmentsParent] = useState([]);
+  const userInfo = useAuthStore((state) => state.userInfo);
 
   useEffect(() => {
     const fetchData = async () => {

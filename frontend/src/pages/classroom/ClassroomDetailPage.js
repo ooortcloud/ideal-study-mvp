@@ -21,10 +21,12 @@ import AttendancePage from "./inClass/attendance/AttendancePage";
 import AssignmentPage from "./inClass/assessment/Assignment";
 import StudyGroupPage from "./inClass/studygroup/StudyGroupPage";
 import Button from "../../components/Button";
+import useAuthStore from "../../stores/authStore";
 
-const ClassroomDetailPage = ({ userInfo }) => {
+const ClassroomDetailPage = () => {
   const { classId } = useParams();
   const [classroomInfo, setClassroomInfo] = useState(null);
+  const userInfo = useAuthStore((state) => state.userInfo);
 
   useEffect(() => {
     // API 호출로 클래스 상세 정보 가져오기

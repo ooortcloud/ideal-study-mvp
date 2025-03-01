@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import useAuthStore from "../../../../stores/authStore";
 import {
   deleteInquiry,
   readInquiry,
 } from "../../../../services/classroom/InquiryService.mjs";
 import { useNavigate, useParams } from "react-router-dom";
-import { AuthContext } from "../../../../context/AuthContext";
 import Button from "../../../../components/Button.js";
 
 // 문의 상세정보 및 수정삭제
@@ -12,7 +12,7 @@ const InquiryContent = () => {
   const { inquiryId, classId } = useParams();
   const [inquiries, setInquiries] = useState([]);
   const navigate = useNavigate();
-  const { userInfo } = useContext(AuthContext);
+  const userInfo = useAuthStore((state) => state.userInfo);
 
   useEffect(() => {
     const fetchInquiry = async () => {
