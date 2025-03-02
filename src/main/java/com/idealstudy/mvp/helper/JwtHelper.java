@@ -117,22 +117,35 @@ public class JwtHelper {
     }
 
     // 4. JWT 검증
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token) throws RuntimeException {
+
+        /// TODO:블랙리스트 추후 구현 예정
+        /*  
+        if (isTokenBlacklisted(token)) {
+            log.error("Blacklisted token");
+            return false;
+        }
+        */
+
         try {
             Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
         } catch (ExpiredJwtException e) {
             log.error("Expired JWT token, 만료된 JWT token 입니다.");
-        } catch (UnsupportedJwtException e) {
+            throw new io.jsonwebtoken.security.SecurityException("Expired JWT token, 만료된 JWT token 입니다.");
+        } catch (SecurityException | MalformedJwtException e) {
+            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            throw new io.jsonwebtoken.security.SecurityException("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+        } catch (UnsupportedJwtException e) { 
             log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            throw new io.jsonwebtoken.security.SecurityException("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
         } catch (IllegalArgumentException e) {
             log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            throw new io.jsonwebtoken.security.SecurityException("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
         } catch (Exception e) {
             log.error(e + " : " + e.getMessage());
+            throw new io.jsonwebtoken.security.SecurityException("예상하지 못한 오류: " + e.getMessage());
         }
-        return false;
     }
 
     // 5. JWT에서 사용자 정보 가져오기

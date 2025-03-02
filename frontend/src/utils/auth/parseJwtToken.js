@@ -5,8 +5,19 @@ export const parseJwtToken = (username) => {
   if (!token) return null;
 
   try {
+
     const payload = JSON.parse(atob(token.split(".")[1])); // JWT 페이로드 디코딩
-    console.log("payload좀 보자", payload);
+    // console.log("payload좀 보자", payload);
+
+    // 토큰 만료 확인
+    // 추후 백엔드와 연동 필요
+    const currentTime = Math.floor( Date.now() / 1000 ); // 현재 시간을 초 단위로 변환
+    if (payload.exp && payload.exp < currentTime) {
+      console.log("토큰이 만료되었습니다.");
+      localStorage.removeItem("jwtToken");
+      return null;
+    }
+
     // Role 매핑
     let role;
     switch (payload.role) {
