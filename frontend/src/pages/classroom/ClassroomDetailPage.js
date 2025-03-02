@@ -23,6 +23,8 @@ import StudyGroupPage from "./inClass/studygroup/StudyGroupPage";
 import Button from "../../components/Button";
 import useAuthStore from "../../stores/authStore";
 
+import VimeoPlayer from "../../components/vimeo/VimeoPlayer";
+
 const ClassroomDetailPage = () => {
   const { classId } = useParams();
   const [classroomInfo, setClassroomInfo] = useState(null);
@@ -71,6 +73,11 @@ const ClassroomDetailPage = () => {
         <ClassEnrollment classId={classId} />
       </div>
 
+      {/* 샘플 영상 test */}
+      <div className="section">
+        <VimeoPlayer />
+      </div>
+      
       {/* 질문 게시판 섹션 */}
       {/* <div className="section inquiry-section">
         <ClassInquiry classId={classId} />

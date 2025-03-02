@@ -23,5 +23,5 @@ public class JwtPayloadDto {
 
     private final String name;
 
-    private final int level;
+    private final Integer level;
 }

@@ -15,8 +15,8 @@ public class EmailSender {
     @Autowired
     private final JavaMailSender mailSender;
 
-    @Value("${server.backend-domain-url}")
-    private String backendDomainUrl;
+    @Value("${server.frontend-domain-url}")
+    private String frontendDomainUrl;
 
     // 이메일 이미지 첨부용(yml 등으로 빼도 됨)
     private final String logoContentId = "logo";
@@ -57,7 +57,7 @@ public class EmailSender {
 
     private String getMailContents(String email, String token) {
 
-        String authenticationUrl = backendDomainUrl + "/users/email-authentication"
+        String authenticationUrl = frontendDomainUrl + "/signup-complete"
                 + "?emailToken=" + token + "&email=" + email;
 
         return  "<h3>이메일 인증</h3>" +

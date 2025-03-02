@@ -43,10 +43,16 @@ import TeacherRoomPage from "./pages/teacher/TeacherRoomPage";
 import StudentClassroomListPage from "./pages/student/studentRoom/StudentClassroomListPage";
 import TeacherClassroomListPage from "./pages/teacher/teacherRoom/TeacherClassroomListPage";
 import EnrollmentBoardPage from "./pages/classroom/preClass/enrollment/EnrollmentBoardPage";
+import ReactGA from 'react-ga4';
+import PageTracker from './utils/ga/PageTracker';
+
+// 앱 시작시 한 번만 초기화
+ReactGA.initialize(process.env.REACT_APP_GA_MEASUREMENT_ID); 
 
 const App = () => {
   return (
     <Router>
+      <PageTracker />
       <AppContent />
     </Router>
   );
