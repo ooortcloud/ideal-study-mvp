@@ -3,12 +3,13 @@
 spring:
   # 개발환경에선 로컬 mysql
   datasource:
-    url: jdbc:mysql://172.21.138.60:3306/idealstudy?createDatabaseIfNotExist=true
+    url: jdbc:mysql://mysql-db.c128s4yi2c9t.ap-northeast-2.rds.amazonaws.com:3306/idealstudy?createDatabaseIfNotExist=true
+    # url: jdbc:mysql://172.21.138.60:3306/idealstudy?createDatabaseIfNotExist=true
     #    url: jdbc:mysql://172.17.129.27:3306/idealstudy (성진 wsl 주소)
 
   jpa:
     hibernate:
-      ddl-auto: update # 로컬 개발환경에서는 ddl-auto ON
+      ddl-auto: validate # 로컬 개발환경에서는 ddl-auto ON
     show-sql: true
     properties:
       hibernate:
@@ -25,6 +26,7 @@ redis:
   hostname: 172.21.138.60
 
 server:
+  frontend-domain-url: http://localhost:3000
   backend-domain-url: http://localhost:8080
   backend-domain: localhost
   dev: true

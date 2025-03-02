@@ -55,6 +55,8 @@ public class MemberController {
     @Operation(summary = "회원가입", description = "사용자가 회원가입을 신청한 이메일로 등록 메일을 보냅니다.")
     @PostMapping("/users/sign-up")
     public ResponseEntity<String> signUp(@RequestBody SignUpUserRequestDto dto) throws Exception {
+        
+        /// TODO: 이미 존재하는 이메일인지 체크하고, 중복 이메일이면 요청 거부 로직 필요
 
         sendEmail(dto.getEmail(), dto.getRole());
 

@@ -65,6 +65,7 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .role(Role.ROLE_TEACHER)
                 .init(1)
                 .profileUri(defaultImage)
+                .level(1)
                 .build();
 
         TeacherDto teacherDto = MemberMapper.INSTANCE.entityToDto(teacherJpaRepository.save(entity));
@@ -87,6 +88,7 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .role(Role.ROLE_PARENTS)
                 .init(1)
                 .profileUri(defaultImage)
+                .level(1)
                 .build();
 
         ParentsDto parentsDto = MemberMapper.INSTANCE.entityToDto(parentsJpaRepository.save(entity));
@@ -107,6 +109,7 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .role(Role.ROLE_STUDENT)
                 .init(1)
                 .profileUri(defaultImage)
+                .level(1)
                 .build();
 
         StudentDto studentDto = MemberMapper.INSTANCE.entityToDto(studentJpaRepository.save(entity));

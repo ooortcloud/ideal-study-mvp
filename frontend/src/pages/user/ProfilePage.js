@@ -12,14 +12,15 @@ import GuestBook from "../../components/user/GuestBook";
 import "./ProfilePage.css";
 import Bio from "../../components/user/Bio";
 import Button from "../../components/Button";
+import useAuthStore from "../../stores/authStore";
 
-const ProfilePage = ({ userInfo }) => {
+const ProfilePage = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null); // 유저 정보
   const [bio, setBio] = useState(null); // 유저 자기소개
   const [isEditingUser, setIsEditingUser] = useState(false); // 사용자 정보 수정 모드
   const [isEditingBio, setIsEditingBio] = useState(false); // 자기소개 수정 모드
-
+  const userInfo = useAuthStore((state) => state.userInfo);
   useEffect(() => {
     const fetchUserProfile = async () => {
       const data = await readUser(id);

@@ -44,7 +44,7 @@ public class MaterialsRepositoryImpl implements MaterialsRepository {
     public MaterialsRepositoryImpl(MaterialsJpaRepository materialsJpaRepository,
                                    ClassroomJpaRepository classroomJpaRepository,
                                    StudentJpaRepository studentJpaRepository,
-                                   @Value("${upload.path}") String uploadPath) {
+                                   @Value("${upload.materials-path}") String uploadPath) {
         this.materialsJpaRepository = materialsJpaRepository;
         this.classroomJpaRepository = classroomJpaRepository;
         this.studentJpaRepository = studentJpaRepository;

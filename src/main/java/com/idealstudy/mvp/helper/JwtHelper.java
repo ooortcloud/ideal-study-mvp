@@ -4,17 +4,21 @@ import com.idealstudy.mvp.application.dto.member.MemberDto;
 import com.idealstudy.mvp.enums.member.Role;
 import com.idealstudy.mvp.security.dto.JwtPayloadDto;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
+import org.springframework.beans.factory.annotation.Value;
 import javax.crypto.SecretKey;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @Slf4j(topic = "JwtUtil")
@@ -28,14 +32,18 @@ public class JwtHelper {
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
     private static final long TOKEN_TIME = 60 * 60 * 1000L; // 1시간
-    private static final SecretKey key = Jwts.SIG.HS256.key().build();
 
-    /*
+    @Value("${jwt.secret}")  // application.properties나 application.yml에서 값을 가져옴
+    private String secretKey;
+
+    private SecretKey key;
+
+    
     @PostConstruct // 한 번만 받아와도 되는 값을 사용할때마다 요청을 새로하지 않기 위해
     public void init() {
-        key = alg.key().build();
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
-     */
 
     @Deprecated
     public String createToken(String username, Role role) {
@@ -65,24 +73,25 @@ public class JwtHelper {
         log.info("발급시간: " + date.toString());
         try{
             log.info("JWT 토큰 생성");
+
+            Map<String, Object> claims = new HashMap<>();
+            claims.put(AUTHORIZATION_KEY, dto.getRole().toString());
+            claims.put("name", dto.getName());
+            claims.put("level", dto.getLevel());
+
             String token = Jwts.builder()
                     .header().type("JWT").and()  // typ
                     .subject(dto.getUserId()) // 사용자 식별자값(ID)
-                    .claim(AUTHORIZATION_KEY, dto.getRole().toString()) // 사용자 권한
-                    .claim("name", dto.getName())
-                    .claim("level", dto.getLevel())
+                    .claims(claims)
                     .expiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
                     .issuedAt(date) // 발급일
                     .signWith(key) // signature
                     .compact();
 
-            /*
-            log.info("생성 시 사용된 키: " + Encoders.BASE64.encode(key.getEncoded()));
-            log.info("생성된 토큰값: " + token);
-             */
+            log.info("생성된 token: " + token);
 
             validateToken(token);
-            
+
             return BEARER_PREFIX + token;
 
         } catch (Exception e) {
@@ -108,28 +117,35 @@ public class JwtHelper {
     }
 
     // 4. JWT 검증
-    public boolean validateToken(String token) {
-        try {
-            log.info("생성된 토큰 검증");
-            /*
-            log.info("검증 시 사용된 키: " + Encoders.BASE64.encode(key.getEncoded()));
-            log.info("검증할 토큰값: " + token);
-             */
+    public boolean validateToken(String token) throws RuntimeException {
 
+        /// TODO:블랙리스트 추후 구현 예정
+        /*  
+        if (isTokenBlacklisted(token)) {
+            log.error("Blacklisted token");
+            return false;
+        }
+        */
+
+        try {
             Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
         } catch (ExpiredJwtException e) {
             log.error("Expired JWT token, 만료된 JWT token 입니다.");
-        } catch (UnsupportedJwtException e) {
+            throw new io.jsonwebtoken.security.SecurityException("Expired JWT token, 만료된 JWT token 입니다.");
+        } catch (SecurityException | MalformedJwtException e) {
+            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            throw new io.jsonwebtoken.security.SecurityException("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+        } catch (UnsupportedJwtException e) { 
             log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            throw new io.jsonwebtoken.security.SecurityException("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
         } catch (IllegalArgumentException e) {
             log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            throw new io.jsonwebtoken.security.SecurityException("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
         } catch (Exception e) {
             log.error(e + " : " + e.getMessage());
+            throw new io.jsonwebtoken.security.SecurityException("예상하지 못한 오류: " + e.getMessage());
         }
-        return false;
     }
 
     // 5. JWT에서 사용자 정보 가져오기
@@ -160,7 +176,6 @@ public class JwtHelper {
 
     public JwtPayloadDto getPayloadFromToken(String token) {
 
-        validateToken(token);
         Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
 
         return  JwtPayloadDto.builder()

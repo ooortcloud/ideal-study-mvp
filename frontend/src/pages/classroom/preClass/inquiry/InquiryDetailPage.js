@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
+import useAuthStore from "../../../../stores/authStore";
 import {
   createComment,
   deleteComment,
@@ -17,7 +18,7 @@ const InquiryDetailPage = () => {
   const { inquiryId } = useParams();
   const [inquiry, setInquiry] = useState(null);
   const [comments, setComments] = useState([]);
-  const { userInfo } = useContext(AuthContext);
+  const userInfo = useAuthStore((state) => state.userInfo);
 
   useEffect(() => {
     const fetchData = async () => {

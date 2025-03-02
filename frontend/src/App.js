@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
   useLocation,
 } from "react-router-dom";
-import { AuthProvider, AuthContext } from "./context/AuthContext";
+import useAuthStore from "./stores/authStore";
 import HomePage from "./pages/home/HomePage";
 import SignUpPage from "./pages/auth/SignUpPage";
 import SignUpCompletePage from "./pages/auth/SignUpCompletePage";
@@ -43,22 +43,31 @@ import TeacherRoomPage from "./pages/teacher/TeacherRoomPage";
 import StudentClassroomListPage from "./pages/student/studentRoom/StudentClassroomListPage";
 import TeacherClassroomListPage from "./pages/teacher/teacherRoom/TeacherClassroomListPage";
 import EnrollmentBoardPage from "./pages/classroom/preClass/enrollment/EnrollmentBoardPage";
+import ReactGA from 'react-ga4';
+import PageTracker from './utils/ga/PageTracker';
+
+// 앱 시작시 한 번만 초기화
+ReactGA.initialize(process.env.REACT_APP_GA_MEASUREMENT_ID); 
 
 const App = () => {
   return (
-    <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </AuthProvider>
+    <Router>
+      <PageTracker />
+      <AppContent />
+    </Router>
   );
 };
 
 const AppContent = () => {
-  const { logout, isAuthenticated, userInfo } = useContext(AuthContext);
+  const { logout, isAuthenticated, userInfo, initialize } = useAuthStore();
   const location = useLocation();
-  // 현재 경로 prefix
   const here = location.pathname.split("/")[1];
+
+  // 앱 시작시 인증 상태 초기화
+  useEffect(() => {
+    console.log("[debug]: initialize");
+    initialize();
+  }, [initialize]);
 
   return (
     <>
@@ -75,7 +84,7 @@ const AppContent = () => {
             <Route path="/teacherRoom">
               <Route
                 path="classes"
-                element={<TeacherClassroomListPage userInfo={userInfo} />}
+                element={<TeacherClassroomListPage />}
               />
               <Route path="students" element={<StudentListPage />} />
               <Route path="assignments" element={<AssignmentListPage />} />
@@ -96,7 +105,7 @@ const AppContent = () => {
               <Route path="classes" element={<StudentClassroomListPage />} />
               <Route
                 path="enrollments"
-                element={<EnrollmentBoardPage userInfo={userInfo} />}
+                element={<EnrollmentBoardPage  />}
               />
               <Route
                 path="assignments"
@@ -132,7 +141,7 @@ const AppContent = () => {
             <Route path="/students" element={<ProfileListPage />} />
             <Route
               path="/myPage/:id"
-              element={<ProfilePage userInfo={userInfo} />}
+              element={<ProfilePage />}
             />
             {/* user - teachers only */}
             <Route
@@ -158,7 +167,7 @@ const AppContent = () => {
             {/* 클래스 상세 */}
             <Route
               path="/classes/:classId"
-              element={<ClassroomDetailPage userInfo={userInfo} />}
+              element={<ClassroomDetailPage />}
             />
 
             {/* classroom - inquiry */}
