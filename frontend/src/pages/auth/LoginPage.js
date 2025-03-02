@@ -3,6 +3,7 @@ import useAuthStore from "../../stores/authStore";  // zustand store import
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import { loginUser } from "../../services/auth/AuthService.mjs";
+import { trackLogin } from "../../utils/ga/event_tracking";
 
 const LoginPage = () => {
   const login = useAuthStore((state) => state.login);  // useContext 대신 zustand 사용
@@ -18,6 +19,9 @@ const LoginPage = () => {
       );
 
       const userId = login(response.data.username); // context 를 로그인상태로 등록
+      
+      // 로그인 성공 시 GA 이벤트 트래킹 - 이메일 정보 추가
+      trackLogin('email', userEmail);
 
       if (firstLoginResponse.data === "first") {
         alert("최초 로그인! 회원 정보 수정 페이지로 이동(추후 구현 예정)");
